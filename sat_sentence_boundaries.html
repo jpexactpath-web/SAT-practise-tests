@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SAT Standard English Conventions — Sentence Boundaries</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #181c27;
+    --surface2: #1e2336;
+    --border: #2e3454;
+    --accent: #c9a84c;
+    --accent2: #e8c76d;
+    --text: #e8e6df;
+    --text-muted: #8b8fa8;
+    --correct: #3ecf7a;
+    --wrong: #e05c5c;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 16px 60px;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    width: 100%;
+    max-width: 780px;
+    padding: 36px 0 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  .site-header .label {
+    font-size: 11px;
+    font-family: 'Source Serif 4', serif;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .site-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--text);
+  }
+  .site-header p {
+    margin-top: 10px;
+    font-size: 15px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar-wrap {
+    width: 100%;
+    max-width: 780px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  #progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 4px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* ── QUESTION CARD ── */
+  #quiz-wrap {
+    width: 100%;
+    max-width: 780px;
+  }
+  .q-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .q-counter {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: 'Source Serif 4', serif;
+    letter-spacing: 1px;
+  }
+  .q-counter span { color: var(--accent); font-weight: 600; }
+  .difficulty-badge {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .difficulty-badge.Easy  { color: var(--correct); border-color: #2a5c45; }
+  .difficulty-badge.Medium{ color: var(--accent);  border-color: #5c4a1e; }
+  .difficulty-badge.Hard  { color: var(--wrong);   border-color: #5c2a2a; }
+
+  /* timer */
+  #timer-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .timer-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 1s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(0.8); }
+  }
+  #timer-val { font-weight: 600; color: var(--accent2); font-variant-numeric: tabular-nums; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 20px;
+  }
+  .card p.passage {
+    font-size: 16.5px;
+    line-height: 1.75;
+    color: var(--text);
+    margin-bottom: 0;
+  }
+  .blank { color: var(--accent2); font-weight: 600; font-style: italic; }
+
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    margin-bottom: 24px;
+  }
+  .choice-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    text-align: left;
+    color: var(--text);
+    font-family: 'Source Serif 4', serif;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .choice-btn:hover:not(:disabled) {
+    background: var(--surface2);
+    border-color: var(--accent);
+    transform: translateX(3px);
+  }
+  .choice-btn .letter {
+    min-width: 28px; min-height: 28px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+    flex-shrink: 0;
+    transition: all 0.18s;
+  }
+  .choice-btn:hover:not(:disabled) .letter {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0f1117;
+  }
+  .choice-btn.selected {
+    border-color: var(--accent);
+    background: rgba(201,168,76,0.08);
+  }
+  .choice-btn.selected .letter {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0f1117;
+  }
+  .choice-btn.correct {
+    border-color: var(--correct);
+    background: rgba(62,207,122,0.08);
+  }
+  .choice-btn.correct .letter {
+    background: var(--correct);
+    border-color: var(--correct);
+    color: #0f1117;
+  }
+  .choice-btn.wrong {
+    border-color: var(--wrong);
+    background: rgba(224,92,92,0.08);
+  }
+  .choice-btn.wrong .letter {
+    background: var(--wrong);
+    border-color: var(--wrong);
+    color: #fff;
+  }
+  .choice-btn:disabled { cursor: default; }
+
+  /* nav */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .btn {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 13px 28px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0f1117;
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
+
+  /* skip note */
+  #skip-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* ── RESULTS SCREEN ── */
+  #results-screen { display: none; width: 100%; max-width: 780px; }
+
+  .score-banner {
+    text-align: center;
+    padding: 48px 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .score-banner::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .score-banner .score-label {
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 12px;
+  }
+  .score-banner .score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(56px, 10vw, 80px);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text);
+  }
+  .score-banner .score-num span { color: var(--accent2); }
+  .score-banner .score-sub {
+    margin-top: 12px;
+    font-size: 15px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-card .stat-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+  .stat-card .stat-lbl {
+    font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text-muted); margin-top: 6px;
+  }
+
+  .results-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+  .btn-excel {
+    background: #1d6f42;
+    color: #fff;
+    border: none;
+  }
+  .btn-excel:hover { background: #25864f; transform: translateY(-1px); }
+  .btn-retry {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+  }
+  .btn-retry:hover { background: rgba(201,168,76,0.1); }
+
+  /* review list */
+  .review-header {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .review-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  .review-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .review-item.correct-item { border-left: 4px solid var(--correct); }
+  .review-item.wrong-item   { border-left: 4px solid var(--wrong);   }
+
+  .review-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .review-item-header:hover { background: var(--surface2); }
+
+  .review-q-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .status-chip {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+  }
+  .chip-correct { background: rgba(62,207,122,0.15); color: var(--correct); }
+  .chip-wrong   { background: rgba(224,92,92,0.15);  color: var(--wrong);   }
+
+  .review-time {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .chevron {
+    font-size: 12px;
+    color: var(--text-muted);
+    transition: transform 0.25s;
+    margin-left: 10px;
+  }
+  .review-item.open .chevron { transform: rotate(180deg); }
+
+  .review-body {
+    display: none;
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .review-item.open .review-body { display: block; }
+
+  .review-passage {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text);
+    padding: 16px 0 12px;
+  }
+  .answer-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .answer-box {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  .answer-box .alabel {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    opacity: 0.7;
+  }
+  .answer-box.your-ans.was-right { background: rgba(62,207,122,0.12); border: 1px solid #3ecf7a55; color: var(--correct); }
+  .answer-box.your-ans.was-wrong { background: rgba(224,92,92,0.12);  border: 1px solid #e05c5c55; color: var(--wrong);   }
+  .answer-box.corr-ans           { background: rgba(201,168,76,0.1);  border: 1px solid #c9a84c44; color: var(--accent2); }
+
+  .rationale-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .rationale-box .rat-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .rationale-box p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  /* ── INTRO SCREEN ── */
+  #intro-screen {
+    width: 100%;
+    max-width: 780px;
+  }
+  .intro-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .intro-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 100%, rgba(201,168,76,0.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .intro-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+  .intro-card p {
+    color: var(--text-muted);
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 540px;
+    margin: 0 auto 28px;
+  }
+  .intro-stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .intro-stat .val {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+  .intro-stat .lbl {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .name-input-wrap {
+    margin: 0 auto 28px;
+    max-width: 340px;
+  }
+  .name-input-wrap label {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-align: left;
+  }
+  .name-input-wrap input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 13px 16px;
+    color: var(--text);
+    font-family: 'Source Serif 4', serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .name-input-wrap input:focus { border-color: var(--accent); }
+  .name-input-wrap input::placeholder { color: var(--text-muted); opacity: 0.6; }
+
+  @media (max-width: 560px) {
+    .card { padding: 20px; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .answer-row { grid-template-columns: 1fr; }
+    .results-actions { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="label">SAT · Reading &amp; Writing</div>
+  <h1>Standard English Conventions<br><em style="font-weight:400;font-size:0.72em;color:var(--text-muted)">Sentence Boundaries</em></h1>
+  <p>30 practice questions · timed per question · full rationale review</p>
+</header>
+
+<div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+
+<!-- ── INTRO ── -->
+<div id="intro-screen">
+  <div class="intro-card">
+    <h2>Ready to practise?</h2>
+    <p>Answer each question, then review your results with full SAT explanations. Your time per question is recorded automatically.</p>
+    <div class="intro-stats">
+      <div class="intro-stat"><div class="val">30</div><div class="lbl">Questions</div></div>
+      <div class="intro-stat"><div class="val">↻</div><div class="lbl">Timed</div></div>
+      <div class="intro-stat"><div class="val">XLS</div><div class="lbl">Export</div></div>
+    </div>
+    <div class="name-input-wrap">
+      <label for="student-name">Your name <span style="color:var(--wrong)">*</span> <span style="font-size:11px;letter-spacing:0;text-transform:none;font-style:italic;">(required)</span></label>
+      <input type="text" id="student-name" placeholder="e.g. Nguyen Van A" autocomplete="off"
+        oninput="this.style.borderColor='var(--border)';document.getElementById('name-error').style.display='none';"/>
+      <div id="name-error" style="display:none;color:var(--wrong);font-size:13px;margin-top:6px;text-align:left;">⚠ Please enter your name before starting.</div>
+    </div>
+    <button class="btn btn-primary" onclick="startQuiz()" style="font-size:16px;padding:16px 44px;">Begin Test ›</button>
+  </div>
+</div>
+
+<!-- ── QUIZ ── -->
+<div id="quiz-wrap" style="display:none;">
+  <div class="q-meta">
+    <div class="q-counter">Question <span id="q-num">1</span> of 30</div>
+    <div id="diff-badge" class="difficulty-badge">—</div>
+  </div>
+  <div id="timer-display">
+    <div class="timer-dot"></div>
+    Time on this question: <span id="timer-val">0:00</span>
+  </div>
+  <div class="card">
+    <p class="passage" id="passage-text"></p>
+  </div>
+  <div id="prompt-text" style="font-size:14px;color:var(--text-muted);font-style:italic;margin-bottom:14px;">
+    Which choice completes the text so that it conforms to the conventions of Standard English?
+  </div>
+  <div class="choices" id="choices"></div>
+  <div class="nav-row">
+    <button class="btn btn-ghost" id="prev-btn" onclick="navigate(-1)">‹ Previous</button>
+    <span id="skip-note">Select an answer to continue</span>
+    <button class="btn btn-primary" id="next-btn" onclick="navigate(1)">Next ›</button>
+  </div>
+</div>
+
+<!-- ── RESULTS ── -->
+<div id="results-screen">
+  <div class="score-banner">
+    <div class="score-label">Your Score</div>
+    <div class="score-num" id="score-display">—</div>
+    <div class="score-sub" id="score-sub">—</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-val" id="stat-correct">—</div><div class="stat-lbl">Correct</div></div>
+    <div class="stat-card"><div class="stat-val" id="stat-wrong">—</div><div class="stat-lbl">Incorrect</div></div>
+    <div class="stat-card"><div class="stat-val" id="stat-time">—</div><div class="stat-lbl">Total Time</div></div>
+  </div>
+  <div class="results-actions">
+    <button class="btn btn-excel" onclick="exportExcel()">⬇ Download Score Sheet (.xlsx)</button>
+    <button class="btn btn-retry btn-ghost" onclick="retryQuiz()">↺ Retake Test</button>
+  </div>
+  <div class="review-header">Question Review</div>
+  <div id="review-list"></div>
+</div>
+
+<script>
+// ────────────────────────────────────────────────────────────────────────────
+// DATA
+// ────────────────────────────────────────────────────────────────────────────
+const QUESTIONS = [
+  {
+    id:"de55ec71",
+    difficulty:"Easy",
+    passage:'Generations of mystery and horror <span class="blank">______</span> have been influenced by the dark, gothic stories of celebrated American author Edgar Allan Poe (1809–1849).',
+    choices:["writers","writers,","writers—","writers;"],
+    answer:0,
+    rationale:'Choice A is correct. When a subject ("Generations of mystery and horror writers") is immediately followed by a verb ("have been influenced"), no punctuation is needed between them.'
+  },
+  {
+    id:"89fbc3eb",
+    difficulty:"Medium",
+    passage:'The Mission 66 initiative, which was approved by Congress in 1956, represented a major investment in the infrastructure of overburdened national <span class="blank">______</span> it prioritized physical improvements to the parks\' roads, utilities, employee housing, and visitor facilities while also establishing educational programming for the public.',
+    choices:["parks and","parks","parks;","parks,"],
+    answer:2,
+    rationale:'Choice C is correct. A semicolon correctly joins the first main clause ("The Mission…parks") and the second main clause beginning with "it." A comma alone (D) creates a comma splice. Choice A lacks a comma before the conjunction. Choice B creates a run-on sentence.'
+  },
+  {
+    id:"960dec02",
+    difficulty:"Hard",
+    passage:'A recent study tracked the number of bee species present in twenty-seven New York apple orchards over a ten-year period. <span class="blank">______</span> found that when wild growth near an orchard was cleared, the number of different bee species visiting the orchard decreased.',
+    choices:["Entomologist Heather Grab:","Entomologist, Heather Grab,","Entomologist Heather Grab","Entomologist Heather Grab,"],
+    answer:2,
+    rationale:'Choice C is correct. No punctuation is needed between the title "Entomologist" and the proper noun "Heather Grab," nor between the subject ("Entomologist Heather Grab") and the main verb ("found"). Setting the name off with commas (B) incorrectly implies it is removable.'
+  },
+  {
+    id:"4b0c7b62",
+    difficulty:"Easy",
+    passage:'The algaita is a double reed wind instrument from West Africa. The reed of a wind instrument is the mouthpiece <span class="blank">______</span> A double reed contains two pieces of cane that vibrate and produce sound as air passes between them.',
+    choices:["where sound is made?","where is sound made.","where sound is made.","where is sound made?"],
+    answer:2,
+    rationale:'Choice C is correct. A period ends the declarative sentence "the reed of a wind instrument is the mouthpiece where sound is made." The sentence is declarative, not interrogative, so a question mark is wrong. Choices B and D use inverted word order typical of direct questions, which is incorrect here.'
+  },
+  {
+    id:"7f226b4b",
+    difficulty:"Medium",
+    passage:'In a 2023 study, researchers documented a fascinating behavior in the aquatic plant <em>Elodea densa</em>. When exposed to low levels of light, the plant\'s <span class="blank">______</span> the cellular organs that generate energy from light—reshuffled to form a tightly packed, glass-like surface ideal for collecting more light.',
+    choices:["chloroplasts","chloroplasts;","chloroplasts,","chloroplasts—"],
+    answer:3,
+    rationale:'Choice D is correct. A dash after "chloroplasts" pairs with the existing dash after "from light" to set off the supplementary definition "the cellular organs that generate energy from light." Dashes must be used in matching pairs. A semicolon (B) or comma (C) cannot be paired with a dash in this way.'
+  },
+  {
+    id:"74ce2f05",
+    difficulty:"Medium",
+    passage:'A study led by scientist Rebecca Kirby at the University of Wisconsin–Madison found that black bears that eat human food before hibernation have increased levels of a rare carbon isotope, <span class="blank">______</span> due to the higher ¹³C levels in corn and cane sugar.',
+    choices:["carbon-13, (¹³C)","carbon-13 (¹³C)","carbon-13, (¹³C),","carbon-13 (¹³C),"],
+    answer:3,
+    rationale:'Choice D is correct. The comma after "(¹³C)" pairs with the comma after "isotope" to enclose the supplementary appositive "carbon-13 (¹³C)." No comma is needed inside—between "carbon-13" and the parentheses—because the parentheses already separate the abbreviation. Choices A, B, and C each fail to properly close the supplementary element.'
+  },
+  {
+    id:"a7c85001",
+    difficulty:"Easy",
+    passage:'Researchers Amit Kumar and Nicholas Epley investigated how <span class="blank">______</span> In a series of experiments conducted in 2022, they found that people performing small acts of kindness underestimated the positive effect their actions had on others.',
+    choices:["do people perceive acts of kindness.","do people perceive acts of kindness?","people perceive acts of kindness?","people perceive acts of kindness."],
+    answer:3,
+    rationale:'Choice D is correct. The sentence asks an indirect (embedded) question—"investigated how people perceive acts of kindness"—so it is declarative and ends with a period. Choices A and B use direct-question word order ("do people"). Choice C incorrectly uses a question mark on an indirect question.'
+  },
+  {
+    id:"eb95235b",
+    difficulty:"Hard",
+    passage:'The Limón technique, developed by Mexican-born dancer and choreographer Jose Limón, is known for its emphasis on breath control and its interplay of weight and <span class="blank">______</span> dancers may explore, for example, the moment of mid-air suspension at the top of a jump.',
+    choices:["weightlessness","weightlessness which","weightlessness,","weightlessness;"],
+    answer:3,
+    rationale:'Choice D is correct. A semicolon joins the two main clauses: "The Limón…weightlessness" and "dancers…jump." A comma alone (C) creates a comma splice; no punctuation (A) creates a run-on; the relative pronoun "which" (B) cannot join two main clauses.'
+  },
+  {
+    id:"adf210e7",
+    difficulty:"Hard",
+    passage:'The haiku-like poems of Tomas Tranströmer, which present nature- and dream-influenced images in crisp, spare language, have earned the Swedish poet praise from leading contemporary <span class="blank">______</span> them Nigerian American essayist and novelist Teju Cole, who has written that Tranströmer\'s works "contain a luminous simplicity."',
+    choices:["writers. Among","writers among","writers; among","writers, among"],
+    answer:3,
+    rationale:'Choice D is correct. A comma separates the main clause ("The haiku-like…writers") from the supplementary phrase ("among…Cole") that specifies a writer who has praised Tranströmer. A period (A) creates a sentence fragment. No punctuation (B) fails to mark the boundary. A semicolon (C) cannot precede a supplementary phrase.'
+  },
+  {
+    id:"707461d8",
+    difficulty:"Hard",
+    passage:'In 2021, Mexican biologist Martha Lydia Macías-Rubalcava led a review of the scientific literature related to endophytic fungi (i.e., fungi that live inside a host <span class="blank">______</span> researching 120 endophytic fungi–produced compounds, she found that their phytotoxicity can make them viable alternatives to chemical herbicides for controlling weeds.',
+    choices:["plant). By","plant), by","plant) and by","plant) by"],
+    answer:0,
+    rationale:'Choice A is correct. A period marks the boundary between two complete sentences: "In…plant" and "By…weeds." The participial phrase "By researching…" modifies the subject "she" of the second sentence. A comma (B) creates a comma splice; "and" without a preceding comma (C) is unconventional; no punctuation (D) creates a run-on.'
+  },
+  {
+    id:"13fcf575",
+    difficulty:"Hard",
+    passage:'Roughly 300 nights a year, when the cold air descending from the Andes Mountains meets the warm air rising from Venezuela\'s coastal Lake Maracaibo, the result is a spectacular lightning storm, its strikes so bright, so localized, and so <span class="blank">______</span> that it has become known as "Maracaibo\'s Lighthouse."',
+    choices:["dependable:","dependable;","dependable","dependable,"],
+    answer:2,
+    rationale:'Choice C is correct. No punctuation is needed before the integrated relative clause beginning with "that," which is essential to the meaning of the adjectival phrase "so bright, so localized, and so dependable." Any punctuation mark here (A, B, D) incorrectly interrupts the integrated clause.'
+  },
+  {
+    id:"940ff6f7",
+    difficulty:"Hard",
+    passage:'Jamaican British artist Willard Wigan is known for his remarkable <span class="blank">______</span> so small that they are best viewed through a microscope, Wigan\'s sculptures are made from tiny natural materials, such as spiderweb strands.',
+    choices:["microsculptures creations","microsculptures, creations","microsculptures. Creations","microsculptures and creations"],
+    answer:2,
+    rationale:'Choice C is correct. A period marks the boundary between two sentences: "Jamaican…microsculptures" and "Creations…strands." The noun phrase "Creations so small…" modifies "Wigan\'s sculptures" in the second sentence. No punctuation (A) or a comma (B) creates a run-on or comma splice. "And" without a preceding comma (D) is unconventional.'
+  },
+  {
+    id:"333b2b65",
+    difficulty:"Easy",
+    passage:'While one requires oxygen and one does <span class="blank">______</span> and anaerobic respiration are both forms of cellular respiration—that is, they are processes by which cells break down glucose to use as energy.',
+    choices:["not aerobic","not. Aerobic","not, aerobic","not; aerobic"],
+    answer:2,
+    rationale:'Choice C is correct. A comma is the appropriate punctuation to separate the dependent clause "While one requires oxygen and one does not" from the independent clause that follows. A semicolon (D) or period (B) cannot follow a dependent clause. No punctuation (A) creates a run-on.'
+  },
+  {
+    id:"aaa1907f",
+    difficulty:"Hard",
+    passage:'To serve local families during the Great Depression, innovative New York City librarian Pura Belpré offered storytelling in both English and Spanish, an uncommon <span class="blank">______</span> celebrated el Día de los Tres Reyes Magos, an important community holiday; and put on puppet shows dramatizing Puerto Rican folktales.',
+    choices:["practice, at the time","practice at the time;","practice, at the time,","practice at the time,"],
+    answer:1,
+    rationale:'Choice B is correct. This is a complex series separated by semicolons. The semicolon after "time" matches the semicolon used later, correctly separating the first item ("offered…time") from the second ("celebrated…holiday"). A comma inside the phrase "an uncommon practice at the time" is not needed because "at the time" is essential to the meaning.'
+  },
+  {
+    id:"7f48b098",
+    difficulty:"Medium",
+    passage:'Photosynthesis, the mechanism by which plants use sunlight to turn carbon dioxide and water into <span class="blank">______</span> is fueled in part by an enzyme called Photosystem II that harvests energy-giving electrons from water molecules.',
+    choices:["nutrients","nutrients and","nutrients,","nutrients—"],
+    answer:2,
+    rationale:'Choice C is correct. The comma after "nutrients" pairs with the comma after "Photosynthesis" to enclose the supplementary appositive phrase "the mechanism by which plants use sunlight to turn carbon dioxide and water into nutrients." A dash (D) cannot be paired with a comma; a conjunction (B) is incorrect; no punctuation (A) leaves the supplementary element improperly closed.'
+  },
+  {
+    id:"626a1642",
+    difficulty:"Hard",
+    passage:'As a behavioral economist, Katy Milkman of the University of Pennsylvania recognizes that people sometimes make irrational economic decisions. Milkman\'s research can thus address anomalies that neoclassical economic <span class="blank">______</span> assume that people are consistently rational decision-makers—cannot explain.',
+    choices:["models—which","models, which","models which","models which—"],
+    answer:0,
+    rationale:'Choice A is correct. The dashes after "models" and after "decision-makers" correctly enclose the supplementary element "which assume that people are consistently rational decision-makers." A comma cannot be paired with a dash (B). No punctuation (C) fails to mark the supplementary element. Placing the dash after "which" (D) is grammatically incoherent.'
+  },
+  {
+    id:"148be4da",
+    difficulty:"Easy",
+    passage:'Human-made (synthetic) fibers used in clothes and many other consumer products are more durable than most natural plant <span class="blank">______</span> the manufacture of synthetic fibers requires toxic chemical solvents that can pollute air and water.',
+    choices:["fibers,","fibers but","fibers","fibers, but"],
+    answer:3,
+    rationale:'Choice D is correct. A comma followed by the coordinating conjunction "but" correctly joins two main clauses. A comma alone (A) creates a comma splice. "But" without a preceding comma (B) is unconventional for longer main clauses. No punctuation (C) creates a run-on sentence.'
+  },
+  {
+    id:"0f39b19c",
+    difficulty:"Medium",
+    passage:'After a spate of illnesses as a child, Wilma Rudolph was told she might never walk again. Defying all odds, Rudolph didn\'t just walk, she <span class="blank">______</span> the 1960 Summer Olympics in Rome, she won both the 100- and 200-meter dashes and clinched first place for her team in the 4x100-meter relay, becoming the first US woman to win three gold medals in a single Olympics.',
+    choices:["ran—fast—during","ran—fast during","ran—fast, during","ran—fast. During"],
+    answer:3,
+    rationale:'Choice D is correct. A period marks the boundary between "Defying…fast" and "During…Olympics." When a sentence already contains a dash ("ran—fast"), it is unconventional to add another dash to close the sentence (A). No punctuation (B) creates a run-on; a comma (C) creates a comma splice.'
+  },
+  {
+    id:"f78997cf",
+    difficulty:"Hard",
+    passage:'Recent analysis of 32532 Thereus—an outer solar system object orbiting the Sun between Jupiter and Saturn—has determined its color to be gray, suggesting an icy composition. Such interpretations are ultimately <span class="blank">______</span> the object\'s gray coloration may be an incidental effect of radiation, solar wind, or collisions with other objects rather than evidence of its physical makeup.',
+    choices:["speculative, though","speculative, though;","speculative; though","speculative, though,"],
+    answer:1,
+    rationale:'Choice B is correct. The comma separates the supplementary adverb "though" from the preceding clause, and the semicolon after "though" joins the two main clauses while signaling that the second clause qualifies the first. Choice A lacks the semicolon needed to join the clauses. Choice C places the semicolon before "though," which illogically groups the adverb with the wrong clause. Choice D creates a comma splice.'
+  },
+  {
+    id:"155239cf",
+    difficulty:"Easy",
+    passage:'By analyzing ice cores from Greenland and Antarctica, a research team at Sweden\'s Lund University discovered evidence of a solar storm that occurred 9,200 years ago. Scientists had previously thought the Sun to be in a relatively "quiet" phase at that <span class="blank">______</span> the Lund team\'s finding suggests otherwise.',
+    choices:["time but","time, but","time,","time"],
+    answer:1,
+    rationale:'Choice B is correct. A comma and the coordinating conjunction "but" join the two main clauses. "But" without a preceding comma (A) is unconventional for longer clauses. A comma alone (C) creates a comma splice. No punctuation (D) creates a run-on.'
+  },
+  {
+    id:"9091458d",
+    difficulty:"Easy",
+    passage:'Emperor penguins don\'t waddle out of the ocean. They launch themselves at such a high speed that they travel up to two meters before landing. How <span class="blank">______</span> A layer of microbubbles on their plumage reduces friction as the penguins speed to the surface.',
+    choices:["they are able to move so fast!","are they able to move so fast.","they are able to move so fast.","are they able to move so fast?"],
+    answer:3,
+    rationale:'Choice D is correct. "How are they able to move so fast?" is a direct question that sets up the following sentence\'s explanation. The exclamatory versions (A, C) do not function as questions. A period (B) cannot end a direct question.'
+  },
+  {
+    id:"ac5536c1",
+    difficulty:"Medium",
+    passage:'Beatrix Potter is perhaps best known for writing and illustrating children\'s books such as <em>The Tale of Peter Rabbit</em> (1902), but she also dedicated herself to mycology, the study of <span class="blank">______</span> more than 350 paintings of the fungal species she observed in nature and submitting her research on spore germination to the Linnean Society of London.',
+    choices:["fungi; producing","fungi. Producing","fungi producing","fungi, producing"],
+    answer:3,
+    rationale:'Choice D is correct. A comma separates the supplementary noun phrase "the study of fungi" from the participial phrase "producing…London," which describes the extent of Potter\'s dedication. A semicolon (A) cannot join two supplementary phrases. A period (B) creates a sentence fragment. No punctuation (C) illogically implies the study of fungi is itself producing paintings.'
+  },
+  {
+    id:"5bed774c",
+    difficulty:"Hard",
+    passage:'Philosopher Peter Kivy was a leading figure in musical <span class="blank">______</span> evidenced by his belief that instead of evoking particular emotions, such as sadness or joy, compositions elicit a listener\'s emotional response to the structure and artistry of the music itself, Kivy\'s approach to the study of music was decidedly formalist.',
+    choices:["aesthetics as","aesthetics and as","aesthetics, as","aesthetics. As"],
+    answer:3,
+    rationale:'Choice D is correct. A period marks the boundary between "Philosopher…aesthetics" and "As evidenced…formalist." The long adverbial phrase "As evidenced…itself" modifies the following clause. No punctuation (A) creates a run-on; "and" without a comma (B) is unconventional; a comma (C) creates a comma splice.'
+  },
+  {
+    id:"9c3630b9",
+    difficulty:"Hard",
+    passage:'Using natural debris, such as dried <span class="blank">______</span> such as plastic bags; and more traditional art supplies, such as tree glue, Ghanaian artist Ed Franklin Gavua creates his striking Yiiiiikakaii African masks, which he hopes can help viewers rethink how waste is used in their communities.',
+    choices:["leaves, man-made trash:","leaves; man-made trash,","leaves, man-made trash,","leaves; man-made trash;"],
+    answer:1,
+    rationale:'Choice B is correct. In a complex series with internal punctuation, semicolons separate the items. The semicolon after "leaves" separates the first item ("natural debris, such as dried leaves") from the second ("man-made trash, such as plastic bags"). The comma after "trash" correctly introduces the supplementary phrase "such as plastic bags." A colon (A), a second comma (C), or a semicolon before the supplementary phrase (D) are each incorrect.'
+  },
+  {
+    id:"3a2d77d7",
+    difficulty:"Hard",
+    passage:'In the 1950s, novel audio technologies allowed the addition of another instrument to jazz and swing <span class="blank">______</span> relatively quiet instrument, its full range of sound was finally audible alongside the blaring brass instruments of the time, allowing flautists like Bennie Maupin and Bobbi Humphrey to perform with other jazz greats.',
+    choices:["music, the flute, a","music. The flute, a","music; the flute, a","music: the flute. A"],
+    answer:3,
+    rationale:'Choice D is correct. The colon introduces "the flute" as the instrument added to jazz and swing. The period then correctly separates two sentences: "In…flute" and "A relatively quiet instrument…greats." A comma (A) creates a comma splice between two main clauses. Choices B and C each produce sentences with two uncoordinated subjects ("the flute" and "its full range of sound"), which is awkward and confusing.'
+  },
+  {
+    id:"435809d8",
+    difficulty:"Hard",
+    passage:'On March 23, 2021, a gust of wind wreaked havoc on global trade. Ever Given, an international shipping container vessel, became lodged in Egypt\'s Suez Canal, a major shipping route between Europe and Asia. The vessel took six days to <span class="blank">______</span> it\'s as heavy as two thousand blue whales when fully loaded.',
+    choices:["dislodge in part due to its sheer size,","dislodge, in part due to its sheer size:","dislodge, in part due to its sheer size,","dislodge, in part, due to its sheer size"],
+    answer:1,
+    rationale:'Choice B is correct. The comma after "dislodge" marks the boundary between the main clause and the supplementary phrase "in part due to its sheer size." The colon then introduces the clause that explains the vessel\'s size. A comma at the end (A, C) creates a comma splice. Choice D creates a run-on by omitting end punctuation before the second main clause.'
+  },
+  {
+    id:"b0115ef6",
+    difficulty:"Easy",
+    passage:'Technologies such as microphones and inkjet printers are made using piezoelectric materials, which generate an internal electric field when pressure is applied to them. The toxic nature of some of these materials recently led a team from the University of Sheffield to investigate how <span class="blank">______</span>',
+    choices:["could their use be better regulated?","their use could be better regulated.","their use could be better regulated?","could their use be better regulated."],
+    answer:1,
+    rationale:'Choice B is correct. The sentence contains an indirect (embedded) question—"to investigate how their use could be better regulated"—so it is declarative and ends with a period. Direct-question word order ("could their use") is incorrect in an indirect question (A, D). A question mark is inappropriate for a declarative sentence (C).'
+  },
+  {
+    id:"83898524",
+    difficulty:"Hard",
+    passage:'In addition to advocating for South America\'s independence in two political treatises, the Cartagena Manifesto and the Letter from Jamaica, Simón Bolívar personally led armies against the Spanish, liberating three South American territories—New Granada (present-day Colombia and Panama), Venezuela, and Quito (present-day <span class="blank">______</span> from colonial rule.',
+    choices:["Ecuador,)","Ecuador)","Ecuador),","Ecuador)—"],
+    answer:3,
+    rationale:'Choice D is correct. The dash after "Ecuador)" pairs with the opening dash after "territories" to enclose the supplementary list of liberated territories. No punctuation is needed between "Ecuador" and the closing parenthesis. A comma (A, C) cannot be paired with a dash. No closing dash (B) leaves the supplementary element improperly closed.'
+  },
+  {
+    id:"fba5d8d1",
+    difficulty:"Hard",
+    passage:'In a 2016 study, Eastern Washington University psychologist Amani El-Alayli found that, among the study participants who experienced frisson (a physiological response akin to goosebumps or getting the chills) while listening to music, there was one personality trait that they scored particularly <span class="blank">______</span> openness to experience.',
+    choices:["high. On","high on;","high on","high on:"],
+    answer:3,
+    rationale:'Choice D is correct. A colon marks the boundary between the main clause ("there…on") and the supplementary phrase "openness to experience," introducing the specific personality trait. A period (A) separates the preposition "on" from its object, creating a fragment. A semicolon (B) is conventionally used between two main clauses, not before a supplementary phrase. No punctuation (C) fails to mark the boundary.'
+  },
+  {
+    id:"6fece68e",
+    difficulty:"Easy",
+    passage:'Emperor Ashoka ruled the Maurya Empire in South Asia from roughly 270 to 232 BCE. He is known for enforcing a moral code called the Law of Piety, which established the sanctity of animal <span class="blank">______</span> the just treatment of the elderly, and the abolition of the slave trade.',
+    choices:["life","life;","life:","life,"],
+    answer:3,
+    rationale:'Choice D is correct. "The sanctity of animal life" is the first item in a three-item list. A comma separates consecutive list items consistently throughout the sentence. A semicolon (B) is inconsistent with the commas used later. A colon (C) introduces lists but cannot separate items within one. No punctuation (A) omits the required list separator.'
+  }
+];
+
+// ────────────────────────────────────────────────────────────────────────────
+// STATE
+// ────────────────────────────────────────────────────────────────────────────
+let current = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+let timesPerQ = new Array(QUESTIONS.length).fill(0);
+let questionStart = 0;
+let timerInterval = null;
+let studentName = "";
+
+// ────────────────────────────────────────────────────────────────────────────
+// INIT
+// ────────────────────────────────────────────────────────────────────────────
+function startQuiz() {
+  const nameInput = document.getElementById('student-name');
+  studentName = nameInput.value.trim();
+  if (!studentName) {
+    nameInput.style.borderColor = 'var(--wrong)';
+    nameInput.placeholder = 'Please enter your name to continue';
+    nameInput.focus();
+    document.getElementById('name-error').style.display = 'block';
+    return;
+  }
+  document.getElementById('intro-screen').style.display = 'none';
+  document.getElementById('quiz-wrap').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  document.getElementById('q-num').innerText = current + 1;
+
+  const badge = document.getElementById('diff-badge');
+  badge.innerText = q.difficulty;
+  badge.className = 'difficulty-badge ' + q.difficulty;
+
+  document.getElementById('passage-text').innerHTML = q.passage;
+
+  const cl = document.getElementById('choices');
+  cl.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.choices.forEach((c,i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    if (answers[current] === i) btn.classList.add('selected');
+    btn.innerHTML = `<span class="letter">${letters[i]}</span><span>${c}</span>`;
+    btn.addEventListener('click', () => selectAnswer(i));
+    cl.appendChild(btn);
+  });
+
+  document.getElementById('prev-btn').disabled = current === 0;
+  document.getElementById('next-btn').innerText = current === QUESTIONS.length-1 ? 'Finish ›' : 'Next ›';
+  document.getElementById('next-btn').disabled = answers[current] === null;
+  document.getElementById('skip-note').style.display = answers[current] === null ? 'block' : 'none';
+
+  updateProgress();
+  startTimer();
+}
+
+function selectAnswer(idx) {
+  if (answers[current] !== null) return;
+  stopTimer();
+  answers[current] = idx;
+
+  const btns = document.querySelectorAll('.choice-btn');
+  btns.forEach((b,i) => {
+    b.disabled = true;
+    if (i === QUESTIONS[current].answer) b.classList.add('correct');
+    if (i === idx && idx !== QUESTIONS[current].answer) b.classList.add('wrong');
+    if (i === idx) b.classList.add('selected');
+  });
+
+  document.getElementById('next-btn').disabled = false;
+  document.getElementById('skip-note').style.display = 'none';
+}
+
+function navigate(dir) {
+  stopTimer();
+  current += dir;
+  if (current < 0) { current = 0; return; }
+  if (current >= QUESTIONS.length) { showResults(); return; }
+  renderQuestion();
+}
+
+function updateProgress() {
+  const pct = ((current) / QUESTIONS.length) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// TIMER
+// ────────────────────────────────────────────────────────────────────────────
+function startTimer() {
+  clearInterval(timerInterval);
+  questionStart = Date.now() - (timesPerQ[current] * 1000);
+  updateTimerDisplay();
+  if (answers[current] === null) {
+    timerInterval = setInterval(() => {
+      timesPerQ[current] = (Date.now() - questionStart) / 1000;
+      updateTimerDisplay();
+    }, 500);
+  }
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timesPerQ[current] = (Date.now() - questionStart) / 1000;
+}
+
+function updateTimerDisplay() {
+  document.getElementById('timer-val').innerText = fmtTime(timesPerQ[current]);
+}
+
+function fmtTime(secs) {
+  const s = Math.floor(secs);
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2,'0');
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// RESULTS
+// ────────────────────────────────────────────────────────────────────────────
+function showResults() {
+  clearInterval(timerInterval);
+  document.getElementById('quiz-wrap').style.display = 'none';
+  document.getElementById('results-screen').style.display = 'block';
+  document.getElementById('progress-bar').style.width = '100%';
+
+  const correct = answers.filter((a,i) => a === QUESTIONS[i].answer).length;
+  const wrong   = QUESTIONS.length - correct;
+  const pct     = Math.round(correct / QUESTIONS.length * 100);
+  const totalSec = timesPerQ.reduce((a,b) => a+b, 0);
+
+  document.getElementById('score-display').innerHTML = `<span>${pct}</span>%`;
+  document.getElementById('score-sub').innerText = `${correct} correct out of ${QUESTIONS.length} questions`;
+  document.getElementById('stat-correct').innerText = correct;
+  document.getElementById('stat-wrong').innerText = wrong;
+  document.getElementById('stat-time').innerText = fmtTime(totalSec);
+
+  buildReview();
+}
+
+function buildReview() {
+  const list = document.getElementById('review-list');
+  list.innerHTML = '';
+  const letters = ['A','B','C','D'];
+
+  QUESTIONS.forEach((q,i) => {
+    const ans = answers[i];
+    const isCorrect = ans === q.answer;
+
+    const item = document.createElement('div');
+    item.className = 'review-item ' + (isCorrect ? 'correct-item' : 'wrong-item');
+
+    const hdr = document.createElement('div');
+    hdr.className = 'review-item-header';
+    hdr.innerHTML = `
+      <div class="review-q-label">
+        <span>Q${i+1}</span>
+        <span class="status-chip ${isCorrect ? 'chip-correct' : 'chip-wrong'}">${isCorrect ? '✓ Correct' : '✗ Incorrect'}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="review-time">⏱ ${fmtTime(timesPerQ[i])}</span>
+        <span class="chevron">▼</span>
+      </div>`;
+    hdr.addEventListener('click', () => item.classList.toggle('open'));
+    item.appendChild(hdr);
+
+    const body = document.createElement('div');
+    body.className = 'review-body';
+
+    const yourLetter = ans !== null ? letters[ans] : '—';
+    const corrLetter = letters[q.answer];
+
+    body.innerHTML = `
+      <div class="review-passage">${q.passage}</div>
+      <div class="answer-row">
+        <div class="answer-box your-ans ${isCorrect ? 'was-right' : 'was-wrong'}">
+          <div class="alabel">Your Answer</div>
+          <strong>${yourLetter}.</strong> ${ans !== null ? q.choices[ans] : 'Not answered'}
+        </div>
+        <div class="answer-box corr-ans">
+          <div class="alabel">Correct Answer</div>
+          <strong>${corrLetter}.</strong> ${q.choices[q.answer]}
+        </div>
+      </div>
+      <div class="rationale-box">
+        <div class="rat-label">Explanation</div>
+        <p>${q.rationale}</p>
+      </div>`;
+    item.appendChild(body);
+    list.appendChild(item);
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// EXCEL EXPORT
+// ────────────────────────────────────────────────────────────────────────────
+function exportExcel() {
+  const letters = ['A','B','C','D'];
+  const rows = [["Student Name","Question #","Question ID","Difficulty","Your Answer","Correct Answer","Result","Time (s)","Time (m:ss)"]];
+
+  QUESTIONS.forEach((q,i) => {
+    const ans = answers[i];
+    const isCorrect = ans === q.answer;
+    rows.push([
+      studentName,
+      i + 1,
+      q.id,
+      q.difficulty,
+      ans !== null ? letters[ans] + '. ' + q.choices[ans] : 'Not answered',
+      letters[q.answer] + '. ' + q.choices[q.answer],
+      isCorrect ? 'Correct' : 'Incorrect',
+      Math.round(timesPerQ[i]),
+      fmtTime(timesPerQ[i])
+    ]);
+  });
+
+  // Summary row
+  const correct = answers.filter((a,i) => a === QUESTIONS[i].answer).length;
+  const totalSec = timesPerQ.reduce((a,b) => a+b, 0);
+  rows.push([]);
+  rows.push(["SUMMARY","","","",`Score: ${correct}/${QUESTIONS.length} (${Math.round(correct/QUESTIONS.length*100)}%)`,
+    "","",`Total: ${Math.round(totalSec)}s`, fmtTime(totalSec)]);
+
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+
+  // Column widths
+  ws['!cols'] = [
+    {wch:20},{wch:12},{wch:12},{wch:12},{wch:38},{wch:38},{wch:12},{wch:12},{wch:12}
+  ];
+
+  // Header style hint (not all xlsx renderers support full styling but this sets bold)
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  for (let C = range.s.c; C <= range.e.c; C++) {
+    const cellAddr = XLSX.utils.encode_cell({r:0, c:C});
+    if (!ws[cellAddr]) continue;
+    ws[cellAddr].s = { font: { bold: true } };
+  }
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "SAT Results");
+
+  const date = new Date().toISOString().slice(0,10);
+  XLSX.writeFile(wb, `SAT_Boundaries_${studentName.replace(/\s+/g,'_')}_${date}.xlsx`);
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// RETRY
+// ────────────────────────────────────────────────────────────────────────────
+function retryQuiz() {
+  current = 0;
+  answers = new Array(QUESTIONS.length).fill(null);
+  timesPerQ = new Array(QUESTIONS.length).fill(0);
+  document.getElementById('results-screen').style.display = 'none';
+  document.getElementById('progress-bar').style.width = '0%';
+  document.getElementById('intro-screen').style.display = 'block';
+}
+</script>
+</body>
+</html>
