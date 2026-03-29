@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SAT Reading &amp; Writing — Words in Context</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #181c27;
+    --surface2: #1e2336;
+    --border: #2e3454;
+    --accent: #c9a84c;
+    --accent2: #e8c76d;
+    --text: #e8e6df;
+    --text-muted: #8b8fa8;
+    --correct: #3ecf7a;
+    --wrong: #e05c5c;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 16px 60px;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    width: 100%;
+    max-width: 780px;
+    padding: 36px 0 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  .site-header .label {
+    font-size: 11px;
+    font-family: 'Source Serif 4', serif;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .site-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--text);
+  }
+  .site-header p {
+    margin-top: 10px;
+    font-size: 15px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar-wrap {
+    width: 100%;
+    max-width: 780px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 4px;
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  #progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 4px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  /* ── QUESTION CARD ── */
+  #quiz-wrap {
+    width: 100%;
+    max-width: 780px;
+  }
+  .q-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+  }
+  .q-counter {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: 'Source Serif 4', serif;
+    letter-spacing: 1px;
+  }
+  .q-counter span { color: var(--accent); font-weight: 600; }
+  .difficulty-badge {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .difficulty-badge.Easy  { color: var(--correct); border-color: #2a5c45; }
+  .difficulty-badge.Medium{ color: var(--accent);  border-color: #5c4a1e; }
+  .difficulty-badge.Hard  { color: var(--wrong);   border-color: #5c2a2a; }
+
+  /* timer */
+  #timer-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  .timer-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 1s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.4; transform: scale(0.8); }
+  }
+  #timer-val { font-weight: 600; color: var(--accent2); font-variant-numeric: tabular-nums; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 20px;
+  }
+  .card p.passage {
+    font-size: 16.5px;
+    line-height: 1.75;
+    color: var(--text);
+    margin-bottom: 0;
+  }
+  .blank { color: var(--accent2); font-weight: 600; font-style: italic; }
+
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+    margin-bottom: 24px;
+  }
+  .choice-btn {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    text-align: left;
+    color: var(--text);
+    font-family: 'Source Serif 4', serif;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .choice-btn:hover:not(:disabled) {
+    background: var(--surface2);
+    border-color: var(--accent);
+    transform: translateX(3px);
+  }
+  .choice-btn .letter {
+    min-width: 28px; min-height: 28px;
+    border-radius: 50%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+    flex-shrink: 0;
+    transition: all 0.18s;
+  }
+  .choice-btn:hover:not(:disabled) .letter {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0f1117;
+  }
+  .choice-btn.selected {
+    border-color: var(--accent);
+    background: rgba(201,168,76,0.08);
+  }
+  .choice-btn.selected .letter {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #0f1117;
+  }
+  .choice-btn.correct {
+    border-color: var(--correct);
+    background: rgba(62,207,122,0.08);
+  }
+  .choice-btn.correct .letter {
+    background: var(--correct);
+    border-color: var(--correct);
+    color: #0f1117;
+  }
+  .choice-btn.wrong {
+    border-color: var(--wrong);
+    background: rgba(224,92,92,0.08);
+  }
+  .choice-btn.wrong .letter {
+    background: var(--wrong);
+    border-color: var(--wrong);
+    color: #fff;
+  }
+  .choice-btn:disabled { cursor: default; }
+
+  /* nav */
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .btn {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 13px 28px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #0f1117;
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-ghost {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
+
+  /* skip note */
+  #skip-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  /* ── RESULTS SCREEN ── */
+  #results-screen { display: none; width: 100%; max-width: 780px; }
+
+  .score-banner {
+    text-align: center;
+    padding: 48px 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+  .score-banner::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .score-banner .score-label {
+    font-size: 12px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 12px;
+  }
+  .score-banner .score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(56px, 10vw, 80px);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text);
+  }
+  .score-banner .score-num span { color: var(--accent2); }
+  .score-banner .score-sub {
+    margin-top: 12px;
+    font-size: 15px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 32px;
+  }
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: center;
+  }
+  .stat-card .stat-val {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+  .stat-card .stat-lbl {
+    font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text-muted); margin-top: 6px;
+  }
+
+  .results-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 36px;
+    flex-wrap: wrap;
+  }
+  .btn-excel {
+    background: #1d6f42;
+    color: #fff;
+    border: none;
+  }
+  .btn-excel:hover { background: #25864f; transform: translateY(-1px); }
+  .btn-retry {
+    background: transparent;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+  }
+  .btn-retry:hover { background: rgba(201,168,76,0.1); }
+
+  /* review list */
+  .review-header {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .review-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
+
+  .review-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+  .review-item.correct-item { border-left: 4px solid var(--correct); }
+  .review-item.wrong-item   { border-left: 4px solid var(--wrong);   }
+
+  .review-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .review-item-header:hover { background: var(--surface2); }
+
+  .review-q-label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .status-chip {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+  }
+  .chip-correct { background: rgba(62,207,122,0.15); color: var(--correct); }
+  .chip-wrong   { background: rgba(224,92,92,0.15);  color: var(--wrong);   }
+
+  .review-time {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+  }
+  .chevron {
+    font-size: 12px;
+    color: var(--text-muted);
+    transition: transform 0.25s;
+    margin-left: 10px;
+  }
+  .review-item.open .chevron { transform: rotate(180deg); }
+
+  .review-body {
+    display: none;
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--border);
+  }
+  .review-item.open .review-body { display: block; }
+
+  .review-passage {
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text);
+    padding: 16px 0 12px;
+  }
+  .answer-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .answer-box {
+    padding: 12px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  .answer-box .alabel {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    opacity: 0.7;
+  }
+  .answer-box.your-ans.was-right { background: rgba(62,207,122,0.12); border: 1px solid #3ecf7a55; color: var(--correct); }
+  .answer-box.your-ans.was-wrong { background: rgba(224,92,92,0.12);  border: 1px solid #e05c5c55; color: var(--wrong);   }
+  .answer-box.corr-ans           { background: rgba(201,168,76,0.1);  border: 1px solid #c9a84c44; color: var(--accent2); }
+
+  .rationale-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .rationale-box .rat-label {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+  .rationale-box p {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text-muted);
+  }
+
+  /* ── INTRO SCREEN ── */
+  #intro-screen {
+    width: 100%;
+    max-width: 780px;
+  }
+  .intro-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .intro-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 100%, rgba(201,168,76,0.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .intro-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    margin-bottom: 12px;
+  }
+  .intro-card p {
+    color: var(--text-muted);
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 540px;
+    margin: 0 auto 28px;
+  }
+  .intro-stats {
+    display: flex;
+    justify-content: center;
+    gap: 32px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .intro-stat .val {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--accent2);
+  }
+  .intro-stat .lbl {
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .name-input-wrap {
+    margin: 0 auto 28px;
+    max-width: 340px;
+  }
+  .name-input-wrap label {
+    display: block;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    text-align: left;
+  }
+  .name-input-wrap input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 13px 16px;
+    color: var(--text);
+    font-family: 'Source Serif 4', serif;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .name-input-wrap input:focus { border-color: var(--accent); }
+  .name-input-wrap input::placeholder { color: var(--text-muted); opacity: 0.6; }
+
+  @media (max-width: 560px) {
+    .card { padding: 20px; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .answer-row { grid-template-columns: 1fr; }
+    .results-actions { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="label">SAT · Reading &amp; Writing</div>
+  <h1>Text Completion</h1>
+  <p>6 practice questions · timed per question · full rationale review</p>
+</header>
+
+<div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+
+<!-- ── INTRO ── -->
+<div id="intro-screen">
+  <div class="intro-card">
+    <h2>Ready to practise?</h2>
+    <p>Read each passage carefully and choose the answer that most logically completes the text. Your time per question is recorded automatically.</p>
+    <div class="intro-stats">
+      <div class="intro-stat"><div class="val">6</div><div class="lbl">Questions</div></div>
+      <div class="intro-stat"><div class="val">↻</div><div class="lbl">Timed</div></div>
+      <div class="intro-stat"><div class="val">XLS</div><div class="lbl">Export</div></div>
+    </div>
+    <div class="name-input-wrap">
+      <label for="student-name">Your name <span style="color:var(--wrong)">*</span> <span style="font-size:11px;letter-spacing:0;text-transform:none;font-style:italic;">(required)</span></label>
+      <input type="text" id="student-name" placeholder="e.g. Nguyen Van A" autocomplete="off"
+        oninput="this.style.borderColor='var(--border)';document.getElementById('name-error').style.display='none';"/>
+      <div id="name-error" style="display:none;color:var(--wrong);font-size:13px;margin-top:6px;text-align:left;">⚠ Please enter your name before starting.</div>
+    </div>
+    <button class="btn btn-primary" onclick="startQuiz()" style="font-size:16px;padding:16px 44px;">Begin Test ›</button>
+  </div>
+</div>
+
+<!-- ── QUIZ ── -->
+<div id="quiz-wrap" style="display:none;">
+  <div class="q-meta">
+    <div class="q-counter">Question <span id="q-num">1</span> of 6</div>
+    <div id="diff-badge" class="difficulty-badge">—</div>
+  </div>
+  <div id="timer-display">
+    <div class="timer-dot"></div>
+    Time on this question: <span id="timer-val">0:00</span>
+  </div>
+  <div class="card">
+    <p class="passage" id="passage-text"></p>
+  </div>
+  <div id="prompt-text" style="font-size:14px;color:var(--text-muted);font-style:italic;margin-bottom:14px;">
+    Which choice most logically completes the text?
+  </div>
+  <div class="choices" id="choices"></div>
+  <div class="nav-row">
+    <button class="btn btn-ghost" id="prev-btn" onclick="navigate(-1)">‹ Previous</button>
+    <span id="skip-note">Select an answer to continue</span>
+    <button class="btn btn-primary" id="next-btn" onclick="navigate(1)">Next ›</button>
+  </div>
+</div>
+
+<!-- ── RESULTS ── -->
+<div id="results-screen">
+  <div class="score-banner">
+    <div class="score-label">Your Score</div>
+    <div class="score-num" id="score-display">—</div>
+    <div class="score-sub" id="score-sub">—</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-val" id="stat-correct">—</div>
+      <div class="stat-lbl">Correct</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-wrong">—</div>
+      <div class="stat-lbl">Incorrect</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" id="stat-time">—</div>
+      <div class="stat-lbl">Total Time</div>
+    </div>
+  </div>
+  <div class="results-actions">
+    <button class="btn btn-excel" onclick="exportExcel()">⬇ Download Results (.xlsx)</button>
+    <button class="btn btn-retry" onclick="retryQuiz()">↻ Try Again</button>
+  </div>
+  <div class="review-header">Question Review</div>
+  <div id="review-list"></div>
+</div>
+
+<script>
+// ────────────────────────────────────────────────────────────────────────────
+// QUESTIONS
+// ────────────────────────────────────────────────────────────────────────────
+const QUESTIONS = [
+  {
+    id: "q1_blackhole",
+    difficulty: "Medium",
+    passage: 'Physicists have yet to figure out what exactly happens at the singularity of a black hole: matter is crushed, but what becomes of it then? The event horizon, by hiding the singularity, isolates this gap in our knowledge. All kinds of processes unknown to science may occur at the singularity, yet they have no effect on the outside world. Astronomers plotting the orbits of planets and stars can safely ignore the uncertainties introduced by singularities and <span class="blank">______</span>',
+    choices: [
+      "apply the standard laws of physics with confidence.",
+      "focus on gaining a deeper understanding of black holes.",
+      "attempt to peer behind the event horizon.",
+      "uncover phenomena not currently known to science."
+    ],
+    answer: 0,
+    rationale: 'Choice A is correct. The second-to-last sentence includes the transition <em>yet</em>, which indicates key information: although singularities may involve all sorts of mysterious processes, they have no real-world effect. Thus, scientists can ignore them. The correct answer must restate or be consistent with this idea. (A) is correct because if singularities don\'t have an effect, then scientists can treat everything as normal and apply the usual laws of physics. (B) is unrelated to the required idea, and (C) and (D) both contradict the idea of ignoring puzzling aspects of black holes and maintaining the existing scientific framework.'
+  
+  },
+  {
+    id: "q2_grocery",
+    difficulty: "Medium",
+    passage: 'Most grocery stores spray produce with water on a regular basis in order to ensure that they maintain a wholesome, fresh-picked appearance. However, according to Martin Lindstrom, author of <em>Brandwashed: Tricks Companies Use to Manipulate Our Minds and Persuade Us to Buy</em>, not only does this liquid lack any practical purpose, but it actually has a deleterious effect: <span class="blank">______</span>',
+    choices: [
+      "shoppers are unlikely to purchase fruits and vegetables that appear dry and withered.",
+      "moisture causes picked vegetables to spoil more quickly than they otherwise would.",
+      "certain vegetables lose some of their nutrients when they are boiled.",
+      "produce must be watered at predictable intervals in order to appeal to consumers."
+    ],
+    answer: 1,
+    rationale: 'Choice B is correct. The key phrase occurs right before the blank: <em>not only does the liquid [used to water fresh produce] lack any practical purpose, but it also has a deleterious</em> [negative] <em>effect</em>. The information that follows must logically explain that effect. (A) does not explain the negative impact of watering on already-picked fruits and vegetables—the fact that shoppers are unlikely to select produce in poor condition is irrelevant to this section of the passage. (C) is incorrect because the passage focuses only on the effects of water on uncooked vegetables. (D) incorrectly states a positive effect of watering produce. (B) is correct because faster spoilage is a negative effect of spraying fresh fruits and vegetables with water.'
+  },
+  {
+    id: "q3_social_sensing",
+    difficulty: "Hard",
+    passage: 'Although it is widely assumed that cognitive bias clouds our assessment of the people around us, their research and that of others, a group of researchers at the Santa Fe Institute has found that people\'s estimations of what their friends and family believe are often largely correct. That\'s because as highly social creatures, we have become very good at sizing up those around us—what researchers call "social sensing." It is therefore possible <span class="blank">______</span>',
+    choices: [
+      "to gather highly accurate information about trends by asking individuals about their social circles rather than their own beliefs.",
+      "to determine people\'s views on a variety of topics by analyzing the ways in which they interact with others.",
+      "to discover what people truly believe about an issue by asking them to reflect on their personal biases.",
+      "to develop an algorithm that reliably predicts people\'s preferences about a wide range of items."
+    ],
+    answer: 0,
+    rationale: 'Choice A is correct. This is a good example of a question in which the answer is very nearly stated in the passage. The text makes clear that people are generally pretty accurate in identifying the beliefs of their friends and family members, so logically it must be possible to gather accurate information about trends by asking individuals what the people close to them think rather than what they themselves think—which is exactly what (A) says. (B) is incorrect because the passage focuses on beliefs, not interactions. (C) says exactly the opposite of what is indicated by the passage—reliable information can be obtained by asking people about others, not themselves. (D) goes way beyond the scope of the passage, which does not discuss the role of technology in determining people\'s preferences at all.'
+  },
+  {
+    id: "q4_yamnaya",
+    difficulty: "Hard",
+    passage: 'One of the most startling discoveries of the early 21<sup>st</sup> century was that Indo-European languages seem not to have been spread by Anatolian farmers living in what is now Turkey, as was commonly thought, but rather by a people called the Yamnaya, horse-herding nomads who lived on the Eurasian steppes more than 5,000 years ago. A host of linguistic evidence suggesting this possibility was first compiled persuasively by archaeologist David Anthony in 2007; DNA evidence later proved he was on target, showing that <span class="blank">______</span>',
+    choices: [
+      "members of tribes from the steppes arrived in Germany sometime between 2500 and 2000 BCE.",
+      "the Yamnaya were a genetic blend of three separate Eurasian populations.",
+      "around 5,000 years ago, the Yamnaya\'s genes began to appear throughout Europe and Asia.",
+      "the Yamnayans were linguistically unique in comparison to other groups from the same period."
+    ],
+    answer: 2,
+    rationale: 'Choice C is correct. The statement immediately before the blank indicates that David Anthony was <em>on target</em>, so the blank must refer to evidence supporting his theory. What was Anthony\'s theory? That Indo-European languages were spread by the Yamnaya, <em>horse-herding nomads who lived on the Eurasian steppes more than 5,000 years ago</em>. The correct answer must support this with information indicating that the Yamnaya moved throughout the regions where Indo-European languages became established. (A) focuses on Germany, which is only one area, so it can be eliminated. (B) is off-topic—the Yamnaya\'s genetic roots are irrelevant to the argument. (D) does not fit because the correct answer must involve the Yamnaya\'s migration and its eventual effects; even though this option mentions the Yamnaya\'s language, it does not mention how their influence was spread. Only (C) contains that information: if "the Yamnaya\'s genes appeared throughout Europe and Asia," these people must have been present in many regions, hence the spread of their language.'
+  },
+  {
+    id: "q5_newton",
+    difficulty: "Medium",
+    passage: 'When Isaac Newton published the <em>Principia</em> in 1687, his laws of motion solved numerous problems in physics; however, they also introduced a new conundrum, which was not fully grasped until centuries after Newton and which still poses a problem for cosmologists today. Essentially, Newton\'s laws work about twice as well as they are intended: they describe the everyday world that people move through, but they also account perfectly well for a world in which people walk backwards, clocks tick from evening to morning, and <span class="blank">______</span>',
+    choices: [
+      "objects interact unpredictably with one another.",
+      "planets that are in motion remain in motion.",
+      "particles of different weights move at varying speeds.",
+      "apples rise from the ground to the branches of a tree."
+    ],
+    answer: 3,
+    rationale: 'Choice D is correct. The first two examples in the list describe situations in which things run backwards, so logically, the final item in the list must describe a normal occurrence that is reversed. Objects interacting unpredictably; planets remaining in motion; and particles of different weights moving at varying speeds are not examples of a phenomenon running backwards. Only apples rising back to a tree, rather than falling from one, illustrates the required idea. (D) is thus correct.'
+  },
+  {
+    id: "q6_mars",
+    difficulty: "Hard",
+    passage: 'Exactly how Mars was formed approximately 4.5 billion years ago is a mystery, although there are several theories. One idea is that the planet was created via a titanic collision of rocks in space, spawning an all-encompassing magma ocean. When it cooled, a crust with high levels of basalt was formed. Another possibility is that parts of the first crust on Mars had a different origin, one that would primarily show large concentrations of silica. Planetary geochemist Valerie Payré and her partners analyzed data for the planet\'s southern hemisphere, the planet\'s oldest region. They discovered nine locations rich in feldspar, a mineral associated with lava flows that are higher in silica than basalt. This finding led them to conclude that <span class="blank">______</span>',
+    choices: [
+      "portions of Mars\' surface were never covered by a crust.",
+      "the magma ocean formed from rocks colliding in space was not all-encompassing.",
+      "the southern hemisphere of Mars contained more silica than was previously believed.",
+      "the first crust on Mars did not develop until long after the planet was formed."
+    ],
+    answer: 1,
+    rationale: 'Choice B is correct. This is a complicated question that requires working backwards through the passage. First, what is the finding? That nine regions of Mars were rich in feldspar, which is <em>associated with lava flows that are higher in silica than basalt</em>. What is the significance of this finding? It supports the theory that <em>parts of the first crust on Mars had a different origin</em>. A different origin from what? From the <em>all-encompassing magma ocean</em> that was created from rocks colliding in space. Logically, if parts of the crust were formed from something other than the magma ocean, then the ocean could not have been all-encompassing (covering everything). And that is what (B) says. (A) is incorrect because the passage only discusses the origins of the first crust that did exist on Mars—there is nothing to suggest that there were places without a crust. (C) is incorrect because the passage indicates only that feldspar, which is found in Mars\'s southern hemisphere, is higher in silica than basalt; the passage does not indicate how much silica researchers previously believed was present. (D) does not work either because the passage only mentions that Mars was formed around 4.5 billion years ago and the southern hemisphere is Mars\'s oldest region—there is no mention of when the crust formed, and the amount of feldspar and silica in that area is not discussed in relation to any particular timeline.'
+  }
+];
+
+// ────────────────────────────────────────────────────────────────────────────
+// STATE
+// ────────────────────────────────────────────────────────────────────────────
+let current = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+let timesPerQ = new Array(QUESTIONS.length).fill(0);
+let questionStart = 0;
+let timerInterval = null;
+let studentName = "";
+
+// ────────────────────────────────────────────────────────────────────────────
+// INIT
+// ────────────────────────────────────────────────────────────────────────────
+function startQuiz() {
+  const nameInput = document.getElementById('student-name');
+  studentName = nameInput.value.trim();
+  if (!studentName) {
+    nameInput.style.borderColor = 'var(--wrong)';
+    nameInput.placeholder = 'Please enter your name to continue';
+    nameInput.focus();
+    document.getElementById('name-error').style.display = 'block';
+    return;
+  }
+  document.getElementById('intro-screen').style.display = 'none';
+  document.getElementById('quiz-wrap').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  document.getElementById('q-num').innerText = current + 1;
+
+  const badge = document.getElementById('diff-badge');
+  badge.innerText = q.difficulty;
+  badge.className = 'difficulty-badge ' + q.difficulty;
+
+  document.getElementById('passage-text').innerHTML = q.passage;
+
+  const cl = document.getElementById('choices');
+  cl.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.choices.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    if (answers[current] === i) btn.classList.add('selected');
+    btn.innerHTML = `<span class="letter">${letters[i]}</span><span>${c}</span>`;
+    btn.addEventListener('click', () => selectAnswer(i));
+    cl.appendChild(btn);
+  });
+
+  document.getElementById('prev-btn').disabled = current === 0;
+  document.getElementById('next-btn').innerText = current === QUESTIONS.length - 1 ? 'Finish ›' : 'Next ›';
+  document.getElementById('next-btn').disabled = answers[current] === null;
+  document.getElementById('skip-note').style.display = answers[current] === null ? 'block' : 'none';
+
+  updateProgress();
+  startTimer();
+}
+
+function selectAnswer(idx) {
+  if (answers[current] !== null) return;
+  stopTimer();
+  answers[current] = idx;
+
+  const btns = document.querySelectorAll('.choice-btn');
+  btns.forEach((b, i) => {
+    b.disabled = true;
+    if (i === QUESTIONS[current].answer) b.classList.add('correct');
+    if (i === idx && idx !== QUESTIONS[current].answer) b.classList.add('wrong');
+    if (i === idx) b.classList.add('selected');
+  });
+
+  document.getElementById('next-btn').disabled = false;
+  document.getElementById('skip-note').style.display = 'none';
+}
+
+function navigate(dir) {
+  stopTimer();
+  current += dir;
+  if (current < 0) { current = 0; return; }
+  if (current >= QUESTIONS.length) { showResults(); return; }
+  renderQuestion();
+}
+
+function updateProgress() {
+  const pct = (current / QUESTIONS.length) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// TIMER
+// ────────────────────────────────────────────────────────────────────────────
+function startTimer() {
+  clearInterval(timerInterval);
+  questionStart = Date.now() - (timesPerQ[current] * 1000);
+  updateTimerDisplay();
+  if (answers[current] === null) {
+    timerInterval = setInterval(() => {
+      timesPerQ[current] = (Date.now() - questionStart) / 1000;
+      updateTimerDisplay();
+    }, 500);
+  }
+}
+
+function stopTimer() {
+  clearInterval(timerInterval);
+  timesPerQ[current] = (Date.now() - questionStart) / 1000;
+}
+
+function updateTimerDisplay() {
+  document.getElementById('timer-val').innerText = fmtTime(timesPerQ[current]);
+}
+
+function fmtTime(secs) {
+  const s = Math.floor(secs);
+  const m = Math.floor(s / 60);
+  return m + ':' + String(s % 60).padStart(2, '0');
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// RESULTS
+// ────────────────────────────────────────────────────────────────────────────
+function showResults() {
+  clearInterval(timerInterval);
+  document.getElementById('quiz-wrap').style.display = 'none';
+  document.getElementById('results-screen').style.display = 'block';
+  document.getElementById('progress-bar').style.width = '100%';
+
+  const correct = answers.filter((a, i) => a === QUESTIONS[i].answer).length;
+  const wrong = QUESTIONS.length - correct;
+  const pct = Math.round(correct / QUESTIONS.length * 100);
+  const totalSec = timesPerQ.reduce((a, b) => a + b, 0);
+
+  document.getElementById('score-display').innerHTML = `<span>${pct}</span>%`;
+  document.getElementById('score-sub').innerText = `${correct} correct out of ${QUESTIONS.length} questions`;
+  document.getElementById('stat-correct').innerText = correct;
+  document.getElementById('stat-wrong').innerText = wrong;
+  document.getElementById('stat-time').innerText = fmtTime(totalSec);
+
+  buildReview();
+}
+
+function buildReview() {
+  const list = document.getElementById('review-list');
+  list.innerHTML = '';
+  const letters = ['A','B','C','D'];
+
+  QUESTIONS.forEach((q, i) => {
+    const ans = answers[i];
+    const isCorrect = ans === q.answer;
+
+    const item = document.createElement('div');
+    item.className = 'review-item ' + (isCorrect ? 'correct-item' : 'wrong-item');
+
+    const hdr = document.createElement('div');
+    hdr.className = 'review-item-header';
+    hdr.innerHTML = `
+      <div class="review-q-label">
+        <span>Q${i + 1}</span>
+        <span class="status-chip ${isCorrect ? 'chip-correct' : 'chip-wrong'}">${isCorrect ? '✓ Correct' : '✗ Incorrect'}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="review-time">⏱ ${fmtTime(timesPerQ[i])}</span>
+        <span class="chevron">▼</span>
+      </div>`;
+    hdr.addEventListener('click', () => item.classList.toggle('open'));
+    item.appendChild(hdr);
+
+    const body = document.createElement('div');
+    body.className = 'review-body';
+
+    const yourLetter = ans !== null ? letters[ans] : '—';
+    const corrLetter = letters[q.answer];
+
+    body.innerHTML = `
+      <div class="review-passage">${q.passage}</div>
+      <div class="answer-row">
+        <div class="answer-box your-ans ${isCorrect ? 'was-right' : 'was-wrong'}">
+          <div class="alabel">Your Answer</div>
+          <strong>${yourLetter}.</strong> ${ans !== null ? q.choices[ans] : 'Not answered'}
+        </div>
+        <div class="answer-box corr-ans">
+          <div class="alabel">Correct Answer</div>
+          <strong>${corrLetter}.</strong> ${q.choices[q.answer]}
+        </div>
+      </div>
+      <div class="rationale-box">
+        <div class="rat-label">Explanation</div>
+        <p>${q.rationale}</p>
+      </div>`;
+    item.appendChild(body);
+    list.appendChild(item);
+  });
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// EXCEL EXPORT
+// ────────────────────────────────────────────────────────────────────────────
+function exportExcel() {
+  const letters = ['A','B','C','D'];
+  const rows = [["Student Name","Question #","Question ID","Difficulty","Your Answer","Correct Answer","Result","Time (s)","Time (m:ss)"]];
+
+  QUESTIONS.forEach((q, i) => {
+    const ans = answers[i];
+    const isCorrect = ans === q.answer;
+    rows.push([
+      studentName,
+      i + 1,
+      q.id,
+      q.difficulty,
+      ans !== null ? letters[ans] + '. ' + q.choices[ans] : 'Not answered',
+      letters[q.answer] + '. ' + q.choices[q.answer],
+      isCorrect ? 'Correct' : 'Incorrect',
+      Math.round(timesPerQ[i]),
+      fmtTime(timesPerQ[i])
+    ]);
+  });
+
+  const correct = answers.filter((a, i) => a === QUESTIONS[i].answer).length;
+  const totalSec = timesPerQ.reduce((a, b) => a + b, 0);
+  rows.push([]);
+  rows.push(["SUMMARY","","","",`Score: ${correct}/${QUESTIONS.length} (${Math.round(correct / QUESTIONS.length * 100)}%)`,
+    "","",`Total: ${Math.round(totalSec)}s`, fmtTime(totalSec)]);
+
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols'] = [
+    {wch:20},{wch:12},{wch:18},{wch:12},{wch:40},{wch:40},{wch:12},{wch:12},{wch:12}
+  ];
+
+  const range = XLSX.utils.decode_range(ws['!ref']);
+  for (let C = range.s.c; C <= range.e.c; C++) {
+    const cellAddr = XLSX.utils.encode_cell({r: 0, c: C});
+    if (!ws[cellAddr]) continue;
+    ws[cellAddr].s = { font: { bold: true } };
+  }
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "SAT Results");
+
+  const date = new Date().toISOString().slice(0, 10);
+  XLSX.writeFile(wb, `SAT_WordsInContext_${studentName.replace(/\s+/g, '_')}_${date}.xlsx`);
+}
+
+// ────────────────────────────────────────────────────────────────────────────
+// RETRY
+// ────────────────────────────────────────────────────────────────────────────
+function retryQuiz() {
+  current = 0;
+  answers = new Array(QUESTIONS.length).fill(null);
+  timesPerQ = new Array(QUESTIONS.length).fill(0);
+  document.getElementById('results-screen').style.display = 'none';
+  document.getElementById('progress-bar').style.width = '0%';
+  document.getElementById('intro-screen').style.display = 'block';
+}
+</script>
+</body>
+</html>
