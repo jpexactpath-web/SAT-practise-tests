@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SAT Standard English Conventions — Mixed Practice</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #181c27;
+    --surface2: #1e2336;
+    --border: #2e3454;
+    --accent: #c9a84c;
+    --accent2: #e8c76d;
+    --text: #e8e6df;
+    --text-muted: #8b8fa8;
+    --correct: #3ecf7a;
+    --wrong: #e05c5c;
+    --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 16px 60px;
+  }
+  .site-header {
+    width: 100%; max-width: 780px;
+    padding: 36px 0 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  .site-header .label {
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 10px;
+  }
+  .site-header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(26px, 4vw, 38px); font-weight: 700; line-height: 1.15;
+  }
+  .site-header p { margin-top: 10px; font-size: 15px; color: var(--text-muted); font-style: italic; }
+
+  #progress-bar-wrap {
+    width: 100%; max-width: 780px; height: 4px;
+    background: var(--border); border-radius: 4px; margin-bottom: 28px; overflow: hidden;
+  }
+  #progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 4px; transition: width 0.4s ease; width: 0%;
+  }
+
+  #quiz-wrap { width: 100%; max-width: 780px; }
+
+  .q-meta {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 14px; flex-wrap: wrap; gap: 8px;
+  }
+  .q-counter { font-size: 13px; color: var(--text-muted); letter-spacing: 1px; }
+  .q-counter span { color: var(--accent); font-weight: 600; }
+  .q-meta-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+  .badge {
+    font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+    padding: 4px 11px; border-radius: 20px;
+    background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted);
+  }
+  .badge.Easy   { color: var(--correct); border-color: #2a5c45; }
+  .badge.Medium { color: var(--accent);  border-color: #5c4a1e; }
+  .badge.Hard   { color: var(--wrong);   border-color: #5c2a2a; }
+  .badge.Boundaries { color: #7eb8f7; border-color: #1e3a5c; }
+  .badge.FSS { color: #c47ef7; border-color: #3a1e5c; }
+  .badge.id-badge { font-family: monospace; letter-spacing: 0.5px; font-size: 11px; text-transform: none; }
+
+  #timer-display {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--text-muted); margin-bottom: 20px;
+  }
+  .timer-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent); animation: pulse 1s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50%      { opacity:0.4; transform:scale(0.8); }
+  }
+  #timer-val { font-weight: 600; color: var(--accent2); font-variant-numeric: tabular-nums; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 32px; margin-bottom: 20px;
+  }
+  .card .passage { font-size: 16.5px; line-height: 1.8; color: var(--text); }
+  .blank { color: var(--accent2); font-weight: 600; font-style: italic; }
+  .card .prompt {
+    margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--border);
+    font-size: 14.5px; font-style: italic; color: var(--text-muted); line-height: 1.6;
+  }
+
+  .choices { display: flex; flex-direction: column; gap: 11px; margin-bottom: 24px; }
+  .choice-btn {
+    display: flex; align-items: flex-start; gap: 14px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 20px;
+    cursor: pointer; transition: all 0.18s ease;
+    text-align: left; color: var(--text);
+    font-family: 'Source Serif 4', serif; font-size: 15px; line-height: 1.5;
+  }
+  .choice-btn:hover:not(:disabled) {
+    background: var(--surface2); border-color: var(--accent); transform: translateX(3px);
+  }
+  .choice-btn .letter {
+    min-width: 28px; min-height: 28px; border-radius: 50%;
+    background: var(--surface2); border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600; font-family: 'Playfair Display', serif;
+    flex-shrink: 0; transition: all 0.18s;
+  }
+  .choice-btn:hover:not(:disabled) .letter { background: var(--accent); border-color: var(--accent); color: #0f1117; }
+  .choice-btn.selected { border-color: var(--accent); background: rgba(201,168,76,0.08); }
+  .choice-btn.selected .letter { background: var(--accent); border-color: var(--accent); color: #0f1117; }
+  .choice-btn.correct { border-color: var(--correct); background: rgba(62,207,122,0.08); }
+  .choice-btn.correct .letter { background: var(--correct); border-color: var(--correct); color: #0f1117; }
+  .choice-btn.wrong { border-color: var(--wrong); background: rgba(224,92,92,0.08); }
+  .choice-btn.wrong .letter { background: var(--wrong); border-color: var(--wrong); color: #fff; }
+  .choice-btn:disabled { cursor: default; }
+
+  .nav-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 4px; }
+  .btn {
+    font-family: 'Playfair Display', serif; font-size: 14px; font-weight: 600;
+    padding: 13px 28px; border-radius: 8px; border: none;
+    cursor: pointer; letter-spacing: 0.5px; transition: all 0.2s;
+  }
+  .btn-primary { background: var(--accent); color: #0f1117; }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-muted); }
+  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none !important; }
+  #skip-note { font-size: 12px; color: var(--text-muted); font-style: italic; }
+
+  /* RESULTS */
+  #results-screen { display: none; width: 100%; max-width: 780px; }
+  .score-banner {
+    text-align: center; padding: 48px 32px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 32px;
+    position: relative; overflow: hidden;
+  }
+  .score-banner::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(201,168,76,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .score-banner .score-label { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  .score-banner .score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(56px, 10vw, 80px); font-weight: 700; line-height: 1;
+  }
+  .score-banner .score-num span { color: var(--accent2); }
+  .score-banner .score-sub { margin-top: 12px; font-size: 15px; color: var(--text-muted); font-style: italic; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 32px; }
+  .stat-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 20px; text-align: center;
+  }
+  .stat-card .stat-val { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--accent2); }
+  .stat-card .stat-lbl { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-top: 6px; }
+
+  .results-actions { display: flex; gap: 12px; margin-bottom: 36px; flex-wrap: wrap; }
+  .btn-excel { background: #1d6f42; color: #fff; border: none; }
+  .btn-excel:hover { background: #25864f; transform: translateY(-1px); }
+
+  .review-header {
+    font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 600;
+    margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .review-header::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--border), transparent); }
+
+  .review-item {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 16px; overflow: hidden;
+  }
+  .review-item.correct-item { border-left: 4px solid var(--correct); }
+  .review-item.wrong-item   { border-left: 4px solid var(--wrong); }
+  .review-item-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px; cursor: pointer; user-select: none;
+  }
+  .review-item-header:hover { background: var(--surface2); }
+  .review-q-label { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; flex-wrap: wrap; }
+  .status-chip { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 20px; font-weight: 700; }
+  .chip-correct { background: rgba(62,207,122,0.15); color: var(--correct); }
+  .chip-wrong   { background: rgba(224,92,92,0.15);  color: var(--wrong); }
+  .review-id-chip { font-size: 11px; font-family: monospace; color: var(--text-muted); background: var(--surface2); padding: 2px 8px; border-radius: 4px; border: 1px solid var(--border); }
+  .review-time { font-size: 12px; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .chevron { font-size: 12px; color: var(--text-muted); transition: transform 0.25s; margin-left: 10px; }
+  .review-item.open .chevron { transform: rotate(180deg); }
+  .review-body { display: none; padding: 0 20px 20px; border-top: 1px solid var(--border); }
+  .review-item.open .review-body { display: block; }
+  .review-passage { font-size: 15px; line-height: 1.8; color: var(--text); padding: 16px 0 12px; }
+  .answer-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .answer-box { padding: 12px 16px; border-radius: 8px; font-size: 14px; line-height: 1.5; }
+  .answer-box .alabel { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; opacity: 0.7; }
+  .answer-box.your-ans.was-right { background: rgba(62,207,122,0.12); border: 1px solid #3ecf7a55; color: var(--correct); }
+  .answer-box.your-ans.was-wrong { background: rgba(224,92,92,0.12);  border: 1px solid #e05c5c55; color: var(--wrong); }
+  .answer-box.corr-ans           { background: rgba(201,168,76,0.1);  border: 1px solid #c9a84c44; color: var(--accent2); }
+  .rationale-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .rationale-box .rat-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; font-weight: 600; }
+  .rationale-box p { font-size: 14px; line-height: 1.75; color: var(--text-muted); }
+
+  /* INTRO */
+  #intro-screen { width: 100%; max-width: 780px; }
+  .intro-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 40px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .intro-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 100%, rgba(201,168,76,0.1) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .intro-card h2 { font-family: 'Playfair Display', serif; font-size: 28px; margin-bottom: 12px; }
+  .intro-card > p { color: var(--text-muted); font-size: 16px; line-height: 1.7; max-width: 540px; margin: 0 auto 28px; }
+  .intro-stats { display: flex; justify-content: center; gap: 32px; margin-bottom: 32px; flex-wrap: wrap; }
+  .intro-stat .val { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: var(--accent2); }
+  .intro-stat .lbl { font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-top: 4px; }
+  .name-input-wrap { margin: 0 auto 28px; max-width: 340px; }
+  .name-input-wrap label { display: block; font-size: 12px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; text-align: left; }
+  .name-input-wrap input {
+    width: 100%; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 13px 16px; color: var(--text);
+    font-family: 'Source Serif 4', serif; font-size: 15px; outline: none; transition: border-color 0.2s;
+  }
+  .name-input-wrap input:focus { border-color: var(--accent); }
+  .name-input-wrap input::placeholder { color: var(--text-muted); opacity: 0.6; }
+
+  .skill-legend {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    margin-bottom: 28px; font-size: 13px; color: var(--text-muted);
+  }
+  .skill-legend span { display: flex; align-items: center; gap: 6px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  @media (max-width: 560px) {
+    .card { padding: 20px; }
+    .stats-row { grid-template-columns: 1fr 1fr; }
+    .answer-row { grid-template-columns: 1fr; }
+    .results-actions { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="label">SAT · Reading &amp; Writing</div>
+  <h1>Standard English Conventions<br><em style="font-weight:400;font-size:0.72em;color:var(--text-muted)">Mixed Practice — Randomised</em></h1>
+  <p>30 questions · Boundaries &amp; Form, Structure, and Sense · timed · full rationale review</p>
+</header>
+
+<div id="progress-bar-wrap"><div id="progress-bar"></div></div>
+
+<!-- INTRO -->
+<div id="intro-screen">
+  <div class="intro-card">
+    <h2>Ready to practise?</h2>
+    <p>This test mixes questions from two Standard English Conventions skills. Questions are randomised each attempt. Your time per question is recorded automatically.</p>
+    <div class="skill-legend">
+      <span><span class="legend-dot" style="background:#7eb8f7"></span>Boundaries</span>
+      <span><span class="legend-dot" style="background:#c47ef7"></span>Form, Structure &amp; Sense</span>
+    </div>
+    <div class="intro-stats">
+      <div class="intro-stat"><div class="val">30</div><div class="lbl">Questions</div></div>
+      <div class="intro-stat"><div class="val">↻</div><div class="lbl">Randomised</div></div>
+      <div class="intro-stat"><div class="val">XLS</div><div class="lbl">Export</div></div>
+    </div>
+    <div class="name-input-wrap">
+      <label for="student-name">Your name <span style="color:var(--wrong)">*</span> <span style="font-size:11px;letter-spacing:0;text-transform:none;font-style:italic;">(required)</span></label>
+      <input type="text" id="student-name" placeholder="e.g. Nguyen Van A" autocomplete="off"
+        oninput="this.style.borderColor='var(--border)';document.getElementById('name-error').style.display='none';"/>
+      <div id="name-error" style="display:none;color:var(--wrong);font-size:13px;margin-top:6px;text-align:left;">⚠ Please enter your name before starting.</div>
+    </div>
+    <button class="btn btn-primary" onclick="startQuiz()" style="font-size:16px;padding:16px 44px;">Begin Test ›</button>
+  </div>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz-wrap" style="display:none;">
+  <div class="q-meta">
+    <div class="q-counter">Question <span id="q-num">1</span> of 30</div>
+    <div class="q-meta-right">
+      <div id="q-id-badge" class="badge id-badge">—</div>
+      <div id="skill-badge" class="badge">—</div>
+      <div id="diff-badge" class="badge">—</div>
+    </div>
+  </div>
+  <div id="timer-display">
+    <div class="timer-dot"></div>
+    Time on this question: <span id="timer-val">0:00</span>
+  </div>
+  <div class="card">
+    <p class="passage" id="passage-text"></p>
+    <p class="prompt">Which choice completes the text so that it conforms to the conventions of Standard English?</p>
+  </div>
+  <div class="choices" id="choices"></div>
+  <div class="nav-row">
+    <button class="btn btn-ghost" id="prev-btn" onclick="navigate(-1)">‹ Previous</button>
+    <span id="skip-note">Select an answer to continue</span>
+    <button class="btn btn-primary" id="next-btn" onclick="navigate(1)" disabled>Next ›</button>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<div id="results-screen">
+  <div class="score-banner">
+    <div class="score-label">Your Score</div>
+    <div class="score-num" id="score-display">—</div>
+    <div class="score-sub" id="score-sub">—</div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-val" id="stat-correct">—</div><div class="stat-lbl">Correct</div></div>
+    <div class="stat-card"><div class="stat-val" id="stat-wrong">—</div><div class="stat-lbl">Incorrect</div></div>
+    <div class="stat-card"><div class="stat-val" id="stat-time">—</div><div class="stat-lbl">Total Time</div></div>
+  </div>
+  <div class="results-actions">
+    <button class="btn btn-excel" onclick="exportExcel()">⬇ Download Score Sheet (.xlsx)</button>
+    <button class="btn btn-ghost" onclick="retryQuiz()">↺ Retake (new order)</button>
+  </div>
+  <div class="review-header">Question Review</div>
+  <div id="review-list"></div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────
+// QUESTION BANK
+// ─────────────────────────────────────────────
+const BANK = [
+  {
+    id: "de55ec71", difficulty: "Easy", skill: "Boundaries",
+    passage: 'Generations of mystery and horror <span class="blank">______</span> have been influenced by the dark, gothic stories of celebrated American author Edgar Allan Poe (1809–1849).',
+    choices: ["writers", "writers,", "writers—", "writers;"],
+    answer: 0,
+    rationale: "Choice A is correct. When a subject (\"Generations of mystery and horror writers\") is immediately followed by a verb (\"have been influenced\"), no punctuation is needed between them. Choices B, C, and D each insert unnecessary punctuation between the subject and the verb."
+  },
+  {
+    id: "e38b3e4f", difficulty: "Easy", skill: "Form, Structure, and Sense",
+    passage: 'The radiation that <span class="blank">______</span> during the decay of radioactive atomic nuclei is known as gamma radiation.',
+    choices: ["occurs", "have occurred", "occur", "are occurring"],
+    answer: 0,
+    rationale: "Choice A is correct. The singular verb \"occurs\" agrees with the singular subject \"radiation.\" Choices B, C, and D all use plural verb forms that don't agree with the singular subject."
+  },
+  {
+    id: "89fbc3eb", difficulty: "Medium", skill: "Boundaries",
+    passage: 'The Mission 66 initiative, which was approved by Congress in 1956, represented a major investment in the infrastructure of overburdened national <span class="blank">______</span> it prioritized physical improvements to the parks\' roads, utilities, employee housing, and visitor facilities while also establishing educational programming for the public.',
+    choices: ["parks and", "parks", "parks;", "parks,"],
+    answer: 2,
+    rationale: "Choice C is correct. A semicolon correctly joins the first main clause (\"The Mission…parks\") and the second main clause beginning with \"it.\" Choice A lacks a comma before the conjunction. Choice B creates a run-on sentence. Choice D creates a comma splice."
+  },
+  {
+    id: "960dec02", difficulty: "Hard", skill: "Boundaries",
+    passage: 'A recent study tracked the number of bee species present in twenty-seven New York apple orchards over a ten-year period. <span class="blank">______</span> found that when wild growth near an orchard was cleared, the number of different bee species visiting the orchard decreased.',
+    choices: ["Entomologist Heather Grab:", "Entomologist, Heather Grab,", "Entomologist Heather Grab", "Entomologist Heather Grab,"],
+    answer: 2,
+    rationale: "Choice C is correct. No punctuation is needed between the title \"Entomologist\" and the proper noun \"Heather Grab,\" nor between the subject and the main verb \"found.\" A colon (A) incorrectly separates subject from verb. Commas around the name (B) wrongly imply it is removable. A comma after the name (D) incorrectly separates subject from verb."
+  },
+  {
+    id: "37e5c794", difficulty: "Hard", skill: "Form, Structure, and Sense",
+    passage: 'Despite being cheap, versatile, and easy to produce, <span class="blank">______</span> they are made from nonrenewable petroleum, and most do not biodegrade in landfills.',
+    choices: ["there are two problems associated with commercial plastics:", "two problems are associated with commercial plastics:", "commercial plastics' two associated problems are that", "commercial plastics have two associated problems:"],
+    answer: 3,
+    rationale: "Choice D is correct. The noun \"commercial plastics\" must follow the modifying phrase \"despite being cheap, versatile, and easy to produce\" so the modifier clearly applies to plastics, not another noun. Choices A, B, and C each create dangling modifiers by placing a different noun immediately after the phrase."
+  },
+  {
+    id: "4b0c7b62", difficulty: "Easy", skill: "Boundaries",
+    passage: 'The algaita is a double reed wind instrument from West Africa. The reed of a wind instrument is the mouthpiece <span class="blank">______</span> A double reed contains two pieces of cane that vibrate and produce sound as air passes between them.',
+    choices: ["where sound is made?", "where is sound made.", "where sound is made.", "where is sound made?"],
+    answer: 2,
+    rationale: "Choice C is correct. The sentence is declarative and ends with a period. A question mark (A) is wrong for a declarative sentence. Choices B and D invert the word order into a direct question, which the sentence structure does not support."
+  },
+  {
+    id: "6f08641e", difficulty: "Medium", skill: "Form, Structure, and Sense",
+    passage: 'On April 5, 1977, Kitty Cone and 150 other disability rights activists entered a San Francisco federal building. After pleading for years—to no effect—for the passage of key antidiscrimination legislation, <span class="blank">______</span> until their demands were addressed. Finally, on April 28, the legislation was signed.',
+    choices: [
+      "pressure on lawmakers increased when the activists staged a sit-in protest",
+      "a sit-in protest staged by the activists increased pressure on lawmakers",
+      "lawmakers came under increased pressure when the activists staged a sit-in protest",
+      "the activists increased pressure on lawmakers by staging a sit-in protest"
+    ],
+    answer: 3,
+    rationale: "Choice D is correct. \"The activists\" must follow the modifying phrase \"After pleading for years…\" to show clearly that the activists—not pressure, a protest, or lawmakers—were doing the pleading. Choices A, B, and C each create dangling modifiers."
+  },
+  {
+    id: "3580533b", difficulty: "Easy", skill: "Form, Structure, and Sense",
+    passage: 'In recent years, economists around the world have created new tools that quantify the overall well-being of a country\'s citizens. Economists in India, for example, use an Ease of Living Index. This tool <span class="blank">______</span> economic potential, sustainability, and citizens\' quality of life.',
+    choices: ["measures", "had measured", "would have measured", "will have been measuring"],
+    answer: 0,
+    rationale: "Choice A is correct. The simple present tense \"measures\" matches the present context established by \"use\" in the previous sentence and expresses a general, ongoing fact. The past perfect (B), future perfect conditional (C), and future perfect continuous (D) are all inconsistent with the present-tense context."
+  },
+  {
+    id: "2c49940e", difficulty: "Medium", skill: "Form, Structure, and Sense",
+    passage: 'French philosopher René Descartes doubted whether he could prove his own existence. Eventually, he found proof in his famous phrase "I think, therefore I am." The <span class="blank">______</span> complexity: only those who exist would be able to ponder their existence.',
+    choices: ["phrases' simplicity masks its", "phrases simplicity masks their", "phrase's simplicity masks their", "phrase's simplicity masks its"],
+    answer: 3,
+    rationale: "Choice D is correct. The singular possessive \"phrase's\" correctly indicates one phrase, and the singular possessive determiner \"its\" agrees with it. Choice A uses the plural possessive \"phrases'.\" Choice B uses the plural noun \"phrases\" and the plural determiner \"their.\" Choice C uses the singular possessive \"phrase's\" but the incorrect plural determiner \"their.\""
+  },
+  {
+    id: "e62241b7", difficulty: "Easy", skill: "Form, Structure, and Sense",
+    passage: 'What is the correct pronunciation of Kiribati? In the Gilbertese language spoken by residents of the island nation, the letter combination -ti makes the -s sound; as a result, the country\'s name <span class="blank">______</span> pronounced "Kiribas."',
+    choices: ["are", "have been", "are being", "is"],
+    answer: 3,
+    rationale: "Choice D is correct. The singular verb \"is\" agrees with the singular subject \"the country's name.\" Choices A, C, and D all use plural verb forms that don't agree with the singular subject."
+  },
+  {
+    id: "7f226b4b", difficulty: "Medium", skill: "Boundaries",
+    passage: 'In a 2023 study, researchers documented a fascinating behavior in the aquatic plant <em>Elodea densa</em>. When exposed to low levels of light, the plant\'s <span class="blank">______</span> the cellular organs that generate energy from light—reshuffled to form a tightly packed, glass-like surface ideal for collecting more light.',
+    choices: ["chloroplasts", "chloroplasts;", "chloroplasts,", "chloroplasts—"],
+    answer: 3,
+    rationale: "Choice D is correct. The dash after \"chloroplasts\" pairs with the existing dash after \"from light\" to enclose the supplementary definition of chloroplasts. A semicolon (B) or comma (C) cannot be paired with a dash. No punctuation (A) leaves the supplementary element improperly marked."
+  },
+  {
+    id: "74ce2f05", difficulty: "Medium", skill: "Boundaries",
+    passage: 'A study led by scientist Rebecca Kirby at the University of Wisconsin–Madison found that black bears that eat human food before hibernation have increased levels of a rare carbon isotope, <span class="blank">______</span> due to the higher ¹³C levels in corn and cane sugar.',
+    choices: ["carbon-13, (¹³C)", "carbon-13 (¹³C)", "carbon-13, (¹³C),", "carbon-13 (¹³C),"],
+    answer: 3,
+    rationale: "Choice D is correct. The comma after \"(¹³C)\" pairs with the comma after \"isotope\" to enclose the supplementary appositive \"carbon-13 (¹³C).\" No comma is needed between \"carbon-13\" and the parentheses. Choices A, B, and C each fail to properly close the supplementary element with a comma."
+  },
+  {
+    id: "a2816c7f", difficulty: "Hard", skill: "Form, Structure, and Sense",
+    passage: 'American abstract artist Richard <span class="blank">______</span> his installations to make passersby keenly aware of how one\'s movements are affected by the physical features of one\'s environment, assembles large-scale steel plates into sculptures that dominate the outdoor spaces they occupy.',
+    choices: ["Serra is intending", "Serra, intends", "Serra, intending", "Serra intends"],
+    answer: 2,
+    rationale: "Choice C is correct. The comma after \"Serra\" pairs with the comma after \"environment\" to set off the nonfinite participial phrase \"intending his installations…environment,\" which supplements the noun phrase. \"Assembles\" serves as the sentence's main verb. Choices A and D create ungrammatical double finite verb constructions. Choice B makes \"intends\" a second finite verb, which is also ungrammatical."
+  },
+  {
+    id: "a7c85001", difficulty: "Easy", skill: "Boundaries",
+    passage: 'Researchers Amit Kumar and Nicholas Epley investigated how <span class="blank">______</span> In a series of experiments conducted in 2022, they found that people performing small acts of kindness underestimated the positive effect their actions had on others.',
+    choices: ["do people perceive acts of kindness.", "do people perceive acts of kindness?", "people perceive acts of kindness?", "people perceive acts of kindness."],
+    answer: 3,
+    rationale: "Choice D is correct. The sentence contains an indirect question (\"investigated how people perceive acts of kindness\"), so it is declarative and ends with a period. Choices A and B use inverted direct-question word order. Choice C incorrectly punctuates a declarative sentence with a question mark."
+  },
+  {
+    id: "eb95235b", difficulty: "Hard", skill: "Boundaries",
+    passage: 'The Limón technique, developed by Mexican-born dancer and choreographer Jose Limón, is known for its emphasis on breath control and its interplay of weight and <span class="blank">______</span> dancers may explore, for example, the moment of mid-air suspension at the top of a jump.',
+    choices: ["weightlessness", "weightlessness which", "weightlessness,", "weightlessness;"],
+    answer: 3,
+    rationale: "Choice D is correct. A semicolon joins the two main clauses: \"The Limón…weightlessness\" and \"dancers…jump.\" No punctuation (A) creates a run-on. The relative pronoun \"which\" (B) cannot join two main clauses. A comma alone (C) creates a comma splice."
+  },
+  {
+    id: "adf210e7", difficulty: "Hard", skill: "Boundaries",
+    passage: 'The haiku-like poems of Tomas Tranströmer, which present nature- and dream-influenced images in crisp, spare language, have earned the Swedish poet praise from leading contemporary <span class="blank">______</span> them Nigerian American essayist and novelist Teju Cole, who has written that Tranströmer\'s works "contain a luminous simplicity."',
+    choices: ["writers. Among", "writers among", "writers; among", "writers, among"],
+    answer: 3,
+    rationale: "Choice D is correct. A comma separates the main clause from the supplementary phrase \"among…Cole.\" A period (A) creates a sentence fragment. No punctuation (B) fails to mark the boundary. A semicolon (C) cannot precede a supplementary phrase."
+  },
+  {
+    id: "b7363ba2", difficulty: "Easy", skill: "Form, Structure, and Sense",
+    passage: 'Mathematician and meteorologist Edward Lorenz used the metaphor of the "butterfly effect" to explain how seemingly minor events can have major impacts on future weather. According to Lorenz\'s metaphor, the wind from a butterfly flapping <span class="blank">______</span> in Brazil might eventually grow into a storm elsewhere across the globe.',
+    choices: ["its wings", "its wings'", "it's wing's", "it's wings'"],
+    answer: 0,
+    rationale: "Choice A is correct. The singular possessive determiner \"its\" (no apostrophe) and the plain plural noun \"wings\" are both correct here. Choice B wrongly uses the plural possessive \"wings'.\". Choices C and D use the contraction \"it's\" (it is) where the possessive \"its\" is required."
+  },
+  {
+    id: "908a76b8", difficulty: "Hard", skill: "Form, Structure, and Sense",
+    passage: 'When a given industry—water and electricity are two well-known examples—carries high infrastructural start-up costs and other barriers that discourage competition, <span class="blank">______</span> of just one or two suppliers per municipality. Such industries are known as natural monopolies.',
+    choices: ["these often consist", "they often consist", "it often consists", "this often consists"],
+    answer: 2,
+    rationale: "Choice C is correct. The singular pronoun \"it\" agrees with the singular antecedent \"industry\" and unambiguously refers to the industry. \"These\" (A) and \"they\" (B) are plural and do not agree with \"industry.\" \"This\" (D) is ambiguous in context."
+  },
+  {
+    id: "707461d8", difficulty: "Hard", skill: "Boundaries",
+    passage: 'In 2021, Mexican biologist Martha Lydia Macías-Rubalcava led a review of the scientific literature related to endophytic fungi (i.e., fungi that live inside a host <span class="blank">______</span> researching 120 endophytic fungi–produced compounds, she found that their phytotoxicity can make them viable alternatives to chemical herbicides for controlling weeds.',
+    choices: ["plant). By", "plant), by", "plant) and by", "plant) by"],
+    answer: 0,
+    rationale: "Choice A is correct. A period ends the first sentence (\"In…plant\") and the second begins with \"By researching…\" modifying the subject \"she.\" A comma (B) creates a comma splice. \"And\" without a preceding comma (C) is unconventional. No punctuation (D) creates a run-on."
+  },
+  {
+    id: "1ee7b429", difficulty: "Medium", skill: "Form, Structure, and Sense",
+    passage: 'Bonnie Buratti of NASA\'s Jet Propulsion Laboratory <span class="blank">______</span> data about Saturn\'s rings collected by the Cassini spacecraft when she made an interesting discovery: the tiny moons embedded between and within Saturn\'s rings are shaped by the buildup of ring material on the moons\' surfaces.',
+    choices: ["studies", "has been studying", "will study", "was studying"],
+    answer: 3,
+    rationale: "Choice D is correct. The past progressive \"was studying\" is consistent with the other past-tense verbs (\"made,\" \"collected\") and correctly indicates an ongoing past action interrupted by another past event. The present (A), present perfect progressive (B), and future (C) tenses are all inconsistent with the past-tense context."
+  },
+  {
+    id: "13fcf575", difficulty: "Hard", skill: "Boundaries",
+    passage: 'Roughly 300 nights a year, when the cold air descending from the Andes Mountains meets the warm air rising from Venezuela\'s coastal Lake Maracaibo, the result is a spectacular lightning storm, its strikes so bright, so localized, and so <span class="blank">______</span> that it has become known as "Maracaibo\'s Lighthouse."',
+    choices: ["dependable:", "dependable;", "dependable", "dependable,"],
+    answer: 2,
+    rationale: "Choice C is correct. No punctuation is needed before the integrated relative clause \"that it has become…\" because the clause is essential to the meaning of the preceding adjectival phrase. Any punctuation mark here (A, B, D) incorrectly interrupts the integrated clause."
+  },
+  {
+    id: "940ff6f7", difficulty: "Hard", skill: "Boundaries",
+    passage: 'Jamaican British artist Willard Wigan is known for his remarkable <span class="blank">______</span> so small that they are best viewed through a microscope, Wigan\'s sculptures are made from tiny natural materials, such as spiderweb strands.',
+    choices: ["microsculptures creations", "microsculptures, creations", "microsculptures. Creations", "microsculptures and creations"],
+    answer: 2,
+    rationale: "Choice C is correct. A period separates two complete sentences: \"Jamaican…microsculptures\" and \"Creations…strands.\" No punctuation (A) and a comma (B) each create a run-on or comma splice. \"And\" without a preceding comma (D) is unconventional."
+  },
+  {
+    id: "333b2b65", difficulty: "Easy", skill: "Boundaries",
+    passage: 'While one requires oxygen and one does <span class="blank">______</span> and anaerobic respiration are both forms of cellular respiration—that is, they are processes by which cells break down glucose to use as energy.',
+    choices: ["not aerobic", "not. Aerobic", "not, aerobic", "not; aerobic"],
+    answer: 2,
+    rationale: "Choice C is correct. A comma correctly separates the dependent clause \"While one requires oxygen and one does not\" from the independent clause that follows. No punctuation (A) creates a run-on. A period (B) creates a fragment. A semicolon (D) cannot follow a dependent clause."
+  },
+  {
+    id: "4c335aea", difficulty: "Hard", skill: "Form, Structure, and Sense",
+    passage: 'In a recent analysis of lyrical trends in 350,000 songs, researchers cite increases in certain measures, such as the ratio of choruses to verses, as evidence music lyrics are becoming more repetitive. For instance, from 1970 to 2020, <span class="blank">______</span> chorus-to-verse ratios trended similarly, with each genre\'s data indicating that relative to the number of unique verses, the number of repeated choruses in songs increased.',
+    choices: ["rocks and raps", "rock's and rap's", "rocks and rap's", "rock and rap's"],
+    answer: 1,
+    rationale: "Choice B is correct. Both \"rock's\" and \"rap's\" are singular possessive nouns correctly showing that the chorus-to-verse ratios belong to each genre individually. Choice A uses plain plural nouns. Choice C uses a plain plural for rock but a possessive for rap. Choice D omits the possessive for rock, wrongly suggesting a single combined ratio."
+  },
+  {
+    id: "8b017d4e", difficulty: "Hard", skill: "Form, Structure, and Sense",
+    passage: 'Supported by biochemical analyses of over 2,000 skeletons from the Middle Ages, <span class="blank">______</span>',
+    choices: [
+      "vegetables and grains were, a 2022 study found, the primary components of early medieval rulers' diets.",
+      "early medieval rulers' diets were found, in a 2022 study, to have primarily consisted of vegetables and grains.",
+      "the primary components of early medieval rulers' diets were vegetables and grains, according to a 2022 study.",
+      "findings from a 2022 study suggested that vegetables and grains were the primary components of early medieval rulers' diets."
+    ],
+    answer: 3,
+    rationale: "Choice D is correct. \"Findings from a 2022 study\" correctly follows the modifying phrase because it is the findings—not vegetables, diets, or primary components—that are supported by the biochemical analyses. Choices A, B, and C each create dangling modifiers."
+  },
+  {
+    id: "aaa1907f", difficulty: "Hard", skill: "Boundaries",
+    passage: 'To serve local families during the Great Depression, innovative New York City librarian Pura Belpré offered storytelling in both English and Spanish, an uncommon <span class="blank">______</span> celebrated el Día de los Tres Reyes Magos, an important community holiday; and put on puppet shows dramatizing Puerto Rican folktales.',
+    choices: ["practice, at the time", "practice at the time;", "practice, at the time,", "practice at the time,"],
+    answer: 1,
+    rationale: "Choice B is correct. The semicolon after \"time\" matches the semicolon used later and correctly separates the first item of the complex series from the second. A comma inside the phrase \"an uncommon practice at the time\" is not needed because \"at the time\" is essential to the meaning. Choices A, C, and D each fail to use matching semicolons throughout the series."
+  },
+  {
+    id: "7f48b098", difficulty: "Medium", skill: "Boundaries",
+    passage: 'Photosynthesis, the mechanism by which plants use sunlight to turn carbon dioxide and water into <span class="blank">______</span> is fueled in part by an enzyme called Photosystem II that harvests energy-giving electrons from water molecules.',
+    choices: ["nutrients", "nutrients and", "nutrients,", "nutrients—"],
+    answer: 2,
+    rationale: "Choice C is correct. The comma after \"nutrients\" pairs with the comma after \"Photosynthesis\" to enclose the supplementary appositive phrase. A dash (D) cannot be paired with a comma. A conjunction (B) is incorrect here. No punctuation (A) leaves the supplementary element improperly closed."
+  },
+  {
+    id: "626a1642", difficulty: "Hard", skill: "Boundaries",
+    passage: 'As a behavioral economist, Katy Milkman of the University of Pennsylvania recognizes that people sometimes make irrational economic decisions. Milkman\'s research can thus address anomalies that neoclassical economic <span class="blank">______</span> assume that people are consistently rational decision-makers—cannot explain.',
+    choices: ["models—which", "models, which", "models which", "models which—"],
+    answer: 0,
+    rationale: "Choice A is correct. The dash after \"models\" pairs with the existing dash after \"decision-makers\" to enclose the supplementary element \"which assume that people are consistently rational decision-makers.\" A comma (B) cannot be paired with a dash. No punctuation (C) fails to open the supplementary element. Placing the dash after \"which\" (D) is grammatically incoherent."
+  },
+  {
+    id: "148be4da", difficulty: "Easy", skill: "Boundaries",
+    passage: 'Human-made (synthetic) fibers used in clothes and many other consumer products are more durable than most natural plant <span class="blank">______</span> the manufacture of synthetic fibers requires toxic chemical solvents that can pollute air and water.',
+    choices: ["fibers,", "fibers but", "fibers", "fibers, but"],
+    answer: 3,
+    rationale: "Choice D is correct. A comma and the coordinating conjunction \"but\" join the two main clauses. A comma alone (A) creates a comma splice. \"But\" without a comma (B) is unconventional for longer main clauses. No punctuation (C) creates a run-on sentence."
+  },
+  {
+    id: "9df6da04", difficulty: "Hard", skill: "Form, Structure, and Sense",
+    passage: 'Entomologists Yash Sondhi and Samuel Fabian have tried to explain why moths fly erratically around light sources at night. Knowing that flying insects keep their backs pointed toward sunlight during the day, <span class="blank">______</span>',
+    choices: [
+      "the researchers theorize that moths, mistaking nighttime lights for the Sun, continually try to reorient their bodies while flying near such lights.",
+      "the researchers' theory is that moths mistake nighttime lights for the Sun, continually trying to reorient their bodies while flying near such lights.",
+      "moths mistake nighttime lights for the Sun and continually try to reorient their bodies while flying near such lights, the researchers theorize.",
+      "moths continually try to reorient their bodies while flying near nighttime lights, the researchers theorize, mistaking such lights for the Sun."
+    ],
+    answer: 0,
+    rationale: "Choice A is correct. \"The researchers\" must immediately follow the modifying phrase \"Knowing that flying insects keep their backs pointed toward sunlight during the day\" to show that the researchers—not moths or a theory—know this fact. Choices B, C, and D each create dangling modifiers."
+  }
+];
+
+// ─────────────────────────────────────────────
+// SHUFFLE
+// ─────────────────────────────────────────────
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let QUESTIONS = [];
+let current = 0;
+let answers = [];
+let timesPerQ = [];
+let questionStart = 0;
+let timerInterval = null;
+let studentName = "";
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+function startQuiz() {
+  const nameInput = document.getElementById('student-name');
+  studentName = nameInput.value.trim();
+  if (!studentName) {
+    nameInput.style.borderColor = 'var(--wrong)';
+    nameInput.placeholder = 'Please enter your name to continue';
+    nameInput.focus();
+    document.getElementById('name-error').style.display = 'block';
+    return;
+  }
+  QUESTIONS = shuffle(BANK);
+  current = 0;
+  answers = new Array(QUESTIONS.length).fill(null);
+  timesPerQ = new Array(QUESTIONS.length).fill(0);
+  document.getElementById('intro-screen').style.display = 'none';
+  document.getElementById('quiz-wrap').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = QUESTIONS[current];
+  document.getElementById('q-num').innerText = current + 1;
+
+  document.getElementById('q-id-badge').innerText = 'ID: ' + q.id;
+
+  const diff = document.getElementById('diff-badge');
+  diff.innerText = q.difficulty;
+  diff.className = 'badge ' + q.difficulty;
+
+  const skill = document.getElementById('skill-badge');
+  if (q.skill === 'Boundaries') {
+    skill.innerText = 'Boundaries';
+    skill.className = 'badge Boundaries';
+  } else {
+    skill.innerText = 'Form, Structure & Sense';
+    skill.className = 'badge FSS';
+  }
+
+  document.getElementById('passage-text').innerHTML = q.passage;
+
+  const cl = document.getElementById('choices');
+  cl.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  q.choices.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    if (answers[current] === i) btn.classList.add('selected');
+    btn.innerHTML = `<span class="letter">${letters[i]}</span><span>${c}</span>`;
+    btn.addEventListener('click', () => selectAnswer(i));
+    cl.appendChild(btn);
+  });
+
+  document.getElementById('prev-btn').disabled = current === 0;
+  const nextBtn = document.getElementById('next-btn');
+  nextBtn.innerText = current === QUESTIONS.length - 1 ? 'Finish ›' : 'Next ›';
+  nextBtn.disabled = answers[current] === null;
+  document.getElementById('skip-note').style.display = answers[current] === null ? 'block' : 'none';
+
+  updateProgress();
+  startTimer();
+}
+
+function selectAnswer(idx) {
+  if (answers[current] !== null) return;
+  stopTimer();
+  answers[current] = idx;
+  const btns = document.querySelectorAll('.choice-btn');
+  btns.forEach((b, i) => {
+    b.disabled = true;
+    if (i === QUESTIONS[current].answer) b.classList.add('correct');
+    if (i === idx && idx !== QUESTIONS[current].answer) b.classList.add('wrong');
+    if (i === idx) b.classList.add('selected');
+  });
+  document.getElementById('next-btn').disabled = false;
+  document.getElementById('skip-note').style.display = 'none';
+}
+
+function navigate(dir) {
+  stopTimer();
+  current += dir;
+  if (current < 0) { current = 0; return; }
+  if (current >= QUESTIONS.length) { showResults(); return; }
+  renderQuestion();
+}
+
+function updateProgress() {
+  document.getElementById('progress-bar').style.width = (current / QUESTIONS.length * 100) + '%';
+}
+
+// ─────────────────────────────────────────────
+// TIMER
+// ─────────────────────────────────────────────
+function startTimer() {
+  clearInterval(timerInterval);
+  questionStart = Date.now() - (timesPerQ[current] * 1000);
+  updateTimerDisplay();
+  if (answers[current] === null) {
+    timerInterval = setInterval(() => {
+      timesPerQ[current] = (Date.now() - questionStart) / 1000;
+      updateTimerDisplay();
+    }, 500);
+  }
+}
+function stopTimer() {
+  clearInterval(timerInterval);
+  timesPerQ[current] = (Date.now() - questionStart) / 1000;
+}
+function updateTimerDisplay() {
+  document.getElementById('timer-val').innerText = fmtTime(timesPerQ[current]);
+}
+function fmtTime(secs) {
+  const s = Math.floor(secs);
+  return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+}
+
+// ─────────────────────────────────────────────
+// RESULTS
+// ─────────────────────────────────────────────
+function showResults() {
+  clearInterval(timerInterval);
+  document.getElementById('quiz-wrap').style.display = 'none';
+  document.getElementById('results-screen').style.display = 'block';
+  document.getElementById('progress-bar').style.width = '100%';
+
+  const correct = answers.filter((a, i) => a === QUESTIONS[i].answer).length;
+  const pct = Math.round(correct / QUESTIONS.length * 100);
+  const totalSec = timesPerQ.reduce((a, b) => a + b, 0);
+
+  document.getElementById('score-display').innerHTML = `<span>${pct}</span>%`;
+  document.getElementById('score-sub').innerText = `${correct} correct out of ${QUESTIONS.length} questions`;
+  document.getElementById('stat-correct').innerText = correct;
+  document.getElementById('stat-wrong').innerText = QUESTIONS.length - correct;
+  document.getElementById('stat-time').innerText = fmtTime(totalSec);
+  buildReview();
+}
+
+function buildReview() {
+  const list = document.getElementById('review-list');
+  list.innerHTML = '';
+  const letters = ['A','B','C','D'];
+  const stripHtml = s => s.replace(/<[^>]+>/g, '');
+
+  QUESTIONS.forEach((q, i) => {
+    const ans = answers[i];
+    const isCorrect = ans === q.answer;
+
+    const item = document.createElement('div');
+    item.className = 'review-item ' + (isCorrect ? 'correct-item' : 'wrong-item');
+
+    const hdr = document.createElement('div');
+    hdr.className = 'review-item-header';
+    hdr.innerHTML = `
+      <div class="review-q-label">
+        <span>Q${i + 1}</span>
+        <span class="status-chip ${isCorrect ? 'chip-correct' : 'chip-wrong'}">${isCorrect ? '✓ Correct' : '✗ Incorrect'}</span>
+        <span class="review-id-chip">ID: ${q.id}</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span class="review-time">⏱ ${fmtTime(timesPerQ[i])}</span>
+        <span class="chevron">▼</span>
+      </div>`;
+    hdr.addEventListener('click', () => item.classList.toggle('open'));
+    item.appendChild(hdr);
+
+    const body = document.createElement('div');
+    body.className = 'review-body';
+    const yourLetter = ans !== null ? letters[ans] : '—';
+    const corrLetter = letters[q.answer];
+
+    body.innerHTML = `
+      <div class="review-passage">${q.passage}</div>
+      <div class="answer-row">
+        <div class="answer-box your-ans ${isCorrect ? 'was-right' : 'was-wrong'}">
+          <div class="alabel">Your Answer</div>
+          <strong>${yourLetter}.</strong> ${ans !== null ? stripHtml(q.choices[ans]) : 'Not answered'}
+        </div>
+        <div class="answer-box corr-ans">
+          <div class="alabel">Correct Answer</div>
+          <strong>${corrLetter}.</strong> ${stripHtml(q.choices[q.answer])}
+        </div>
+      </div>
+      <div class="rationale-box">
+        <div class="rat-label">Explanation</div>
+        <p>${q.rationale}</p>
+      </div>`;
+    item.appendChild(body);
+    list.appendChild(item);
+  });
+}
+
+// ─────────────────────────────────────────────
+// EXCEL EXPORT
+// ─────────────────────────────────────────────
+function exportExcel() {
+  const letters = ['A','B','C','D'];
+  const stripHtml = s => s.replace(/<[^>]+>/g, '');
+  const rows = [["Student Name","Question #","Question ID","Skill","Difficulty","Your Answer","Correct Answer","Result","Time (s)","Time (m:ss)"]];
+
+  QUESTIONS.forEach((q, i) => {
+    const ans = answers[i];
+    const isCorrect = ans === q.answer;
+    rows.push([
+      studentName, i + 1, q.id, q.skill, q.difficulty,
+      ans !== null ? letters[ans] + '. ' + stripHtml(q.choices[ans]) : 'Not answered',
+      letters[q.answer] + '. ' + stripHtml(q.choices[q.answer]),
+      isCorrect ? 'Correct' : 'Incorrect',
+      Math.round(timesPerQ[i]), fmtTime(timesPerQ[i])
+    ]);
+  });
+
+  const correct = answers.filter((a, i) => a === QUESTIONS[i].answer).length;
+  const totalSec = timesPerQ.reduce((a, b) => a + b, 0);
+  rows.push([]);
+  rows.push(["SUMMARY","","","","",
+    `Score: ${correct}/${QUESTIONS.length} (${Math.round(correct/QUESTIONS.length*100)}%)`,
+    "","",`Total: ${Math.round(totalSec)}s`, fmtTime(totalSec)]);
+
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols'] = [{wch:20},{wch:12},{wch:12},{wch:24},{wch:12},{wch:44},{wch:44},{wch:12},{wch:12},{wch:12}];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "SAT Results");
+  const date = new Date().toISOString().slice(0, 10);
+  XLSX.writeFile(wb, `SAT_SEC_Mixed_${studentName.replace(/\s+/g,'_')}_${date}.xlsx`);
+}
+
+// ─────────────────────────────────────────────
+// RETRY
+// ─────────────────────────────────────────────
+function retryQuiz() {
+  clearInterval(timerInterval);
+  document.getElementById('results-screen').style.display = 'none';
+  document.getElementById('progress-bar').style.width = '0%';
+  document.getElementById('intro-screen').style.display = 'block';
+}
+</script>
+</body>
+</html>
