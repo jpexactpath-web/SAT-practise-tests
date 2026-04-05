@@ -27,7 +27,7 @@
       const { useState, useCallback } = React;
 
       // --- ALL EMOJIS REMOVED FROM DATA ---
-      const Chapter = [
+      const CHAPTERS = [
         {
           id: 1, title: "SAT Reading Overview",
           strategies: [
@@ -324,7 +324,7 @@
               <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
                 <div>
                   <h1 style={s.h1}>SAT Reading Prep</h1>
-                  <p style={s.sub}>A Reference Guide to SAT Reading</p>
+                  <p style={s.sub}>A highly concise summary of Reading Prep taught during the course</p>
                 </div>
               </div>
               <div style={s.pbar}><div style={{ ...s.pfill, width: `${(totalRev / QUIZ_POOL.length) * 100}%` }} /></div>
