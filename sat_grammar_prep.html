@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAT Grammar Prep</title>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#f5f0e8;color:#3d3429;font-family:'Minion Pro','Source Serif 4','Georgia',serif;font-size:16px;min-height:100vh;line-height:1.65}
+.ctr{max-width:720px;margin:0 auto;padding:24px 16px}
+h1{font-size:28px;font-weight:700;color:#2c2418}
+h2{font-size:22px;font-weight:700;color:#2c2418;margin-bottom:16px}
+.sub{font-size:14px;color:#7a6e5d;margin-top:3px}
+.pbar{height:6px;background:#ddd5c4;border-radius:3px;overflow:hidden;margin-top:10px}
+.pfill{height:100%;background:linear-gradient(90deg,#8b6914,#b8860b);border-radius:3px;transition:width .4s}
+.ptxt{font-size:14px;color:#7a6e5d;margin-top:6px}
+.btn{background:linear-gradient(135deg,#7a5c1e,#96751e);color:#fdf8ef;border:none;border-radius:8px;padding:12px 22px;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:8px;font-family:inherit}
+.btn:hover{filter:brightness(1.08)}
+.btn2{background:linear-gradient(135deg,#6b2f3a,#8b3a4a)}
+.btn3{background:#b5a48a;color:#2c2418}
+.bk{background:none;border:none;color:#8b6914;font-size:15px;cursor:pointer;padding:4px 0;margin-bottom:12px;font-weight:600;font-family:inherit}
+.gr{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.cd{background:#ede7d9;border:1px solid #d4cbb5;border-radius:10px;padding:16px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:4px;transition:border-color .2s;font-family:inherit}
+.cd:hover{border-color:#b5a48a}
+.cn{font-size:12px;color:#7a6e5d;text-transform:uppercase;letter-spacing:1px}
+.ct{font-size:15px;font-weight:600;color:#2c2418}
+.cm{font-size:13px;color:#8a7d6b}
+.tabs{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.ta{background:#7a5c1e;color:#fdf8ef;border:none;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit}
+.tb{background:#ddd5c4;color:#5a4f3e;border:none;border-radius:8px;padding:8px 16px;font-size:14px;cursor:pointer;font-family:inherit}
+.tb:hover{background:#d4cbb5}
+.fl{background:linear-gradient(145deg,#ede7d9,#e4dccb);border:1px solid #d4cbb5;border-radius:14px;padding:28px 22px;min-height:180px;cursor:pointer;display:flex;flex-direction:column;justify-content:center;user-select:none;text-align:center}
+.fl-l{font-size:12px;color:#7a6e5d;text-transform:uppercase;letter-spacing:2px;margin-bottom:10px}
+.fl-q{font-size:19px;font-weight:600;color:#2c2418;line-height:1.5}
+.fl-a{font-size:16px;color:#4a3f30;line-height:1.6}
+.fl-h{font-size:13px;color:#8a7d6b;margin-top:18px}
+.nv{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:16px;flex-wrap:wrap}
+.nb{background:#ddd5c4;color:#5a4f3e;border:none;border-radius:8px;padding:8px 16px;font-size:14px;cursor:pointer;font-weight:500;font-family:inherit}
+.nb:hover{background:#d4cbb5}
+.nb:disabled{opacity:.4;cursor:default}
+.ri{display:flex;gap:12px;align-items:flex-start;background:#ede7d9;border-radius:10px;padding:12px 16px;border-left:3px solid #8b6914;margin-bottom:8px}
+.rn{background:#7a5c1e;color:#fdf8ef;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+.rt{font-size:15px;color:#3d3429;line-height:1.55}
+.rc{background:#ede7d9;border-radius:10px;padding:12px 16px;margin-bottom:8px}
+.rct{font-size:16px;font-weight:700;margin-bottom:4px}
+.rcd{font-size:15px;color:#4a3f30;margin-bottom:4px}
+.rce{font-size:14px;color:#7a6e5d;font-style:italic}
+.ch{display:flex;align-items:center;width:100%;background:#ede7d9;border:1px solid #d4cbb5;border-radius:8px;padding:12px 16px;margin-bottom:6px;font-size:16px;color:#3d3429;text-align:left;cursor:pointer;transition:all .15s;font-family:inherit}
+.ch:hover{border-color:#b5a48a}
+.ch.ok{background:#e8f0d4;border-color:#6b8e23;color:#3a5a0a}
+.ch.no{background:#f0dcd4;border-color:#a0522d;color:#6b2f1a}
+.ch.off{pointer-events:none}
+.sb{display:flex;gap:10px;align-items:flex-start;background:#ede7d9;border-radius:8px;padding:10px 14px;border-left:3px solid #8b6914;margin-bottom:6px}
+.sn{background:#7a5c1e;color:#fdf8ef;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0}
+.sl{font-size:14px;font-weight:600;color:#7a5c1e;margin-bottom:3px}
+.sd{font-size:14px;color:#5a4f3e;white-space:pre-wrap;line-height:1.5}
+.pb{background:#e8e0d0;border:1px solid #c9bfa8;border-radius:12px;padding:16px 20px;margin-bottom:12px}
+.pl{font-size:11px;color:#8b6914;text-transform:uppercase;letter-spacing:2px;margin-bottom:8px}
+.pt2{font-size:16px;color:#3d3429;line-height:1.7;white-space:pre-wrap}
+.tg{display:inline-block;font-size:12px;padding:2px 8px;border-radius:6px}
+.te{color:#3a5a0a;background:#e8f0d4}.tm{color:#7a5c1e;background:#f0e6c8}.th2{color:#6b2f1a;background:#f0dcd4}
+.er{display:flex;align-items:center;background:#ede7d9;border:1px solid #d4cbb5;border-radius:10px;padding:12px 16px;cursor:pointer;gap:10px;margin-bottom:6px;text-align:left}
+.er:hover{border-color:#b5a48a}
+.cen{text-align:center}
+.mt{margin-top:16px}
+.g12{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+.tip{background:#e8e0d0;border:1px solid #c9bfa8;border-radius:10px;padding:12px 16px;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div class="ctr" id="app"></div>
+<script>
+var D={ch:[
+{id:1,t:"Transitions",p:"I",r:["Transitions are the MOST COMMON question type: 8\u201310 per test (15\u201320% of all questions).","ALWAYS determine the relationship between the two sentences BEFORE looking at answer choices.","Four relationship types: Contrast (however, nevertheless), Continue (moreover, furthermore), Cause-Effect (therefore, consequently), Example (for instance, specifically).","If two answer choices are synonyms (e.g., \u2018consequently\u2019 and \u2018therefore\u2019), BOTH can be eliminated since only one answer can be correct.","A transition in the MIDDLE or END of a sentence still connects to the PREVIOUS sentence, not the two halves of the current sentence.","Conjunctive adverbs (however, therefore, moreover) at sentence start must follow a period or semicolon, NEVER just a comma.","\u2018As such\u2019 means \u2018in that capacity\u2019 or \u2018because of that.\u2019 It signals that something acts in the role previously described.","Contrast: however, nevertheless, still, yet, in contrast, on the other hand, conversely.","Continuation: furthermore, moreover, in addition, similarly, likewise, also, indeed, in fact.","Cause-effect: therefore, thus, consequently, accordingly, as a result, hence.","Example: for example, for instance, specifically, in particular, namely.","Emphasis: indeed, in fact, notably, certainly, clearly.","Sequence: first, second, next, then, finally, subsequently, previously, meanwhile."],q:[
+{q:"How many transition questions per SAT?",a:"8\u201310, about 15\u201320% of all Writing questions. The single most common type."},
+{q:"What should you do BEFORE looking at answers?",a:"Determine the relationship: contrast, continuation, cause-effect, or example. Then predict the answer type."},
+{q:"If \u2018consequently\u2019 and \u2018therefore\u2019 both appear, what do you do?",a:"Eliminate BOTH. They are synonyms and only one answer can be correct."},
+{q:"A mid-sentence transition connects to what?",a:"The PREVIOUS sentence. Cross out the transition\u2014the halves alone won\u2019t make logical sense."},
+{q:"Can \u2018however\u2019 follow a comma between two clauses?",a:"No. It must follow a period or semicolon. Comma + however = comma splice = WRONG."},
+{q:"What is the difference between \u2018still\u2019 and \u2018however\u2019?",a:"\u2018Still\u2019 means \u2018despite this\u2019\u2014something persists despite an obstacle. \u2018However\u2019 signals general contrast."}
+]},
+{id:2,t:"Student Notes",p:"I",r:["These questions present bullet-point notes and ask which answer best achieves a stated goal.","Step 1: Identify the KEY WORD or PHRASE in the question, right after \u2018emphasize,\u2019 \u2018present,\u2019 or \u2018introduce.\u2019","Step 2: Find the answer that directly rewords or addresses that key phrase.","AVOID reading the bullet points\u2014they waste time. Focus on the question and answer choices.","If asked to \u2018introduce to an unfamiliar audience,\u2019 the answer must include background context AND the person\u2019s full name.","If asked to \u2018emphasize a difference,\u2019 the answer must contain a clear comparison or contrast.","If asked to \u2018emphasize mass participation,\u2019 look for numbers, broad scope words, or geographic breadth.","Trap: an answer that is on-topic but addresses a different aspect than the specific focus requested."],q:[
+{q:"What is Step 1 for Student Notes?",a:"Identify the KEY WORD or PHRASE right after \u2018emphasize/present/introduce\u2019 in the question. This defines what the correct answer must focus on."},
+{q:"Should you read the bullet points?",a:"No. Skip them. Focus only on the question\u2019s key phrase and the answer choices."},
+{q:"What must an \u2018introduce to unfamiliar audience\u2019 answer include?",a:"Background context AND the person\u2019s full name (first and last). Last name only implies familiarity."},
+{q:"What is the most common trap?",a:"An answer on-topic but addressing a different aspect than what the question specifically asks for."}
+]},
+{id:3,t:"Sentences and Fragments",p:"II",r:["Every sentence MUST have: 1) a subject, and 2) a conjugated verb matching the subject.","A prepositional phrase (in, to, with, from, for, at, by, on + noun) CANNOT stand alone as a sentence.","A \u2018w-word\u2019 clause (which, who, whose, where) is a FRAGMENT. Exception: when the w-word is the subject (rare).","A word ending in -ing alone is NOT a conjugated verb. \u2018Running through the park\u2019 is a fragment.","BEING is almost always wrong in answer choices. It creates fragments and awkwardness. Eliminate it first.","Subordinating conjunctions (because, although, while, since, if, when, unless, until) create DEPENDENT clauses that cannot stand alone.","Know conjugated forms of \u2018to be\u2019: am, is, are, was, were, has been, have been. These differ from \u2018being\u2019 (not conjugated).","A sentence does not need to make sense out of context. \u2018It grows.\u2019 is a complete sentence."],q:[
+{q:"What two things must every sentence contain?",a:"1) A subject, and 2) a conjugated verb matching the subject. Without both, it is a fragment."},
+{q:"Is \u2018Which is popular\u2019 a sentence?",a:"No. Clauses beginning with which/who/where are fragments."},
+{q:"Why is BEING usually wrong?",a:"It creates fragments and awkward constructions. Answers containing \u2018being\u2019 are almost always incorrect on the SAT."},
+{q:"Is \u2018Because she left\u2019 a sentence?",a:"No. \u2018Because\u2019 creates a dependent clause. It needs an independent clause attached."}
+]},
+{id:4,t:"Joining and Separating Sentences",p:"II",r:["GOLDEN RULE: Period = Semicolon = Comma + and/but. Interchangeable for joining two complete sentences.","Comma + it/this/she/he/they (no conjunction) = comma splice = WRONG.","FANBOYS: For, And, Nor, But, Or, Yet, So. Use comma + FANBOYS to join sentences.","FANBOYS should NEVER follow a period or semicolon. Eliminate \u2018. And\u2019 or \u2018; But\u2019 immediately.","Same subject not repeated: no comma before \u2018and.\u2019 Example: \u2018She sang and danced\u2019 (no comma).","Conjunctive adverbs (however, therefore, moreover) need period or semicolon before them, NEVER just a comma.","Shortcut: Check period or colon answers FIRST\u2014easiest to verify.","Always read the FULL passage. A sentence may look correct locally but create a run-on in context.","Test \u2018comma + and\u2019: replace with a period. If two complete sentences exist, the comma is needed. If not, remove it."],q:[
+{q:"What is the Period = Semicolon rule?",a:"Both separate complete sentences. Interchangeable on the SAT except capitalization after period."},
+{q:"Why is \u2018Tomatoes are popular, they grow\u2019 wrong?",a:"Comma splice: two sentences joined by only a comma. Need period, semicolon, or comma+conjunction."},
+{q:"Can you write \u2018. And\u2019 or \u2018; But\u2019?",a:"No. FANBOYS never follow a period or semicolon. Eliminate immediately."},
+{q:"When is no comma needed before \u2018and\u2019?",a:"When the subject is the same and not repeated: \u2018She sang and danced.\u2019 One subject, two verbs."}
+]},
+{id:5,t:"Colons, Dashes, and Joining Fragments",p:"II",r:["Colon = Single Dash = explanation or list.","Full sentence required BEFORE a colon or dash. After can be anything.","Two commas = Two dashes = Two parentheses = Non-essential clause.","Cannot mix punctuation: two commas pair with two commas, dashes with dashes, parentheses with parentheses.","A colon signals: \u2018here is what I mean\u2019 or \u2018here is the list.\u2019","If the text before a colon is NOT a complete sentence, the colon is wrong."],q:[
+{q:"What must come before a colon?",a:"A complete sentence. What comes after can be a list, explanation, fragment, or full sentence."},
+{q:"Can you mix dashes with commas for non-essential clauses?",a:"No. Use matching pairs only: two commas, two dashes, or two parentheses."}
+]},
+{id:6,t:"Non-Essential and Essential Clauses",p:"II",r:["Non-essential = removable. Sentence still works without it.","Test: mentally remove the clause. If the sentence is still complete and meaningful, it is non-essential.","Phrases with \u2018which,\u2019 \u2018who,\u2019 \u2018whose\u2019 are typically non-essential when set off by commas.","\u2018That\u2019 introduces ESSENTIAL clauses. Never use commas with \u2018that.\u2019","Some sentences have multiple comma pairs. Only one sets off the non-essential clause. Test each separately.","Practice identifying non-essential clauses visually\u2014you cannot cross out text on the digital SAT."],q:[
+{q:"How do you test for non-essential?",a:"Remove the clause mentally. If the sentence remains complete and meaningful, it is non-essential."},
+{q:"What is the difference between \u2018which\u2019 and \u2018that\u2019?",a:"\u2018Which\u2019 = non-essential (commas). \u2018That\u2019 = essential (no commas)."},
+{q:"What if a sentence has multiple comma pairs?",a:"Test each pair separately. Only one marks the true non-essential clause."}
+]},
+{id:7,t:"Additional Comma Rules",p:"II",r:["List commas: three or more items. SAT uses the Oxford comma.","Comma after introductory phrases: \u2018In the morning, she ran.\u2019","NEVER comma between subject and verb, even if the subject is very long.","NEVER comma between verb and direct object.","No comma between two compound items joined by \u2018and\u2019: \u2018Ada and Charles were...\u2019 (no comma\u2014only two items).","No commas around \u2018self\u2019 words: \u2018the city itself\u2019 NOT \u2018the city, itself.\u2019","Two-adjective test: if you can insert \u2018and\u2019 between them naturally, use a comma. If not, don\u2019t."],q:[
+{q:"Should you comma between a long subject and its verb?",a:"Never. No matter how long the subject is, do not separate it from its verb with a comma."},
+{q:"Is \u2018Ada, and Charles were pioneers\u2019 correct?",a:"No. Only two items joined by \u2018and\u2019\u2014no comma. List commas are for three or more."},
+{q:"Can you put commas around \u2018itself\u2019?",a:"No. Never place commas before or around \u2018self\u2019 words (itself, himself, themselves)."}
+]},
+{id:8,t:"Verbs: Agreement and Tense",p:"III",r:["Singular verbs END in -s; plural verbs do NOT. Example: \u2018it suggests\u2019 (singular), \u2018they suggest\u2019 (plural).","The noun right before the verb may NOT be the subject. Watch for prepositional phrases.","Cross out prepositional phrases and non-essential clauses to find the TRUE subject.","Agreement questions may disguise as tense questions. If answers mix singular/plural, focus on agreement FIRST.","Keep tense consistent unless a time marker signals change.","Inverted syntax (verb before subject): ask \u2018who/what is doing this?\u2019 to find the subject.","\u2018Each,\u2019 \u2018every,\u2019 \u2018everyone,\u2019 \u2018nobody,\u2019 \u2018nothing,\u2019 \u2018anyone\u2019 are ALL singular.","Compound subjects (noun + and + noun) are ALWAYS plural.","Gerunds as subjects (-ing words) are SINGULAR: \u2018Running is good.\u2019","Collective nouns (team, company, group) are SINGULAR on the SAT.","\u2018There is/are\u2019: subject comes AFTER the verb. Match verb to that noun.","Errors can occur WITHIN non-essential clauses: \u2018Tea, which are popular...\u2019 is wrong."],q:[
+{q:"How do singular and plural verbs differ?",a:"Singular end in -s (it runs). Plural do not (they run). Opposite of nouns."},
+{q:"In \u2018The patent for the pencils were granted,\u2019 what is wrong?",a:"Subject is \u2018patent\u2019 (singular). \u2018Pencils\u2019 is in a prepositional phrase. Correct: \u2018was granted.\u2019"},
+{q:"Are \u2018each\u2019 and \u2018every\u2019 singular or plural?",a:"Singular. \u2018Each has...\u2019 \u2018Every one is...\u2019"},
+{q:"Are compound subjects singular or plural?",a:"Always plural. \u2018Salt and pepper are...\u2019"},
+{q:"Are gerunds as subjects singular or plural?",a:"Singular. \u2018Running is good exercise.\u2019"},
+{q:"Are collective nouns singular or plural on the SAT?",a:"Singular. \u2018The team is...\u2019 \u2018The company has...\u2019"},
+{q:"How does \u2018there is/are\u2019 work?",a:"Subject comes AFTER the verb. \u2018There are many reasons\u2019 (reasons = plural). \u2018There is one reason\u2019 (singular)."}
+]},
+{id:9,t:"Pronouns",p:"III",r:["Singular nouns take \u2018it\u2019 (things) or \u2018he/she\u2019 (people). Plural nouns take \u2018they.\u2019","\u2018Each,\u2019 \u2018every,\u2019 \u2018everyone,\u2019 \u2018nobody\u2019 are singular: use \u2018it\u2019 or \u2018he or she,\u2019 NOT \u2018they.\u2019","One/you/we must stay CONSISTENT throughout a paragraph. Never mix.","Ambiguous pronoun: if it could refer to multiple nouns, use the specific noun instead.","Missing antecedent: if what \u2018it\u2019 or \u2018they\u2019 refers to is unclear, name the noun explicitly.","Context matters: check surrounding sentences to see which pronoun is already in use."],q:[
+{q:"Is \u2018Each student must bring their notebook\u2019 correct?",a:"No. \u2018Each\u2019 is singular. SAT requires: \u2018his or her notebook.\u2019"},
+{q:"When must you replace a pronoun with a noun?",a:"When the pronoun is ambiguous or the antecedent is missing. Clarity requires naming the specific noun."},
+{q:"Can you mix \u2018one\u2019 and \u2018you\u2019 in the same paragraph?",a:"No. These must remain consistent throughout. Match the pronoun already used in surrounding sentences."}
+]},
+{id:10,t:"Apostrophes",p:"III",r:["It\u2019s = it is. Its = possessive. Test: plug in \u2018it is.\u2019","They\u2019re = they are. Their = possessive. There = location. Test: plug in \u2018they are.\u2019","You\u2019re = you are. Your = possessive. Test: plug in \u2018you are.\u2019","Who\u2019s = who is. Whose = possessive of who (can refer to people AND things).","Singular possessive: add \u2019s (the dog\u2019s bone). Plural ending in -s: add \u2019 only (the dogs\u2019 bones).","Plural not ending in -s: add \u2019s (the children\u2019s toys).","Plural nouns NEVER use apostrophes: \u2018Many dogs live here\u2019 not \u2018Many dog\u2019s.\u2019"],q:[
+{q:"How choose between \u2018its\u2019 and \u2018it\u2019s\u2019?",a:"Plug in \u2018it is.\u2019 If it works, use it\u2019s. If not, use its."},
+{q:"How choose between they\u2019re/their/there?",a:"They\u2019re = they are (plug in). Their = possessive. There = place."},
+{q:"Can \u2018whose\u2019 refer to things?",a:"Yes. \u2018The building whose roof collapsed\u2019 is correct."}
+]},
+{id:11,t:"Modification",p:"III",r:["DANGLING MODIFIER: introductory phrase + comma must be followed by the noun it describes.","If the wrong noun follows the comma, the modifier dangles and the sentence is incorrect.","Same rule applies to parentheses: start of parenthetical must refer to the noun immediately before the open parenthesis.","Common trap: passive voice puts the wrong noun after the comma.","Ask: \u2018Who or what is the opening phrase describing?\u2019 That noun must appear right after the comma.","Modifiers at the END of a sentence must also connect logically to the nearest noun."],q:[
+{q:"What is a dangling modifier?",a:"An introductory phrase followed by the wrong noun. The noun right after the comma must be what the phrase describes."},
+{q:"What is the most common modifier trap?",a:"Passive voice: \u2018Discovered in 1850, scientists studied...\u2019 Scientists were not discovered in 1850."},
+{q:"How do modifiers work with parentheses?",a:"The start of a parenthetical refers to the noun immediately before the opening parenthesis. Same logic as commas."}
+]},
+{id:12,t:"Parallel Structure and Comparisons",p:"III",r:["List items must be in the SAME grammatical form: all nouns, all -ing forms, all infinitives, etc.","Match the form of the FIRST item in the list.","Applies to pairs with \u2018and,\u2019 \u2018but,\u2019 \u2018or,\u2019 \u2018not only...but also,\u2019 \u2018either...or,\u2019 \u2018neither...nor.\u2019","Faulty comparisons: always compare equivalent things. Music to music, not music to a person.","Use \u2018that of\u2019 for singular: \u2018Ives\u2019s music was less popular than that of Sousa.\u2019","Use \u2018those of\u2019 for plural: \u2018skills similar to those of human toddlers.\u2019","Do not mix \u2018that of\u2019 (singular) with plural nouns, or \u2018those of\u2019 (plural) with singular nouns.","Semicolons can separate list items that already contain commas (complex lists)."],q:[
+{q:"What is parallel structure?",a:"Items in a list or pair must share the same grammatical form. Match the first item."},
+{q:"What is a faulty comparison?",a:"Comparing unequal things. \u2018Ives\u2019s music was less popular than Sousa\u2019 compares music to a person. Fix: \u2018than that of Sousa.\u2019"},
+{q:"When use \u2018that of\u2019 vs \u2018those of\u2019?",a:"\u2018That of\u2019 replaces a singular noun. \u2018Those of\u2019 replaces a plural noun."}
+]}
+],
+cs:[
+{r:"Read the full passage and plug your answer back in to double-check.",c:"All"},
+{r:"Transitions: determine the relationship before looking at choices.",c:"1"},
+{r:"Conjunctive adverbs (however, therefore) follow a period or semicolon, never a comma.",c:"1"},
+{r:"Student Notes: find the key phrase, match the answer. Skip the bullet points.",c:"2"},
+{r:"Period = Semicolon = Comma + and/but.",c:"4"},
+{r:"Comma + it/this/he/she/they (no conjunction) = comma splice = WRONG.",c:"4"},
+{r:"Colon = Single Dash = Explanation or List. Full sentence required before.",c:"5"},
+{r:"2 Commas = 2 Dashes = 2 Parentheses = Non-essential. Do not mix types.",c:"6"},
+{r:"Singular verbs end in -s; plural do not. The noun before the verb may not be the subject.",c:"8"},
+{r:"Keep verb tense consistent unless there is a clear reason to change.",c:"8"},
+{r:"Pronoun agreement: singular = it; plural = they. Keep one/you/we consistent.",c:"9"},
+{r:"Dangling modifier: descriptive phrase + comma must be followed by the noun described.",c:"11"},
+{r:"Parallel structure: list items must share the same grammatical form.",c:"12"},
+{r:"Faulty comparisons: use \u2018that of\u2019 (singular) or \u2018those of\u2019 (plural) to compare equivalent things.",c:"12"},
+{r:"BEING in answer choices is almost always wrong. Eliminate it first.",c:"3"}
+],
+ex:[
+{id:1,tp:"Transitions",df:"Easy",
+ps:"Although T.S. Eliot devoted several years to writing \"The Waste Land,\" it sold only about 330 copies in the six months following its publication in 1922. ______ Eliot was forced to seek other sources of income.",
+qq:"Which choice completes the text with the most logical transition?",
+ch:[{l:"A",t:"In addition,",c:false},{l:"B",t:"For example,",c:false},{l:"C",t:"Consequently,",c:true},{l:"D",t:"However,",c:false}],
+st:[{s:"Read both sentences",d:"Sentence 1: poem sold poorly. Sentence 2: Eliot needed other income."},{s:"Determine relationship",d:"Poor sales LED TO needing income = CAUSE-AND-EFFECT."},{s:"Eliminate",d:"A) continuation\nB) example\nD) contrast"},{s:"Confirm",d:"C) \u2018Consequently\u2019 = result. Answer: C"}],
+an:"C",ti:"Ask: did Sentence 1 LEAD TO Sentence 2? If yes, use therefore/consequently/as a result."},
+{id:2,tp:"Joining Sentences",df:"Medium",
+ps:"The tomato is often treated as a vegetable ______ it is actually classified as a fruit by botanists.",
+qq:"Which choice conforms to Standard English?",
+ch:[{l:"A",t:", however,",c:false},{l:"B",t:"; however,",c:true},{l:"C",t:"however,",c:false},{l:"D",t:", and however,",c:false}],
+st:[{s:"Identify structure",d:"Two complete sentences joined at the blank."},{s:"Apply rule",d:"\u2018However\u2019 is a conjunctive adverb. Must follow period or semicolon."},{s:"Eliminate",d:"A) comma splice\nC) run-on\nD) \u2018and however\u2019 invalid"},{s:"Confirm",d:"B) Semicolon + however. Answer: B"}],
+an:"B",ti:"Conjunctive adverbs MUST follow a period or semicolon."},
+{id:3,tp:"Subject-Verb Agreement",df:"Medium",
+ps:"The collection of rare manuscripts, which were donated by several prominent families, ______ on display at the university library.",
+qq:"Which choice conforms to Standard English?",
+ch:[{l:"A",t:"are",c:false},{l:"B",t:"is",c:true},{l:"C",t:"were",c:false},{l:"D",t:"have been",c:false}],
+st:[{s:"Find true subject",d:"Cross out \u2018of rare manuscripts\u2019 and \u2018which were donated...\u2019 Subject = \u2018collection\u2019 (SINGULAR)."},{s:"Match verb",d:"\u2018Collection\u2019 is singular. Needs \u2018is.\u2019"},{s:"Eliminate",d:"A) plural, C) plural, D) plural"},{s:"Confirm",d:"B) \u2018is\u2019 = singular. \u2018Manuscripts\u2019 is a trap. Answer: B"}],
+an:"B",ti:"Cross out prepositional phrases and non-essential clauses to find the true subject."},
+{id:4,tp:"Dangling Modifier",df:"Hard",
+ps:"______ the French military used pigeons to transport messages to Paris during the Franco-Prussian War in 1871.",
+qq:"Which choice conforms to Standard English?",
+ch:[{l:"A",t:"Valued for their speed and homing ability,",c:true},{l:"B",t:"Their speed and homing ability being valued,",c:false},{l:"C",t:"Having valued their speed and homing ability,",c:false},{l:"D",t:"To value speed and homing ability,",c:false}],
+st:[{s:"Identify rule",d:"Introductory phrase + comma must be followed by the noun described. After blank: \u2018the French military.\u2019"},{s:"Evaluate",d:"A) \u2018Valued for speed\u2019\u2014sets up context correctly\nB) awkward \u2018being\u2019\nC) misattributes action\nD) infinitive doesn\u2019t fit"},{s:"Confirm",d:"A) correct. Answer: A"}],
+an:"A",ti:"The noun immediately after an introductory modifier + comma must be what the phrase describes."},
+{id:5,tp:"Apostrophes",df:"Easy",
+ps:"The three researchers published ______ findings in a peer-reviewed journal.",
+qq:"Which choice conforms to Standard English?",
+ch:[{l:"A",t:"they\u2019re",c:false},{l:"B",t:"their",c:true},{l:"C",t:"there",c:false},{l:"D",t:"its",c:false}],
+st:[{s:"Plug in \u2018they are\u2019",d:"\u2018Published they are findings\u2019 \u2014 no. A) wrong."},{s:"Place vs possession",d:"Not about a place. C) wrong."},{s:"Check number",d:"\u2018Three researchers\u2019 = plural. \u2018Its\u2019 = singular. D) wrong."},{s:"Confirm",d:"B) \u2018their\u2019 = plural possessive. Answer: B"}],
+an:"B",ti:"Always test they\u2019re/you\u2019re/it\u2019s by plugging in the expanded form."},
+{id:6,tp:"Parallel Structure",df:"Medium",
+ps:"Spiders use strategies to capture prey, including trapping it in webs, lassoing it with sticky bolas, and ______",
+qq:"Which choice maintains parallel structure?",
+ch:[{l:"A",t:"they mimic other insects.",c:false},{l:"B",t:"mimicking other insects.",c:true},{l:"C",t:"to mimic other insects.",c:false},{l:"D",t:"other insects are mimicked.",c:false}],
+st:[{s:"Find pattern",d:"List: trapping..., lassoing..., and ______. Both use -ing."},{s:"Match form",d:"Third item must also be -ing."},{s:"Eliminate",d:"A) subject+verb, C) infinitive, D) passive"},{s:"Confirm",d:"B) \u2018mimicking\u2019 = -ing. Answer: B"}],
+an:"B",ti:"Match every list item to the grammatical form of the first item."}
+]};
+
+var S={v:'home',ch:null,tab:'rules',ci:0,fl:false,rv:{},qz:[],qi:0,sa:false,sc:{y:0,n:0},qd:false,qf:'all',rt:'cheat',se:null,cho:null,ss:false,st:0,co:{}};
+var aQ=D.ch.flatMap(function(c){return c.q.map(function(q){return{q:q.q,a:q.a,cId:c.id,cT:c.t}});});
+function sh(a){var b=a.slice();for(var i=b.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var tmp=b[i];b[i]=b[j];b[j]=tmp;}return b;}
+function rc(id){var c=D.ch.find(function(x){return x.id===id;});if(!c)return 0;return c.q.filter(function(_,i){return S.rv[id+'-'+i];}).length;}
+function tr(){return Object.keys(S.rv).length;}
+function sq(f){var p=f==='all'?aQ:aQ.filter(function(q){return q.cId===f;});S.qz=sh(p).slice(0,Math.min(12,p.length));S.qi=0;S.sa=false;S.sc={y:0,n:0};S.qd=false;S.qf=f;S.v='quiz';R();}
+function qn(ok){if(ok)S.sc.y++;else S.sc.n++;if(S.qi+1>=S.qz.length)S.qd=true;else{S.qi++;S.sa=false;}R();}
+
+function R(){
+var $=document.getElementById('app');
+if(S.v==='home'){
+  var t=tr(),tot=aQ.length;
+  $.innerHTML='<div style="margin-bottom:20px"><h1>SAT Grammar Prep</h1><p class="sub">Writing and Language Test Preparation</p></div>'+
+  '<div class="pbar"><div class="pfill" style="width:'+(t/tot*100)+'%"></div></div><p class="ptxt">'+t+'/'+tot+' questions reviewed</p>'+
+  '<div style="display:flex;gap:10px;flex-wrap:wrap;margin:16px 0">'+
+  '<button class="btn" onclick="sq(\'all\')">Quick Quiz &mdash; All Chapters</button>'+
+  '<button class="btn btn2" onclick="S.v=\'ref\';R()">Cheat Sheet &amp; Reference</button>'+
+  '<button class="btn btn3" onclick="S.v=\'prac\';R()">Practice Exercises</button></div>'+
+  '<div class="gr">'+D.ch.map(function(c){
+    var p=c.q.length?rc(c.id)/c.q.length:0;var r=14,ci=2*Math.PI*r;
+    return'<button class="cd" onclick="S.ch='+c.id+';S.ci=0;S.fl=false;S.tab=\'rules\';S.v=\'ch\';R()">'+
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">'+
+    '<svg width="34" height="34" style="transform:rotate(-90deg)"><circle cx="17" cy="17" r="'+r+'" fill="none" stroke="#ddd5c4" stroke-width="3"/><circle cx="17" cy="17" r="'+r+'" fill="none" stroke="#8b6914" stroke-width="3" stroke-dasharray="'+ci+'" stroke-dashoffset="'+ci*(1-p)+'" stroke-linecap="round"/></svg></div>'+
+    '<p class="cn">Ch. '+c.id+' &middot; Part '+c.p+'</p><p class="ct">'+c.t+'</p><p class="cm">'+c.q.length+' Q&amp;A &middot; '+c.r.length+' rules</p></button>';
+  }).join('')+'</div>';
+}
+else if(S.v==='ref'){
+  $.innerHTML='<button class="bk" onclick="S.v=\'home\';R()">&larr; Home</button><h2>Cheat Sheet &amp; Reference</h2>'+
+  '<div class="tabs"><button class="'+(S.rt==='cheat'?'ta':'tb')+'" onclick="S.rt=\'cheat\';R()">15-Rule Cheat Sheet</button>'+
+  '<button class="'+(S.rt==='trans'?'ta':'tb')+'" onclick="S.rt=\'trans\';R()">Transition Words</button>'+
+  '<button class="'+(S.rt==='punct'?'ta':'tb')+'" onclick="S.rt=\'punct\';R()">Punctuation Rules</button></div>'+
+  (S.rt==='cheat'?'<p style="font-size:14px;color:#7a6e5d;margin-bottom:12px">The 15 most important rules for test day.</p>'+
+  D.cs.map(function(r,i){return'<div class="ri"><span class="rn">'+(i+1)+'</span><div><p class="rt">'+r.r+'</p><p style="font-size:13px;color:#8a7d6b;margin-top:4px">Ch. '+r.c+'</p></div></div>';}).join(''):'')+
+  (S.rt==='trans'?'<p style="font-size:14px;color:#7a6e5d;margin-bottom:12px">Know these categories for transition questions.</p>'+
+  [{c:'Contrast',co:'#8b3a4a',w:'however, nevertheless, still, yet, in contrast, on the other hand, conversely, whereas'},
+  {c:'Continuation',co:'#3a5a0a',w:'furthermore, moreover, in addition, similarly, likewise, also, indeed, in fact'},
+  {c:'Cause and Effect',co:'#2a5a8b',w:'therefore, thus, consequently, accordingly, as a result, hence, so'},
+  {c:'Example / Specificity',co:'#8b6914',w:'for example, for instance, specifically, in particular, namely'},
+  {c:'Emphasis',co:'#6b2f6b',w:'indeed, in fact, notably, certainly, clearly'},
+  {c:'Sequence',co:'#2a6b5a',w:'first, second, next, then, finally, subsequently, previously, meanwhile'}
+  ].map(function(g){return'<div class="rc" style="border-left:3px solid '+g.co+'"><p class="rct" style="color:'+g.co+'">'+g.c+'</p><p class="rcd">'+g.w+'</p></div>';}).join(''):'')+
+  (S.rt==='punct'?'<p style="font-size:14px;color:#7a6e5d;margin-bottom:12px">Every punctuation rule tested on the SAT.</p>'+
+  [{t:'Period = Semicolon',d:'Both separate two complete sentences.',e:'She ran. He walked. = She ran; he walked.'},
+  {t:'Comma + FANBOYS',d:'Joins two sentences with For/And/Nor/But/Or/Yet/So.',e:'Correct: She ran, and he walked.'},
+  {t:'Comma Splice (WRONG)',d:'Two sentences joined by only a comma.',e:'Wrong: She ran, he walked.'},
+  {t:'Colon / Single Dash',d:'Explanation or list. Full sentence required before.',e:'She had one goal: to win.'},
+  {t:'Non-Essential Clause',d:'2 commas = 2 dashes = 2 parentheses. Do not mix.',e:'The dog, a poodle, barked.'},
+  {t:'Conjunctive Adverbs',d:'However/therefore need period or semicolon before.',e:'Right: She ran; however, he walked.'},
+  {t:'No Subject-Verb Comma',d:'Never separate subject from verb with a comma.',e:'Wrong: The tall boy, ran.'},
+  {t:'No Comma Around Self Words',d:'Never commas around itself/himself/themselves.',e:'Right: the city itself is...'}
+  ].map(function(r){return'<div class="rc"><p class="rct" style="color:#7a5c1e">'+r.t+'</p><p class="rcd">'+r.d+'</p><p class="rce">'+r.e+'</p></div>';}).join(''):'');
+}
+else if(S.v==='ch'){
+  var c=D.ch.find(function(x){return x.id===S.ch;});var q=c.q[S.ci];var ir=S.rv[c.id+'-'+S.ci];
+  $.innerHTML='<button class="bk" onclick="S.v=\'home\';R()">&larr; Home</button><h2>Ch. '+c.id+': '+c.t+'</h2>'+
+  '<div class="tabs"><button class="'+(S.tab==='rules'?'ta':'tb')+'" onclick="S.tab=\'rules\';R()">Rules</button>'+
+  '<button class="'+(S.tab==='flash'?'ta':'tb')+'" onclick="S.tab=\'flash\';R()">Flashcards</button>'+
+  '<button class="tb" onclick="sq('+c.id+')">Quiz</button></div>'+
+  (S.tab==='rules'?c.r.map(function(r,i){return'<div class="ri"><span class="rn">'+(i+1)+'</span><p class="rt">'+r+'</p></div>';}).join(''):'')+
+  (S.tab==='flash'&&q?'<div class="fl" onclick="S.fl=!S.fl;R()">'+
+  (!S.fl?'<p class="fl-l">QUESTION</p><p class="fl-q">'+q.q+'</p><p class="fl-h">tap to reveal answer</p>':
+  '<p class="fl-l" style="color:#8b6914">ANSWER</p><p class="fl-a">'+q.a+'</p><p class="fl-h">tap to see question</p>')+
+  '</div><div class="nv"><button class="nb" '+(S.ci===0?'disabled':'')+' onclick="S.ci--;S.fl=false;R()">&larr; Prev</button>'+
+  '<span style="font-size:14px;color:#7a6e5d;font-weight:600">'+(S.ci+1)+'/'+c.q.length+'</span>'+
+  '<button class="nb" style="background:'+(ir?'#c5d4a0':'#ddd5c4')+';color:'+(ir?'#3a5a0a':'#5a4f3e')+'" onclick="S.rv[\''+c.id+'-'+S.ci+'\']=true;R()">'+(ir?'Done':'Mark Done')+'</button>'+
+  '<button class="nb" '+(S.ci===c.q.length-1?'disabled':'')+' onclick="S.ci++;S.fl=false;R()">Next &rarr;</button></div>':'');
+}
+else if(S.v==='quiz'){
+  if(S.qd){var p=S.qz.length?Math.round(S.sc.y/S.qz.length*100):0;
+  $.innerHTML='<div class="cen" style="padding:48px 0"><p style="font-size:28px;color:#7a5c1e;font-weight:700;margin-bottom:8px">'+(p>=80?'Excellent':p>=50?'Good effort':'Keep studying')+'</p>'+
+  '<h2>Quiz Complete</h2><p style="font-size:22px;color:#7a5c1e;font-weight:700;margin-top:12px">'+S.sc.y+'/'+S.qz.length+' correct ('+p+'%)</p>'+
+  '<div class="g12 mt"><button class="btn" onclick="sq(S.qf)">Retry</button><button class="btn btn3" onclick="S.v=\'home\';R()">Home</button></div></div>';return;}
+  var cq=S.qz[S.qi];
+  $.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center"><button class="bk" onclick="S.v=\'home\';R()">&times; End</button>'+
+  '<span style="font-size:14px;color:#7a6e5d;font-weight:600">'+(S.qi+1)+'/'+S.qz.length+'</span></div>'+
+  '<p style="color:#7a6e5d;font-size:13px;margin-top:8px;text-transform:uppercase;letter-spacing:1px">Ch. '+cq.cId+': '+cq.cT+'</p>'+
+  '<div class="fl" style="cursor:default;min-height:'+(S.sa?220:160)+'px"><p class="fl-l">QUESTION</p><p class="fl-q">'+cq.q+'</p>'+
+  (S.sa?'<div style="margin-top:16px;padding-top:16px;border-top:1px solid #d4cbb5"><p class="fl-l" style="color:#8b6914">ANSWER</p><p class="fl-a">'+cq.a+'</p></div>':'')+'</div>'+
+  (!S.sa?'<div class="cen mt"><button class="btn" onclick="S.sa=true;R()">Show Answer</button></div>':
+  '<div class="g12 mt"><button class="nb" style="background:#c5d4a0;color:#3a5a0a;padding:12px 28px;font-size:16px" onclick="qn(true)">I Knew It</button>'+
+  '<button class="nb" style="background:#e8c8c0;color:#6b2f1a;padding:12px 28px;font-size:16px" onclick="qn(false)">Didn\'t Know</button></div>')+
+  '<div class="pbar"><div class="pfill" style="width:'+((S.qi+(S.sa?1:0))/S.qz.length*100)+'%"></div></div>';
+}
+else if(S.v==='prac'){
+  $.innerHTML='<button class="bk" onclick="S.v=\'home\';R()">&larr; Home</button>'+
+  '<div style="margin-bottom:20px"><h1>Practice Exercises</h1><p class="sub">SAT-style questions with strategy breakdowns</p></div>'+
+  '<div class="pbar"><div class="pfill" style="width:'+(Object.keys(S.co).length/D.ex.length*100)+'%"></div></div>'+
+  '<p class="ptxt mb12">'+Object.keys(S.co).length+'/'+D.ex.length+' completed</p>'+
+  D.ex.map(function(ex){return'<div class="er" onclick="S.se='+ex.id+';S.cho=null;S.ss=false;S.st=0;S.v=\'ex\';R()">'+
+  '<div style="flex:1"><p style="font-size:15px;font-weight:600;color:#2c2418;margin:0">Q'+ex.id+': '+ex.tp+'</p>'+
+  '<p style="font-size:13px;color:#7a6e5d;margin:2px 0 0"><span class="tg '+(ex.df==='Easy'?'te':ex.df==='Medium'?'tm':'th2')+'">'+ex.df+'</span></p></div>'+
+  '<span style="font-size:14px;color:'+(S.co[ex.id]?'#3a5a0a':'#d4cbb5')+'">'+(S.co[ex.id]?'done':'&rarr;')+'</span></div>';}).join('');
+}
+else if(S.v==='ex'){
+  var ex=D.ex.find(function(e){return e.id===S.se;});
+  var isOk=S.cho!==null&&ex.ch.find(function(c){return c.l===S.cho;})&&ex.ch.find(function(c){return c.l===S.cho;}).c;
+  $.innerHTML='<button class="bk" onclick="S.v=\'prac\';R()">&larr; All Exercises</button>'+
+  '<div style="display:flex;gap:8px;align-items:center;margin-bottom:4px">'+
+  '<span style="font-size:15px;font-weight:600;color:#7a5c1e">'+ex.tp+'</span>'+
+  '<span class="tg '+(ex.df==='Easy'?'te':ex.df==='Medium'?'tm':'th2')+'">'+ex.df+'</span></div>'+
+  '<div class="pb"><p class="pl">PASSAGE</p><p class="pt2">'+ex.ps+'</p></div>'+
+  '<p style="font-size:16px;font-weight:600;color:#2c2418;margin:0 0 12px">'+ex.qq+'</p>'+
+  ex.ch.map(function(c){var cls='ch';if(S.cho){cls+=' off';if(c.c)cls+=' ok';else if(c.l===S.cho&&!c.c)cls+=' no';}
+  return'<button class="'+cls+'" onclick="S.cho=\''+c.l+'\';R()"><span style="font-weight:700;margin-right:10px;color:'+(S.cho&&c.c?'#3a5a0a':'#8a7d6b')+'">'+c.l+')</span>'+c.t+
+  (S.cho&&c.c?' <span style="margin-left:auto;color:#3a5a0a">correct</span>':'')+
+  (S.cho&&c.l===S.cho&&!c.c?' <span style="margin-left:auto;color:#6b2f1a">incorrect</span>':'')+'</button>';}).join('')+
+  (S.cho&&!S.ss?'<div class="cen mt"><p style="font-size:16px;font-weight:600;color:'+(isOk?'#3a5a0a':'#6b2f1a')+';margin-bottom:12px">'+(isOk?'Correct.':'Incorrect. The answer is '+ex.an+'.')+'</p>'+
+  '<button class="btn" onclick="S.ss=true;S.st=0;R()">See Strategy Breakdown</button></div>':'')+
+  (S.ss?'<div class="mt"><p style="font-size:12px;color:#7a5c1e;text-transform:uppercase;letter-spacing:2px;margin-bottom:12px">STRATEGY WALKTHROUGH</p>'+
+  ex.st.slice(0,S.st+1).map(function(s,i){return'<div class="sb" style="opacity:'+(i===S.st?1:.7)+';border-left-color:'+(i===S.st?'#8b6914':'#d4cbb5')+'">'+
+  '<span class="sn">'+(i+1)+'</span><div><p class="sl">'+s.s+'</p><p class="sd">'+s.d+'</p></div></div>';}).join('')+
+  '<div class="g12" style="margin-top:12px">'+
+  (S.st<ex.st.length-1?'<button class="btn" onclick="S.st++;R()">Next Step &rarr;</button>':
+  '<div class="cen"><div class="tip"><p style="font-size:12px;color:#8b6914;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">Key Takeaway</p>'+
+  '<p style="font-size:15px;color:#5a4f3e">'+ex.ti+'</p></div>'+
+  '<button class="btn" style="background:#3a5a0a" onclick="S.co['+ex.id+']=true;S.v=\'prac\';R()">Mark Complete &amp; Return</button></div>')+
+  '</div></div>':'');
+}
+}
+R();
+</script>
+</body>
+</html>
