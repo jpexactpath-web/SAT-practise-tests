@@ -8,12 +8,13 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
     <style>
-      /* --- NEW SEPIA & WARM BROWN THEME --- */
+      /* --- SEPIA THEME & MINION PRO FONT --- */
       body { 
         margin: 0; 
         padding: 0; 
         background-color: #f4ecd8; /* Sepia base background */
-        font-family: 'Minion Pro', 'Minion Pro', sans-serif;
+        font-family: 'Minion Pro', Georgia, serif; /* SAT Standard Serif Font */
+        font-size: 18px; /* Base size bumped */
         color: #4a3a2a; /* Main text color: dark brown */
       }
       * { box-sizing: border-box; }
@@ -23,13 +24,12 @@
     <div id="root"></div>
 
     <script type="text/babel">
-      // 1. Pull React tools directly from the browser script
       const { useState, useCallback } = React;
 
-      // --- YOUR DATA REMAINS UNCHANGED (Emojis are just not displayed) ---
+      // --- ALL EMOJIS REMOVED FROM DATA ---
       const CHAPTERS = [
         {
-          id: 1, title: "SAT Reading Overview", ,
+          id: 1, title: "SAT Reading Overview",
           strategies: [
             "The Digital SAT has 2 modules of 27 questions each (54 total), 30 minutes per module. Module 1 performance determines Module 2 difficulty.",
             "Passages are short (50–150 words), one paragraph each, with ONE question per passage. Exception: paired passages have two short texts.",
@@ -51,7 +51,7 @@
           ],
         },
         {
-          id: 2, title: "Vocabulary in Context", 
+          id: 2, title: "Vocabulary in Context",
           strategies: [
             "Expect ~10 vocabulary questions per test — the most common question type. Most will be sentence completions.",
             "Two types: (1) Sentence Completions — fill in a missing word using passage clues; (2) Meaning in Context — identify alternate meaning of a common word.",
@@ -72,7 +72,7 @@
           ],
         },
         {
-          id: 3, title: "Making the Leap", 
+          id: 3, title: "Making the Leap",
           strategies: [
             "This is the crucial skill of moving between specific/concrete language and abstract/general language.",
             "Authors use PRONOUNS (this, that, it, they) and ABSTRACT NOUNS (observation, claim, conclusion, phenomenon) to refer back to specific ideas. You must track what they refer to.",
@@ -90,7 +90,7 @@
           ],
         },
         {
-          id: 4, title: "The Big Picture", 
+          id: 4, title: "The Big Picture",
           strategies: [
             "Big-picture questions ask about main ideas, claims, purposes, and the overall structure of a passage.",
             "The TOPIC is the person, thing, or idea that is the primary subject — usually the word or phrase that appears most frequently throughout the passage.",
@@ -111,7 +111,7 @@
           ],
         },
         {
-          id: 5, title: "Literal Comprehension", 
+          id: 5, title: "Literal Comprehension",
           strategies: [
             "These questions ask what the passage 'states,' 'indicates,' or what is 'true' about something — testing direct understanding.",
             "Common stems: 'According to the text...', 'Based on the text...', 'What is true about...?'",
@@ -130,7 +130,7 @@
           ],
         },
         {
-          id: 6, title: "Reading for Function", 
+          id: 6, title: "Reading for Function",
           strategies: [
             "Function questions ask WHY something is written — not WHAT it says. They test the rhetorical PURPOSE of information.",
             "Key distinction: content = WHAT is said; function = WHY it's said. You must understand content first, then determine its purpose.",
@@ -149,7 +149,7 @@
           ],
         },
         {
-          id: 7, title: "Text Completions", 
+          id: 7, title: "Text Completions",
           strategies: [
             "Text completions present a passage with a blank at the end. You must infer what logically completes the argument.",
             "These are essentially literal comprehension questions with a twist — all the information is there, you just connect the dots.",
@@ -168,7 +168,7 @@
           ],
         },
         {
-          id: 8, title: "Supporting & Undermining", emoji: "⚖️",
+          id: 8, title: "Supporting & Undermining",
           strategies: [
             "These questions ask you to identify what would SUPPORT (strengthen) or UNDERMINE (weaken) a claim or theory from the passage.",
             "Three-step process: 1) Identify the claim and rephrase it simply. 2) Determine what type of information would support or weaken it. 3) Check the answers.",
@@ -187,7 +187,7 @@
           ],
         },
         {
-          id: 9, title: "Graphs and Charts", 
+          id: 9, title: "Graphs and Charts",
           strategies: [
             "Graph/chart questions combine a passage with a visual data source. Expect 1-2 per module, mainly in science and social science passages.",
             "Key insight: many answers can be determined from the question wording and answer choices ALONE — you may not even need to look at the graph.",
@@ -206,7 +206,7 @@
           ],
         },
         {
-          id: 10, title: "Paired Passages", 
+          id: 10, title: "Paired Passages",
           strategies: [
             "Paired passages present two short texts ('Text 1' and 'Text 2') about the same topic with different or conflicting viewpoints.",
             "The most common relationship is DISAGREEMENT, but passages may also AGREE on certain points. Correct answers can involve both.",
@@ -322,7 +322,6 @@
           <div style={s.ctr}>
             <div style={s.hdr}>
               <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-                {/* --- Emoji Removed --- */}
                 <div>
                   <h1 style={s.h1}>SAT Reading Prep</h1>
                   <p style={s.sub}>Based on The Complete Guide to SAT Reading (Meltzer)</p>
@@ -342,15 +341,14 @@
                 return (
                   <button key={ch.id} style={s.card} onClick={() => { setSelCh(ch); setCardIdx(0); setFlipped(false); setTab("strategies"); setView("chapter"); }}>
                     <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", marginBottom: 6 }}>
-                      {/* --- Emoji Removed --- */}
                       <svg width={34} height={34} style={{ transform: "rotate(-90deg)" }}>
                         <circle cx={17} cy={17} r={r} fill="none" stroke="#dcd3be" strokeWidth={3} />
                         <circle cx={17} cy={17} r={r} fill="none" stroke="#9c6644" strokeWidth={3} strokeDasharray={c} strokeDashoffset={c * (1 - pct)} strokeLinecap="round" style={{ transition: "stroke-dashoffset 0.4s" }} />
                       </svg>
                     </div>
-                    <p style={{ Size: 11, color: "#6b5a4a", margin: 0, textTransform: "uppercase", letterSpacing: 1 }}>Ch. {ch.id}</p>
-                    <p style={{ Size: 13, Weight: 600, color: "#4a3a2a", margin: "2px 0" }}>{ch.title}</p>
-                    <p style={{ Size: 11, color: "#6b5a4a", margin: 0 }}>{ch.questions.length} Q&A · {ch.strategies.length} tips</p>
+                    <p style={{ fontSize: 13, color: "#6b5a4a", margin: 0, textTransform: "uppercase", letterSpacing: 1 }}>Ch. {ch.id}</p>
+                    <p style={{ fontSize: 15, fontWeight: 600, color: "#4a3a2a", margin: "2px 0" }}>{ch.title}</p>
+                    <p style={{ fontSize: 13, color: "#6b5a4a", margin: 0 }}>{ch.questions.length} Q&A · {ch.strategies.length} tips</p>
                   </button>
                 );
               })}
@@ -370,36 +368,36 @@
             </div>
             {refTab === "wrong" && (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                <p style={{ Size: 12, color: "#6b5a4a", margin: "0 0 8px" }}>Learn to spot these 7 types of wrong answers — they appear on EVERY SAT.</p>
+                <p style={{ fontSize: 14, color: "#6b5a4a", margin: "0 0 8px" }}>Learn to spot these 7 types of wrong answers — they appear on EVERY SAT.</p>
                 {WRONG_ANSWER_TYPES.map((w, i) => (
                   <div key={i} style={{ background: "#ede0d4", borderRadius: 10, padding: "12px 16px", borderLeft: "3px solid #8b4513" }}>
-                    <p style={{ Size: 14, Weight: 700, color: "#8b4513", margin: "0 0 4px" }}>{i + 1}. {w.type}</p>
-                    <p style={{ Size: 13, color: "#4a3a2a", margin: "0 0 4px" }}>{w.desc}</p>
-                    <p style={{ Size: 12, color: "#6b5a4a", margin: 0, Style: "italic" }}>Ex: {w.example}</p>
+                    <p style={{ fontSize: 16, fontWeight: 700, color: "#8b4513", margin: "0 0 4px" }}>{i + 1}. {w.type}</p>
+                    <p style={{ fontSize: 15, color: "#4a3a2a", margin: "0 0 4px" }}>{w.desc}</p>
+                    <p style={{ fontSize: 14, color: "#6b5a4a", margin: 0, fontStyle: "italic" }}>Ex: {w.example}</p>
                   </div>
                 ))}
               </div>
             )}
             {refTab === "function" && (
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <p style={{ Size: 12, color: "#6b5a4a", margin: "0 0 8px" }}>Master these words — they appear constantly in Function & Purpose questions.</p>
+                <p style={{ fontSize: 14, color: "#6b5a4a", margin: "0 0 8px" }}>Master these words — they appear constantly in Function & Purpose questions.</p>
                 {FUNCTION_WORDS.map((w, i) => (
                   <div key={i} style={{ display: "flex", gap: 12, background: "#ede0d4", borderRadius: 8, padding: "10px 14px", alignItems: "center" }}>
-                    <span style={{ Size: 13, Weight: 700, color: "#9c6644", minWidth: 110 }}>{w.word}</span>
-                    <span style={{ Size: 13, color: "#4a3a2a" }}>{w.meaning}</span>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: "#9c6644", minWidth: 110 }}>{w.word}</span>
+                    <span style={{ fontSize: 15, color: "#4a3a2a" }}>{w.meaning}</span>
                   </div>
                 ))}
               </div>
             )}
             {refTab === "secondary" && (
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <p style={{ Size: 12, color: "#6b5a4a", margin: "0 0 8px" }}>The SAT tests UNCOMMON meanings. If you see the common meaning, it's likely wrong.</p>
+                <p style={{ fontSize: 14, color: "#6b5a4a", margin: "0 0 8px" }}>The SAT tests UNCOMMON meanings. If you see the common meaning, it's likely wrong.</p>
                 {SECOND_MEANINGS.map((w, i) => (
                   <div key={i} style={{ background: "#ede0d4", borderRadius: 8, padding: "10px 14px" }}>
-                    <span style={{ Size: 14, Weight: 700, color: "#9c6644" }}>{w.word}</span>
+                    <span style={{ fontSize: 16, fontWeight: 700, color: "#9c6644" }}>{w.word}</span>
                     <div style={{ display: "flex", gap: 16, marginTop: 4, flexWrap: "wrap" }}>
-                      <span style={{ Size: 12, color: "#6b5a4a" }}>Common: <span style={{ color: "#4a3a2a" }}>{w.common}</span></span>
-                      <span style={{ Size: 12, color: "#b08968" }}>SAT meaning: <span style={{ color: "#9c6644", Weight: 600 }}>{w.sat}</span></span>
+                      <span style={{ fontSize: 14, color: "#6b5a4a" }}>Common: <span style={{ color: "#4a3a2a" }}>{w.common}</span></span>
+                      <span style={{ fontSize: 14, color: "#b08968" }}>SAT meaning: <span style={{ color: "#9c6644", fontWeight: 600 }}>{w.sat}</span></span>
                     </div>
                   </div>
                 ))}
@@ -415,19 +413,18 @@
           return (
             <div style={s.ctr}>
               <button style={s.back} onClick={() => setView("home")}>← Home</button>
-              {/* --- Emoji Removed from Title --- */}
               <h2 style={s.h2}>Ch. {selCh.id}: {selCh.title}</h2>
               <div style={{ display: "flex", gap: 8, marginBottom: 18, flexWrap: "wrap" }}>
-                <button style={tab === "strategies" ? s.tActive : s.tBtn} onClick={() => setTab("strategies")}>📌 Strategies</button>
-                <button style={tab === "flashcards" ? s.tActive : s.tBtn} onClick={() => setTab("flashcards")}>🃏 Flashcards</button>
-                <button style={s.tBtn} onClick={() => { setQFilter(selCh.id); startQuiz(selCh.id); }}>🧪 Quiz</button>
+                <button style={tab === "strategies" ? s.tActive : s.tBtn} onClick={() => setTab("strategies")}>Strategies</button>
+                <button style={tab === "flashcards" ? s.tActive : s.tBtn} onClick={() => setTab("flashcards")}>Flashcards</button>
+                <button style={s.tBtn} onClick={() => { setQFilter(selCh.id); startQuiz(selCh.id); }}>Quiz</button>
               </div>
               {tab === "strategies" && (
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {selCh.strategies.map((st, i) => (
                     <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", background: "#ede0d4", borderRadius: 10, padding: "12px 16px", borderLeft: "3px solid #9c6644" }}>
-                      <span style={{ background: "#9c6644", color: "#fff", borderRadius: "50%", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", Size: 12, Weight: 700, flexShrink: 0 }}>{i + 1}</span>
-                      <p style={{ Size: 13, color: "#4a3a2a", margin: 0, lineHeight: 1.55 }}>{st}</p>
+                      <span style={{ background: "#9c6644", color: "#fff", borderRadius: "50%", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 14, fontWeight: 700, flexShrink: 0 }}>{i + 1}</span>
+                      <p style={{ fontSize: 15, color: "#4a3a2a", margin: 0, lineHeight: 1.55 }}>{st}</p>
                     </div>
                   ))}
                 </div>
@@ -443,8 +440,8 @@
                   </div>
                   <div style={s.nav}>
                     <button style={s.nBtn} disabled={cardIdx === 0} onClick={() => { setCardIdx(cardIdx - 1); setFlipped(false); }}>← Prev</button>
-                    <span style={{ Size: 13, color: "#6b5a4a", Weight: 600 }}>{cardIdx + 1}/{selCh.questions.length}</span>
-                    <button style={{ ...s.nBtn, background: isRev ? "#556b2f" : "#8b4513", color: "#fff" }} onClick={() => markReviewed(selCh.id, cardIdx)}>{isRev ? "✓ Done" : "Mark Done"}</button>
+                    <span style={{ fontSize: 15, color: "#6b5a4a", fontWeight: 600 }}>{cardIdx + 1}/{selCh.questions.length}</span>
+                    <button style={{ ...s.nBtn, background: isRev ? "#556b2f" : "#8b4513", color: "#fff" }} onClick={() => markReviewed(selCh.id, cardIdx)}>{isRev ? "Done" : "Mark Done"}</button>
                     <button style={s.nBtn} disabled={cardIdx === selCh.questions.length - 1} onClick={() => { setCardIdx(cardIdx + 1); setFlipped(false); }}>Next →</button>
                   </div>
                 </>
@@ -460,10 +457,10 @@
             return (
               <div style={s.ctr}>
                 <div style={{ textAlign: "center", padding: "48px 0" }}>
-                  {/* --- Emoji Removed --- */}
+                  <p style={{ fontSize: 32, marginBottom: 8, fontWeight: 700 }}>Result:</p>
                   <h2 style={s.h1}>Quiz Complete!</h2>
-                  <p style={{ ...s.sub, Size: 22, marginTop: 12 }}>{score.y}/{quizQs.length} correct ({pct}%)</p>
-                  <p style={{ color: "#6b5a4a", marginTop: 8 }}>{pct >= 80 ? "Excellent! You know these strategies well." : pct >= 50 ? "Good start — review the chapters you missed." : "Keep studying — focus on the strategies first, then re-quiz."}</p>
+                  <p style={{ ...s.sub, fontSize: 24, marginTop: 12 }}>{score.y}/{quizQs.length} correct ({pct}%)</p>
+                  <p style={{ color: "#6b5a4a", marginTop: 8, fontSize: 16 }}>{pct >= 80 ? "Excellent! You know these strategies well." : pct >= 50 ? "Good start — review the chapters you missed." : "Keep studying — focus on the strategies first, then re-quiz."}</p>
                   <div style={{ marginTop: 28, display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
                     <button style={s.mainBtn} onClick={() => startQuiz(qFilter)}>Retry</button>
                     <button style={{ ...s.mainBtn, background: "#8b6e63", color: "#fff" }} onClick={() => setView("home")}>Home</button>
@@ -477,9 +474,9 @@
             <div style={s.ctr}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <button style={s.back} onClick={() => setView("home")}>✕ End</button>
-                <span style={{ Size: 13, color: "#6b5a4a", Weight: 600 }}>{qIdx + 1}/{quizQs.length}</span>
+                <span style={{ fontSize: 15, color: "#6b5a4a", fontWeight: 600 }}>{qIdx + 1}/{quizQs.length}</span>
               </div>
-              <p style={{ color: "#6b5a4a", Size: 11, marginTop: 8, textTransform: "uppercase", letterSpacing: 1 }}>Ch. {cq.chapter}: {cq.chTitle}</p>
+              <p style={{ color: "#6b5a4a", fontSize: 13, marginTop: 8, textTransform: "uppercase", letterSpacing: 1 }}>Ch. {cq.chapter}: {cq.chTitle}</p>
               <div style={{ ...s.flash, cursor: "default", minHeight: showA ? 220 : 160 }}>
                 <p style={s.fLabel}>QUESTION</p>
                 <p style={s.fQ}>{cq.q}</p>
@@ -489,10 +486,10 @@
                 <div style={{ textAlign: "center", marginTop: 16 }}><button style={s.mainBtn} onClick={() => setShowA(true)}>Show Answer</button></div>
               ) : (
                 <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 16 }}>
-                  <button style={{ ...s.nBtn, background: "#556b2f", color: "#fff", padding: "12px 28px", Size: 15 }}
-                    onClick={() => { setScore(sc => ({ ...sc, y: sc.y + 1 })); if (qIdx + 1 >= quizQs.length) setQDone(true); else { setQIdx(qIdx + 1); setShowA(false); } }}>✓ Knew It</button>
-                  <button style={{ ...s.nBtn, background: "#8b4513", color: "#fff", padding: "12px 28px", Size: 15 }}
-                    onClick={() => { setScore(sc => ({ ...sc, n: sc.n + 1 })); if (qIdx + 1 >= quizQs.length) setQDone(true); else { setQIdx(qIdx + 1); setShowA(false); } }}>✗ Didn't Know</button>
+                  <button style={{ ...s.nBtn, background: "#556b2f", color: "#fff", padding: "12px 28px", fontSize: 17 }}
+                    onClick={() => { setScore(sc => ({ ...sc, y: sc.y + 1 })); if (qIdx + 1 >= quizQs.length) setQDone(true); else { setQIdx(qIdx + 1); setShowA(false); } }}>Got It</button>
+                  <button style={{ ...s.nBtn, background: "#8b4513", color: "#fff", padding: "12px 28px", fontSize: 17 }}
+                    onClick={() => { setScore(sc => ({ ...sc, n: sc.n + 1 })); if (qIdx + 1 >= quizQs.length) setQDone(true); else { setQIdx(qIdx + 1); setShowA(false); } }}>Missed It</button>
                 </div>
               )}
               <div style={s.pbar}><div style={{ ...s.pfill, background: "linear-gradient(90deg, #b08968, #9c6644)", width: `${((qIdx + (showA ? 1 : 0)) / quizQs.length) * 100}%` }} /></div>
@@ -503,32 +500,31 @@
         return null;
       }
 
-      // --- STYLES OBJECT (All colors matched to Sepia) ---
+      // --- STYLES OBJECT (+2 Font Sizes, Minion Pro matching) ---
       const s = {
-        ctr: { maxWidth: 720, margin: "0 auto", padding: "24px 16px", color: "#4a3a2a", minHeight: "100vh" },
+        ctr: { maxWidth: 720, margin: "0 auto", padding: "24px 16px", color: "#4a3a2a", minHeight: "100vh", fontFamily: "'Minion Pro', Georgia, serif" },
         hdr: { marginBottom: 24 },
-        h1: { fontSize: 24, fontWeight: 700, color: "#4a3a2a", margin: 0, letterSpacing: -0.5 },
-        h2: { fontSize: 20, fontWeight: 700, color: "#4a3a2a", margin: "0 0 16px" },
-        sub: { fontSize: 12, color: "#6b5a4a", margin: "2px 0 0", letterSpacing: 0.3 },
+        h1: { fontSize: 26, fontWeight: 700, color: "#4a3a2a", margin: 0, letterSpacing: -0.5 },
+        h2: { fontSize: 22, fontWeight: 700, color: "#4a3a2a", margin: "0 0 16px" },
+        sub: { fontSize: 14, color: "#6b5a4a", margin: "2px 0 0", letterSpacing: 0.3 },
         pbar: { height: 6, background: "#dcd3be", borderRadius: 3, overflow: "hidden", marginTop: 10 },
         pfill: { height: "100%", background: "linear-gradient(90deg, #b08968, #9c6644)", borderRadius: 3, transition: "width 0.4s" },
-        ptxt: { fontSize: 12, color: "#6b5a4a", marginTop: 6 },
-        mainBtn: { background: "linear-gradient(135deg,#8d6e63,#5d4037)", color: "#fff", border: "none", borderRadius: 10, padding: "12px 22px", fontSize: 14, fontWeight: 600, cursor: "pointer" },
+        ptxt: { fontSize: 14, color: "#6b5a4a", marginTop: 6 },
+        mainBtn: { background: "linear-gradient(135deg,#8d6e63,#5d4037)", color: "#fff", border: "none", borderRadius: 10, padding: "12px 22px", fontSize: 16, fontWeight: 600, cursor: "pointer", fontFamily: "'Minion Pro', Georgia, serif" },
         grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(200px,1fr))", gap: 10 },
-        card: { background: "#ede0d4", border: "1px solid #dcd3be", borderRadius: 12, padding: 16, textAlign: "left", cursor: "pointer", display: "flex", flexDirection: "column", gap: 2, transition: "border-color 0.2s" },
-        back: { background: "none", border: "none", color: "#9c6644", fontSize: 14, cursor: "pointer", padding: "4px 0", marginBottom: 12, fontWeight: 500 },
-        tActive: { background: "#9c6644", color: "#fff", border: "none", borderRadius: 8, padding: "7px 16px", fontSize: 13, fontWeight: 600, cursor: "pointer" },
-        tBtn: { background: "#dcd3be", color: "#4a3a2a", border: "none", borderRadius: 8, padding: "7px 16px", fontSize: 13, cursor: "pointer" },
+        card: { background: "#ede0d4", border: "1px solid #dcd3be", borderRadius: 12, padding: 16, textAlign: "left", cursor: "pointer", display: "flex", flexDirection: "column", gap: 2, transition: "border-color 0.2s", fontFamily: "'Minion Pro', Georgia, serif" },
+        back: { background: "none", border: "none", color: "#9c6644", fontSize: 16, cursor: "pointer", padding: "4px 0", marginBottom: 12, fontWeight: 500, fontFamily: "'Minion Pro', Georgia, serif" },
+        tActive: { background: "#9c6644", color: "#fff", border: "none", borderRadius: 8, padding: "7px 16px", fontSize: 15, fontWeight: 600, cursor: "pointer", fontFamily: "'Minion Pro', Georgia, serif" },
+        tBtn: { background: "#dcd3be", color: "#4a3a2a", border: "none", borderRadius: 8, padding: "7px 16px", fontSize: 15, cursor: "pointer", fontFamily: "'Minion Pro', Georgia, serif" },
         flash: { background: "linear-gradient(145deg, #f4ecd8, #ede0d4)", border: "1px solid #dcd3be", borderRadius: 16, padding: "28px 22px", minHeight: 180, cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "center", userSelect: "none", textAlign: "center" },
-        fLabel: { fontSize: 11, color: "#6b5a4a", textTransform: "uppercase", letterSpacing: 2, marginBottom: 10 },
-        fQ: { fontSize: 17, fontWeight: 600, color: "#4a3a2a", lineHeight: 1.5 },
-        fA: { fontSize: 14, color: "#4a3a2a", lineHeight: 1.6 },
-        fHint: { fontSize: 11, color: "#6b5a4a", marginTop: 18 },
+        fLabel: { fontSize: 13, color: "#6b5a4a", textTransform: "uppercase", letterSpacing: 2, marginBottom: 10 },
+        fQ: { fontSize: 19, fontWeight: 600, color: "#4a3a2a", lineHeight: 1.5 },
+        fA: { fontSize: 16, color: "#4a3a2a", lineHeight: 1.6 },
+        fHint: { fontSize: 13, color: "#6b5a4a", marginTop: 18 },
         nav: { display: "flex", justifyContent: "center", alignItems: "center", gap: 10, marginTop: 16, flexWrap: "wrap" },
-        nBtn: { background: "#dcd3be", color: "#4a3a2a", border: "none", borderRadius: 8, padding: "8px 16px", fontSize: 13, cursor: "pointer", fontWeight: 500 },
+        nBtn: { background: "#dcd3be", color: "#4a3a2a", border: "none", borderRadius: 8, padding: "8px 16px", fontSize: 15, cursor: "pointer", fontWeight: 500, fontFamily: "'Minion Pro', Georgia, serif" },
       };
 
-      // 3. Connect the component to the HTML root
       const root = ReactDOM.createRoot(document.getElementById('root'));
       root.render(<SATReadingPrep />);
     </script>
