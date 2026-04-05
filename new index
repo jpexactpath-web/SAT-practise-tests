@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAT Test Center</title>
+  
+  <style>
+    /* --- SEPIA ACADEMIC THEME --- */
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f4ecd8; /* Sepia base */
+      font-family: 'Minion Pro', Georgia, serif;
+      color: #4a3a2a; /* Dark brown text */
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 50px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid #dcd3be;
+    }
+
+    h1 {
+      font-size: 42px;
+      font-weight: 700;
+      margin: 0 0 10px 0;
+      color: #4a3a2a;
+      letter-spacing: -0.5px;
+    }
+
+    .subtitle {
+      font-size: 18px;
+      color: #6b5a4a;
+      margin: 0;
+    }
+
+    .category-section {
+      margin-bottom: 40px;
+    }
+
+    h2 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #8b4513;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* --- SCALABLE GRID SYSTEM --- */
+    .grid {
+      display: grid;
+      /* Automatically adjusts columns based on screen size */
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: #ede0d4;
+      border: 1px solid #dcd3be;
+      border-radius: 12px;
+      padding: 24px;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      transition: all 0.2s ease-in-out;
+    }
+
+    /* Hover effect for interactivity */
+    .card:hover {
+      background-color: #e6d5c3;
+      border-color: #9c6644;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 12px rgba(74, 58, 42, 0.08);
+    }
+
+    .card h3 {
+      font-size: 20px;
+      margin: 0 0 8px 0;
+      color: #4a3a2a;
+    }
+
+    .card p {
+      font-size: 15px;
+      color: #6b5a4a;
+      margin: 0;
+      flex-grow: 1;
+    }
+
+    .card-footer {
+      margin-top: 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #9c6644;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <h1>Welcome to the Test Center</h1>
+      <p class="subtitle">Select a module below to begin your SAT preparation.</p>
+    </header>
+
+    <section class="category-section">
+      <h2>Practice Modules</h2>
+      <div class="grid">
+        
+        <a href="sat-sentence-boundaries.html" class="card">
+          <h3>Sentence Boundaries</h3>
+          <p>Master punctuation, clauses, and essential grammar structures.</p>
+          <div class="card-footer">Start Practice &rarr;</div>
+        </a>
+
+        <a href="central-ideas-and-details.html" class="card">
+          <h3>Central Ideas & Details</h3>
+          <p>Practice identifying main arguments and supporting evidence.</p>
+          <div class="card-footer">Start Practice &rarr;</div>
+        </a>
+
+        <a href="sat_text_completion.html" class="card">
+          <h3>Text Completion</h3>
+          <p>Test your vocabulary in context and logical sentence flow.</p>
+          <div class="card-footer">Start Practice &rarr;</div>
+        </a>
+
+        <a href="sat_standard_english_mixed.html" class="card">
+          <h3>Mixed Review</h3>
+          <p>A comprehensive mix of Standard English conventions.</p>
+          <div class="card-footer">Start Practice &rarr;</div>
+        </a>
+
+      </div>
+    </section>
+
+    <section class="category-section">
+      <h2>Reference Materials</h2>
+      <div class="grid">
+        
+        <a href="SAT-reading-prep-cheat-sheet.html" class="card">
+          <h3>Reading Cheat Sheet</h3>
+          <p>Core strategies, function words, and wrong answer types.</p>
+          <div class="card-footer">View Guide &rarr;</div>
+        </a>
+
+        <a href="sat_grammar_prep.html" class="card">
+          <h3>Grammar Cheat Sheet</h3>
+          <p>Essential rules and formulas for the Writing section.</p>
+          <div class="card-footer">View Guide &rarr;</div>
+        </a>
+
+      </div>
+    </section>
+
+  </div>
+
+</body>
+</html>
