@@ -1,0 +1,499 @@
+import { useState, useCallback } from "react";
+
+const CHAPTERS = [
+  {
+    id: 1, title: "SAT Reading Overview", emoji: "",
+    strategies: [
+      "The Digital SAT has 2 modules of 27 questions each (54 total), 30 minutes per module. Module 1 performance determines Module 2 difficulty.",
+      "Passages are short (50–150 words), one paragraph each, with ONE question per passage. Exception: paired passages have two short texts.",
+      "Four passage categories: Fiction, Humanities, Social Science, and Natural Science.",
+      "No penalty for wrong answers — NEVER leave a question blank.",
+      "Always start by reading the QUESTION first — it tells you what to focus on in the passage.",
+      "The correct answer is rephrased, not copied word-for-word. If an answer repeats the exact passage phrasing, be cautious — it's likely a trap.",
+      "Core principle: 'Same idea, different words.' Your job is to identify the idea and match it to a synonym-based restatement.",
+      "Read the passage BEFORE looking at answer choices to avoid being distracted by plausible-sounding wrong answers.",
+    ],
+    questions: [
+      { q: "How many total questions are in the SAT Reading & Writing section?", a: "54 questions total — two modules of 27 questions each, with 30 minutes per module." },
+      { q: "What are the four passage categories on the SAT?", a: "Fiction (prose, poetry, drama), Humanities (art, literature, music), Social Science (history, politics, sociology), and Natural Science (biology, physics, astronomy)." },
+      { q: "Should you ever leave a question blank?", a: "No — there is NO penalty for incorrect answers. Always guess if you're unsure." },
+      { q: "What should you read first — the passage or the question?", a: "Read the QUESTION first. It tells you what aspect of the passage to focus on, saving you from getting lost in irrelevant details." },
+      { q: "What does 'same idea, different words' mean?", a: "The correct answer restates an idea from the passage using synonyms or paraphrased language — it almost never uses the exact same wording as the passage." },
+      { q: "If an answer choice repeats the exact phrasing from the passage, what should you think?", a: "Be very cautious. On the SAT, word-for-word repetition from the passage is often a trap. The correct answer typically rephrases the idea." },
+      { q: "What makes the Digital SAT adaptive?", a: "Your performance on Module 1 determines the difficulty of questions in Module 2. Doing well on Module 1 unlocks harder (but higher-scoring) questions." },
+    ],
+  },
+  {
+    id: 2, title: "Vocabulary in Context", emoji: "",
+    strategies: [
+      "Expect ~10 vocabulary questions per test — the most common question type. Most will be sentence completions.",
+      "Two types: (1) Sentence Completions — fill in a missing word using passage clues; (2) Meaning in Context — identify alternate meaning of a common word.",
+      "For sentence completions, use context clues: look for definitions, examples, contrast words (but, however, although), and continuation words (and, moreover, in addition).",
+      "For meaning-in-context questions, if you see the word's usual/obvious definition among choices, it's almost certainly WRONG. The SAT tests secondary meanings.",
+      "Plug each answer choice back into the sentence to test if it makes sense logically and tonally.",
+      "Learn 'Common Second Meanings' — words like 'check' (restrain), 'flag' (decline), 'qualify' (limit), 'appreciate' (increase in value), 'want' (lack).",
+      "Watch out for 'Words that Look Negative But Aren't' — e.g., 'discriminating' (having good taste), 'disinterested' (impartial), 'resigned' (accepting).",
+    ],
+    questions: [
+      { q: "How many vocabulary questions appear on a typical SAT?", a: "About 10 per test, making it the most frequently appearing question type." },
+      { q: "What are the two types of vocabulary questions?", a: "1) Sentence Completions — fill in a blank using passage context. 2) Meaning in Context — identify an alternate/secondary meaning of a common word." },
+      { q: "If you see the most common definition of a word among answer choices, what should you think?", a: "It's almost certainly incorrect. The SAT specifically tests less common, secondary meanings of words. Assume the obvious definition is wrong." },
+      { q: "What are context clues and how do you use them?", a: "Context clues are words/phrases surrounding the blank that hint at the answer. Look for: definitions, examples, contrast words (but, however), and continuation words (moreover, additionally)." },
+      { q: "What does 'qualify' mean as a secondary meaning?", a: "To limit or modify — not to meet requirements. Example: 'She qualified her statement' means she added conditions or limitations to it." },
+      { q: "What technique should you use to verify your answer choice?", a: "Plug the answer choice back into the sentence and re-read it. It should make logical sense AND match the tone of the passage." },
+      { q: "What does 'disinterested' actually mean on the SAT?", a: "Impartial or unbiased — NOT uninterested or bored. This is a classic 'looks negative but isn't' word." },
+    ],
+  },
+  {
+    id: 3, title: "Making the Leap", emoji: "",
+    strategies: [
+      "This is the crucial skill of moving between specific/concrete language and abstract/general language.",
+      "Authors use PRONOUNS (this, that, it, they) and ABSTRACT NOUNS (observation, claim, conclusion, phenomenon) to refer back to specific ideas. You must track what they refer to.",
+      "If you lose track of what a pronoun refers to, go back and re-read. Misidentifying a pronoun referent is one of the most common causes of wrong answers.",
+      "'Compression nouns' — words like 'this approach,' 'this finding,' 'this development' — compress an entire idea into a short phrase. Identify what idea they compress.",
+      "Practice: whenever you see 'this' or 'that' + a noun, ask yourself: 'What specific thing does this refer to in the previous sentence?'",
+      "The SAT tests this by making you connect specific details in the passage to more general/abstract answer choices.",
+    ],
+    questions: [
+      { q: "What is 'Making the Leap'?", a: "The ability to move between specific/concrete wording in the passage and abstract/general language in the answer choices. It's the core skill of SAT reading." },
+      { q: "Why are pronouns so important in SAT passages?", a: "Pronouns like 'this,' 'that,' 'it,' and 'they' refer back to specific ideas. If you misidentify what a pronoun refers to, you'll likely choose the wrong answer." },
+      { q: "What is a 'compression noun'?", a: "A phrase like 'this approach,' 'this finding,' or 'this development' that compresses an entire idea from the previous sentence into a short phrase. You need to identify what idea it summarizes." },
+      { q: "What should you do when you encounter 'this' or 'that' + noun?", a: "Ask yourself: 'What specific thing from the previous sentence(s) does this phrase refer to?' Then trace it back to verify." },
+      { q: "How does the SAT test the 'leap' skill?", a: "The passage uses specific, concrete details, but the answer choices restate those ideas using more general or abstract language. You must connect the two." },
+    ],
+  },
+  {
+    id: 4, title: "The Big Picture", emoji: "",
+    strategies: [
+      "Big-picture questions ask about main ideas, claims, purposes, and the overall structure of a passage.",
+      "The TOPIC is the person, thing, or idea that is the primary subject — usually the word or phrase that appears most frequently throughout the passage.",
+      "The topic is almost always introduced in the FIRST SENTENCE. On the short Digital SAT passages, there's no room to delay it.",
+      "Correct answers to main-idea questions will ALWAYS refer to the topic. Many wrong answers are wrong simply because they're off-topic.",
+      "You cannot recognize an off-topic answer unless you're clear about what the topic IS. Identify it before looking at answer choices.",
+      "Don't get distracted by details. Detail-oriented students often miss the big picture because they focus on one small part instead of the passage as a whole.",
+      "Distinguish between GENERAL scope (the whole passage) and SPECIFIC scope (just a few lines). The question will specify which one it wants.",
+      "Look for words indicating points, goals, and conclusions: 'point,' 'intention,' 'finding,' 'important,' 'significant,' 'crucial,' 'key.'",
+    ],
+    questions: [
+      { q: "What do Big Picture questions ask about?", a: "Main ideas, central claims, the author's purpose, and the overall structure of the passage." },
+      { q: "Where is the topic usually introduced?", a: "In the FIRST SENTENCE of the passage. On the Digital SAT's short passages, there's no room to introduce it later." },
+      { q: "What is the single most common reason answers are wrong on main-idea questions?", a: "They are OFF-TOPIC — they discuss something that isn't the main subject of the passage. You can only catch this if you've clearly identified the topic first." },
+      { q: "What's the difference between general and specific scope?", a: "General scope = the passage as a whole. Specific scope = just a few particular lines. The question will indicate which one it's asking about." },
+      { q: "What signal words should you watch for?", a: "Words like 'point,' 'intention,' 'finding,' 'important,' 'significant,' 'crucial,' 'key,' and italicized words. These indicate what the author considers most important." },
+      { q: "What mistake do detail-oriented students make?", a: "They focus on one specific detail and miss the main point. The SAT rewards skimming for the gist over close-reading every word." },
+    ],
+  },
+  {
+    id: 5, title: "Literal Comprehension", emoji: "",
+    strategies: [
+      "These questions ask what the passage 'states,' 'indicates,' or what is 'true' about something — testing direct understanding.",
+      "Common stems: 'According to the text...', 'Based on the text...', 'What is true about...?'",
+      "The answer will be a PARAPHRASE of the passage — same idea restated using synonyms and different sentence structure.",
+      "The correct answer uses synonyms for key words in the relevant lines. Treat it like a matching game between passage words and answer words.",
+      "If the wording is confusing, try to mentally simplify the passage sentence into plain English before looking at answers.",
+      "You may need to re-read the ENTIRE short passage, not just the obvious sentence. Context from the beginning affects meaning at the end.",
+      "Watch for challenging syntax: long sentences, double negatives, embedded clauses — simplify them mentally.",
+    ],
+    questions: [
+      { q: "What do Literal Comprehension questions test?", a: "Your ability to understand what the passage directly states or indicates — straightforward factual understanding, not inference." },
+      { q: "How are correct answers typically constructed?", a: "As paraphrases — they restate the passage's idea using synonyms and different sentence structure. Never word-for-word copies." },
+      { q: "What should you do if the passage wording is confusing?", a: "Mentally simplify it into plain English before looking at the answer choices. Break long sentences into smaller parts." },
+      { q: "What's the key strategy for matching?", a: "Treat it like a synonym matching game. Find the key words in the relevant passage lines, then look for answers that use synonyms for those key words." },
+      { q: "Should you only read the specific sentence the question targets?", a: "No — read the whole short passage for context. The meaning of a specific sentence often depends on information from earlier in the passage." },
+    ],
+  },
+  {
+    id: 6, title: "Reading for Function", emoji: "",
+    strategies: [
+      "Function questions ask WHY something is written — not WHAT it says. They test the rhetorical PURPOSE of information.",
+      "Key distinction: content = WHAT is said; function = WHY it's said. You must understand content first, then determine its purpose.",
+      "Function answers are NOT stated word-for-word in the passage. They're phrased in more general/abstract language than the passage itself.",
+      "The correct answer will always connect back to the TOPIC. Even function answers must be relevant to the passage's main subject.",
+      "Common functions: to introduce a claim, to provide evidence, to offer a counterargument, to illustrate an example, to qualify a statement, to acknowledge a limitation.",
+      "Key function words to know: 'illustrate,' 'emphasize,' 'qualify,' 'undermine,' 'support,' 'concede,' 'refute,' 'elaborate,' 'challenge,' 'contextualize.'",
+      "When stuck between two answers, ask: 'Which one describes the ROLE this information plays in the argument?' — not just what the information is about.",
+    ],
+    questions: [
+      { q: "What's the difference between content and function?", a: "Content = WHAT the passage says. Function = WHY the author includes that information — its rhetorical purpose or role in the argument." },
+      { q: "How are function answers worded compared to the passage?", a: "In more general and abstract language. You won't find the function stated word-for-word; you must infer the purpose from the content." },
+      { q: "What are common rhetorical functions tested?", a: "To introduce a claim, provide evidence, offer a counterargument, illustrate with an example, qualify/limit a statement, acknowledge a limitation, or concede a point." },
+      { q: "What should you do when stuck between two plausible function answers?", a: "Ask: 'Which one describes the ROLE this information plays in the larger argument?' The answer must connect to the passage's topic and main point." },
+      { q: "Name 5 key function vocabulary words.", a: "Illustrate (show by example), qualify (limit/modify), undermine (weaken), concede (acknowledge opposing point), contextualize (provide background)." },
+    ],
+  },
+  {
+    id: 7, title: "Text Completions", emoji: "",
+    strategies: [
+      "Text completions present a passage with a blank at the end. You must infer what logically completes the argument.",
+      "These are essentially literal comprehension questions with a twist — all the information is there, you just connect the dots.",
+      "The KEY INFORMATION will almost always appear very close to the blank — usually in the sentence right before it.",
+      "The earlier part of the passage primarily provides background/context; the critical clues for the answer are near the end.",
+      "Pay close attention to transition words before the blank: 'therefore,' 'however,' 'as a result,' 'in contrast' — they tell you the logical direction.",
+      "Read the entire passage to understand the overall argument, but focus your answer-finding on the last 1-2 sentences.",
+      "The correct answer will contain SPECIFIC WORDING that corresponds to particular statements in the passage. Look for that correspondence.",
+    ],
+    questions: [
+      { q: "What is a Text Completion question?", a: "A short passage with a blank (usually at the end) that you must fill in by inferring the logical conclusion from the information presented." },
+      { q: "Where does the key information for the answer usually appear?", a: "Very close to the blank — typically in the sentence directly before it. The earlier part of the passage provides background context." },
+      { q: "Why are transition words important?", a: "Words like 'therefore,' 'however,' 'as a result,' 'in contrast' tell you the logical direction. 'Therefore' means the conclusion follows logically; 'however' means it contrasts." },
+      { q: "How do you verify the correct answer?", a: "Check that it contains specific wording that corresponds to particular statements in the passage. There should be a clear textual basis for the answer." },
+      { q: "What's the relationship between text completions and literal comprehension?", a: "Text completions are essentially literal comprehension with a twist — all necessary info is in the passage, you just have to assemble it and state the logical conclusion." },
+    ],
+  },
+  {
+    id: 8, title: "Supporting & Undermining", emoji: "",
+    strategies: [
+      "These questions ask you to identify what would SUPPORT (strengthen) or UNDERMINE (weaken) a claim or theory from the passage.",
+      "Three-step process: 1) Identify the claim and rephrase it simply. 2) Determine what type of information would support or weaken it. 3) Check the answers.",
+      "To SUPPORT a claim: look for evidence, examples, data, or reasoning that makes the claim MORE likely to be true.",
+      "To UNDERMINE a claim: look for evidence, examples, data, or reasoning that makes the claim LESS likely or shows an exception/contradiction.",
+      "Don't get impatient — you MUST clearly understand the claim before you can evaluate what supports or weakens it.",
+      "If the claim is stated in complex language, rephrase it in your own simple words. Write it down if needed.",
+      "Be careful: the answer that supports might SEEM to undermine if you misread the claim, and vice versa.",
+    ],
+    questions: [
+      { q: "What do Support/Undermine questions ask?", a: "They ask which answer choice would either strengthen (support) or weaken (undermine) a specific claim, theory, or argument presented in the passage." },
+      { q: "What is the three-step process?", a: "1) Identify the claim and rephrase it in simple words. 2) Determine what type of info would support or weaken it. 3) Check the answer choices for the best match." },
+      { q: "How do you 'support' a claim?", a: "Provide evidence, examples, data, or reasoning that makes the claim MORE likely to be true or correct." },
+      { q: "How do you 'undermine' a claim?", a: "Provide evidence, examples, data, or reasoning that makes the claim LESS likely — showing exceptions, contradictions, or counter-evidence." },
+      { q: "What's the most common mistake on these questions?", a: "Not clearly understanding the claim before evaluating the answers. If you misunderstand the claim, you might pick an answer that does the opposite of what's asked." },
+    ],
+  },
+  {
+    id: 9, title: "Graphs and Charts", emoji: "",
+    strategies: [
+      "Graph/chart questions combine a passage with a visual data source. Expect 1-2 per module, mainly in science and social science passages.",
+      "Key insight: many answers can be determined from the question wording and answer choices ALONE — you may not even need to look at the graph.",
+      "The relevant data is usually presented at the END of the passage. Skim the intro and focus on the last sentence for key information.",
+      "You are NOT expected to have prior knowledge of the scientific topic. All necessary information is provided.",
+      "Read graph titles, axis labels, and legends carefully before trying to interpret the data.",
+      "The question usually asks you to synthesize the passage + graphic — look for where the text and data connect or where the data supports/contradicts the text.",
+      "Don't be intimidated by complex-looking graphics. They are designed to look harder than they actually are.",
+    ],
+    questions: [
+      { q: "How often do graph/chart questions appear?", a: "Expect 1-2 per Reading/Writing module, primarily with science and social science passages." },
+      { q: "Do you need prior knowledge of scientific topics?", a: "No — all the information you need is provided in the passage and graphic. Don't let unfamiliar terminology intimidate you." },
+      { q: "What should you read first on a graph?", a: "The title, axis labels, and legend. Understanding what the graph measures is essential before interpreting any data points." },
+      { q: "Where does the key information usually appear?", a: "At the END of the passage. The introductory sentences provide background; the critical connection to the graph is near the end." },
+      { q: "Can you sometimes answer without looking at the graph?", a: "Yes — many answers can be determined from the question wording and answer choices alone, based on the passage text. Don't always assume you need the graph." },
+    ],
+  },
+  {
+    id: 10, title: "Paired Passages", emoji: "",
+    strategies: [
+      "Paired passages present two short texts ('Text 1' and 'Text 2') about the same topic with different or conflicting viewpoints.",
+      "The most common relationship is DISAGREEMENT, but passages may also AGREE on certain points. Correct answers can involve both.",
+      "Strategy: Read Text 1 and identify its main argument. Then read Text 2 and identify where it agrees or disagrees with Text 1.",
+      "Deal with the smallest amount of information possible at any time. Don't try to hold both passages in your head simultaneously.",
+      "Key question types: 'How would the author of Text 2 respond to Text 1?' or 'On which point do the authors agree/disagree?'",
+      "Pay attention to details in both passages. The answer may hinge on a single overlooked word or phrase in either text.",
+      "If you struggle with paired passages, plan to skip them initially and return after answering easier questions.",
+    ],
+    questions: [
+      { q: "What are Paired Passages?", a: "Two short texts about the same topic that present alternate viewpoints or information. They're accompanied by a question about the relationship between them." },
+      { q: "What's the most common relationship between paired passages?", a: "Disagreement — but they may also agree on some points. Correct answers can involve areas of BOTH agreement and disagreement." },
+      { q: "What's the best strategy for paired passages?", a: "Read Text 1 first and identify its main argument. Then read Text 2 and specifically note where it agrees with or contradicts Text 1." },
+      { q: "What typical questions are asked?", a: "'How would author of Text 2 respond to Text 1?', 'On which point do the authors disagree?', 'What do both passages agree about?'" },
+      { q: "What if paired passages are your weakest area?", a: "Skip them initially and return after answering all the easier questions. You don't have to answer questions in order." },
+    ],
+  },
+];
+
+const WRONG_ANSWER_TYPES = [
+  { type: "Off-Topic", desc: "Discusses something not related to the passage's main subject", example: "Passage about a poet's calligraphy → answer about poetry techniques" },
+  { type: "Too Broad", desc: "Passage discusses ONE scientist but answer says 'scientists' (plural)", example: "Passage about Dr. Lee → 'researchers have found...'" },
+  { type: "Too Extreme", desc: "Uses absolute words: never, always, completely, all, none", example: "'This approach is NEVER effective' when passage says 'sometimes limited'" },
+  { type: "Half-Right, Half-Wrong", desc: "Right words but wrong conclusion, or vice versa", example: "Starts accurately but ends with a claim the passage doesn't support" },
+  { type: "Could Be True", desc: "Seems reasonable but the passage doesn't actually state or support it", example: "A logical assumption that goes beyond what the text provides" },
+  { type: "True But Not Stated", desc: "Factually correct in the real world but not mentioned in THIS passage", example: "A known fact about the topic that the author didn't include" },
+  { type: "Right Passage, Wrong Lines", desc: "True for the passage overall but not for the specific lines in question", example: "A main-idea answer when the question asks about a specific detail" },
+];
+
+const FUNCTION_WORDS = [
+  { word: "Illustrate", meaning: "Show by example; make clearer" },
+  { word: "Emphasize", meaning: "Stress the importance of; highlight" },
+  { word: "Qualify", meaning: "Limit or add conditions to a statement" },
+  { word: "Undermine", meaning: "Weaken; call into question" },
+  { word: "Concede", meaning: "Acknowledge an opposing point as valid" },
+  { word: "Refute", meaning: "Prove wrong; disprove" },
+  { word: "Elaborate", meaning: "Explain in more detail; expand upon" },
+  { word: "Contextualize", meaning: "Provide background or framework" },
+  { word: "Corroborate", meaning: "Confirm or support with evidence" },
+  { word: "Challenge", meaning: "Question; dispute; push back against" },
+  { word: "Advocate", meaning: "Argue in favor of; recommend" },
+  { word: "Lament", meaning: "Express sadness or regret about" },
+  { word: "Acknowledge", meaning: "Recognize or admit the existence of" },
+  { word: "Dismiss", meaning: "Reject as unworthy of consideration" },
+  { word: "Assert", meaning: "State confidently as fact; declare" },
+];
+
+const SECOND_MEANINGS = [
+  { word: "Check", common: "Verify", sat: "Restrain, hold back" },
+  { word: "Flag", common: "Banner/symbol", sat: "Decline in energy; weaken" },
+  { word: "Qualify", common: "Meet requirements", sat: "Limit; add conditions to" },
+  { word: "Appreciate", common: "Be grateful", sat: "Increase in value" },
+  { word: "Want", common: "Desire", sat: "Lack; be deficient in" },
+  { word: "Address", common: "Location/speak to", sat: "Deal with; tackle (a problem)" },
+  { word: "Temper", common: "Mood/anger", sat: "Moderate; soften" },
+  { word: "Advance", common: "Move forward", sat: "Promote (an idea/argument)" },
+  { word: "Champion", common: "Winner", sat: "Strongly support; advocate for" },
+  { word: "Realize", common: "Understand", sat: "Make real; bring into existence" },
+  { word: "Discriminating", common: "Biased (negative)", sat: "Having refined taste/judgment" },
+  { word: "Resigned", common: "Quit a job", sat: "Accepting; submitting to the inevitable" },
+  { word: "Provincial", common: "Of a province", sat: "Narrow-minded; unsophisticated" },
+  { word: "Pedestrian", common: "Walker", sat: "Dull; ordinary; unimaginative" },
+  { word: "Arrest", common: "Detain by police", sat: "Catch attention; stop; halt" },
+];
+
+const QUIZ_POOL = CHAPTERS.flatMap(ch =>
+  ch.questions.map(q => ({ ...q, chapter: ch.id, chTitle: ch.title }))
+);
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+export default function SATReadingPrep() {
+  const [view, setView] = useState("home");
+  const [selCh, setSelCh] = useState(null);
+  const [tab, setTab] = useState("strategies");
+  const [cardIdx, setCardIdx] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const [reviewed, setReviewed] = useState({});
+
+  const [quizQs, setQuizQs] = useState([]);
+  const [qIdx, setQIdx] = useState(0);
+  const [showA, setShowA] = useState(false);
+  const [score, setScore] = useState({ y: 0, n: 0 });
+  const [qDone, setQDone] = useState(false);
+  const [qFilter, setQFilter] = useState("all");
+
+  const [refTab, setRefTab] = useState("wrong");
+
+  const startQuiz = useCallback((filter) => {
+    const pool = filter === "all" ? QUIZ_POOL : QUIZ_POOL.filter(q => q.chapter === filter);
+    setQuizQs(shuffle(pool).slice(0, Math.min(12, pool.length)));
+    setQIdx(0); setShowA(false); setScore({ y: 0, n: 0 }); setQDone(false);
+    setView("quiz");
+  }, []);
+
+  const markReviewed = (chId, idx) => setReviewed(p => ({ ...p, [`${chId}-${idx}`]: true }));
+  const revCount = (chId) => {
+    const ch = CHAPTERS.find(c => c.id === chId);
+    return ch ? ch.questions.filter((_, i) => reviewed[`${chId}-${i}`]).length : 0;
+  };
+  const totalRev = Object.keys(reviewed).length;
+
+  // HOME
+  if (view === "home") return (
+    <div style={s.ctr}>
+      <div style={s.hdr}>
+        <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
+          <span style={{ fontSize: 34 }}></span>
+          <div>
+            <h1 style={s.h1}>SAT Reading Prep</h1>
+            <p style={s.sub}>Based on The Complete Guide to SAT Reading (Meltzer)</p>
+          </div>
+        </div>
+        <div style={s.pbar}><div style={{ ...s.pfill, width: `${(totalRev / QUIZ_POOL.length) * 100}%` }} /></div>
+        <p style={s.ptxt}>{totalRev}/{QUIZ_POOL.length} questions reviewed</p>
+      </div>
+      <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 20 }}>
+        <button style={s.mainBtn} onClick={() => startQuiz("all")}> Quick Quiz — All Chapters</button>
+        <button style={{ ...s.mainBtn, background: "linear-gradient(135deg,#7c3aed,#a855f7)" }} onClick={() => setView("reference")}>📋 Reference Sheets</button>
+      </div>
+      <div style={s.grid}>
+        {CHAPTERS.map(ch => {
+          const pct = ch.questions.length > 0 ? revCount(ch.id) / ch.questions.length : 0;
+          const r = 14, c = 2 * Math.PI * r;
+          return (
+            <button key={ch.id} style={s.card} onClick={() => { setSelCh(ch); setCardIdx(0); setFlipped(false); setTab("strategies"); setView("chapter"); }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                <span style={{ fontSize: 22 }}>{ch.emoji}</span>
+                <svg width={34} height={34} style={{ transform: "rotate(-90deg)" }}>
+                  <circle cx={17} cy={17} r={r} fill="none" stroke="#1e293b" strokeWidth={3} />
+                  <circle cx={17} cy={17} r={r} fill="none" stroke="#f59e0b" strokeWidth={3} strokeDasharray={c} strokeDashoffset={c * (1 - pct)} strokeLinecap="round" style={{ transition: "stroke-dashoffset 0.4s" }} />
+                </svg>
+              </div>
+              <p style={{ fontSize: 11, color: "#64748b", margin: 0, textTransform: "uppercase", letterSpacing: 1 }}>Ch. {ch.id}</p>
+              <p style={{ fontSize: 13, fontWeight: 600, color: "#e2e8f0", margin: "2px 0" }}>{ch.title}</p>
+              <p style={{ fontSize: 11, color: "#475569", margin: 0 }}>{ch.questions.length} Q&A · {ch.strategies.length} tips</p>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+
+  // REFERENCE SHEETS
+  if (view === "reference") return (
+    <div style={s.ctr}>
+      <button style={s.back} onClick={() => setView("home")}>← Home</button>
+      <h2 style={s.h2}> Quick Reference Sheets</h2>
+      <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
+        <button style={refTab === "wrong" ? s.tActive : s.tBtn} onClick={() => setRefTab("wrong")}>Wrong Answer Types</button>
+        <button style={refTab === "function" ? s.tActive : s.tBtn} onClick={() => setRefTab("function")}>Function Words</button>
+        <button style={refTab === "secondary" ? s.tActive : s.tBtn} onClick={() => setRefTab("secondary")}>Second Meanings</button>
+      </div>
+      {refTab === "wrong" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 8px" }}>Learn to spot these 7 types of wrong answers — they appear on EVERY SAT.</p>
+          {WRONG_ANSWER_TYPES.map((w, i) => (
+            <div key={i} style={{ background: "#0f172a", borderRadius: 10, padding: "12px 16px", borderLeft: "3px solid #ef4444" }}>
+              <p style={{ fontSize: 14, fontWeight: 700, color: "#fca5a5", margin: "0 0 4px" }}>{i + 1}. {w.type}</p>
+              <p style={{ fontSize: 13, color: "#cbd5e1", margin: "0 0 4px" }}>{w.desc}</p>
+              <p style={{ fontSize: 12, color: "#64748b", margin: 0, fontStyle: "italic" }}>Ex: {w.example}</p>
+            </div>
+          ))}
+        </div>
+      )}
+      {refTab === "function" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 8px" }}>Master these words — they appear constantly in Function & Purpose questions.</p>
+          {FUNCTION_WORDS.map((w, i) => (
+            <div key={i} style={{ display: "flex", gap: 12, background: "#0f172a", borderRadius: 8, padding: "10px 14px", alignItems: "center" }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: "#f59e0b", minWidth: 110 }}>{w.word}</span>
+              <span style={{ fontSize: 13, color: "#cbd5e1" }}>{w.meaning}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      {refTab === "secondary" && (
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          <p style={{ fontSize: 12, color: "#94a3b8", margin: "0 0 8px" }}>The SAT tests UNCOMMON meanings. If you see the common meaning, it's likely wrong.</p>
+          {SECOND_MEANINGS.map((w, i) => (
+            <div key={i} style={{ background: "#0f172a", borderRadius: 8, padding: "10px 14px" }}>
+              <span style={{ fontSize: 14, fontWeight: 700, color: "#22d3ee" }}>{w.word}</span>
+              <div style={{ display: "flex", gap: 16, marginTop: 4, flexWrap: "wrap" }}>
+                <span style={{ fontSize: 12, color: "#64748b" }}>Common: <span style={{ color: "#94a3b8" }}>{w.common}</span></span>
+                <span style={{ fontSize: 12, color: "#f59e0b" }}>SAT meaning: <span style={{ color: "#fbbf24", fontWeight: 600 }}>{w.sat}</span></span>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  // CHAPTER VIEW
+  if (view === "chapter" && selCh) {
+    const q = selCh.questions[cardIdx];
+    const isRev = reviewed[`${selCh.id}-${cardIdx}`];
+    return (
+      <div style={s.ctr}>
+        <button style={s.back} onClick={() => setView("home")}>← Home</button>
+        <h2 style={s.h2}>{selCh.emoji} Ch. {selCh.id}: {selCh.title}</h2>
+        <div style={{ display: "flex", gap: 8, marginBottom: 18, flexWrap: "wrap" }}>
+          <button style={tab === "strategies" ? s.tActive : s.tBtn} onClick={() => setTab("strategies")}>📌 Strategies</button>
+          <button style={tab === "flashcards" ? s.tActive : s.tBtn} onClick={() => setTab("flashcards")}>🃏 Flashcards</button>
+          <button style={s.tBtn} onClick={() => { setQFilter(selCh.id); startQuiz(selCh.id); }}>🧪 Quiz</button>
+        </div>
+        {tab === "strategies" && (
+          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {selCh.strategies.map((st, i) => (
+              <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", background: "#0f172a", borderRadius: 10, padding: "12px 16px", borderLeft: "3px solid #f59e0b" }}>
+                <span style={{ background: "#78350f", color: "#fbbf24", borderRadius: "50%", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>{i + 1}</span>
+                <p style={{ fontSize: 13, color: "#cbd5e1", margin: 0, lineHeight: 1.55 }}>{st}</p>
+              </div>
+            ))}
+          </div>
+        )}
+        {tab === "flashcards" && q && (
+          <>
+            <div style={s.flash} onClick={() => setFlipped(!flipped)}>
+              {!flipped ? (
+                <><p style={s.fLabel}>QUESTION</p><p style={s.fQ}>{q.q}</p><p style={s.fHint}>tap to reveal answer</p></>
+              ) : (
+                <><p style={{ ...s.fLabel, color: "#f59e0b" }}>ANSWER</p><p style={s.fA}>{q.a}</p><p style={s.fHint}>tap to see question</p></>
+              )}
+            </div>
+            <div style={s.nav}>
+              <button style={s.nBtn} disabled={cardIdx === 0} onClick={() => { setCardIdx(cardIdx - 1); setFlipped(false); }}>← Prev</button>
+              <span style={{ fontSize: 13, color: "#64748b", fontWeight: 600 }}>{cardIdx + 1}/{selCh.questions.length}</span>
+              <button style={{ ...s.nBtn, background: isRev ? "#065f46" : "#78350f", color: isRev ? "#6ee7b7" : "#fbbf24" }} onClick={() => markReviewed(selCh.id, cardIdx)}>{isRev ? "✓ Done" : "Mark Done"}</button>
+              <button style={s.nBtn} disabled={cardIdx === selCh.questions.length - 1} onClick={() => { setCardIdx(cardIdx + 1); setFlipped(false); }}>Next →</button>
+            </div>
+          </>
+        )}
+      </div>
+    );
+  }
+
+  // QUIZ
+  if (view === "quiz") {
+    if (qDone) {
+      const pct = quizQs.length > 0 ? Math.round((score.y / quizQs.length) * 100) : 0;
+      return (
+        <div style={s.ctr}>
+          <div style={{ textAlign: "center", padding: "48px 0" }}>
+            <p style={{ fontSize: 56, marginBottom: 8 }}>{pct >= 80 ? "🎉" : pct >= 50 ? "💪" : "📖"}</p>
+            <h2 style={s.h1}>Quiz Complete!</h2>
+            <p style={{ ...s.sub, fontSize: 22, marginTop: 12 }}>{score.y}/{quizQs.length} correct ({pct}%)</p>
+            <p style={{ color: "#94a3b8", marginTop: 8 }}>{pct >= 80 ? "Excellent! You know these strategies well." : pct >= 50 ? "Good start — review the chapters you missed." : "Keep studying — focus on the strategies first, then re-quiz."}</p>
+            <div style={{ marginTop: 28, display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
+              <button style={s.mainBtn} onClick={() => startQuiz(qFilter)}>Retry</button>
+              <button style={{ ...s.mainBtn, background: "#334155" }} onClick={() => setView("home")}>Home</button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+    const cq = quizQs[qIdx];
+    return (
+      <div style={s.ctr}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <button style={s.back} onClick={() => setView("home")}>✕ End</button>
+          <span style={{ fontSize: 13, color: "#64748b", fontWeight: 600 }}>{qIdx + 1}/{quizQs.length}</span>
+        </div>
+        <p style={{ color: "#64748b", fontSize: 11, marginTop: 8, textTransform: "uppercase", letterSpacing: 1 }}>Ch. {cq.chapter}: {cq.chTitle}</p>
+        <div style={{ ...s.flash, cursor: "default", minHeight: showA ? 220 : 160 }}>
+          <p style={s.fLabel}>QUESTION</p>
+          <p style={s.fQ}>{cq.q}</p>
+          {showA && <div style={{ marginTop: 16, paddingTop: 16, borderTop: "1px solid #334155" }}><p style={{ ...s.fLabel, color: "#f59e0b" }}>ANSWER</p><p style={s.fA}>{cq.a}</p></div>}
+        </div>
+        {!showA ? (
+          <div style={{ textAlign: "center", marginTop: 16 }}><button style={s.mainBtn} onClick={() => setShowA(true)}>Show Answer</button></div>
+        ) : (
+          <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 16 }}>
+            <button style={{ ...s.nBtn, background: "#065f46", color: "#6ee7b7", padding: "12px 28px", fontSize: 15 }}
+              onClick={() => { setScore(sc => ({ ...sc, y: sc.y + 1 })); if (qIdx + 1 >= quizQs.length) setQDone(true); else { setQIdx(qIdx + 1); setShowA(false); } }}>✓ Knew It</button>
+            <button style={{ ...s.nBtn, background: "#7f1d1d", color: "#fca5a5", padding: "12px 28px", fontSize: 15 }}
+              onClick={() => { setScore(sc => ({ ...sc, n: sc.n + 1 })); if (qIdx + 1 >= quizQs.length) setQDone(true); else { setQIdx(qIdx + 1); setShowA(false); } }}>✗ Didn't Know</button>
+          </div>
+        )}
+        <div style={s.pbar}><div style={{ ...s.pfill, background: "linear-gradient(90deg,#d97706,#f59e0b)", width: `${((qIdx + (showA ? 1 : 0)) / quizQs.length) * 100}%` }} /></div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+const s = {
+  ctr: { fontFamily: "'Söhne','Helvetica Neue',sans-serif", maxWidth: 720, margin: "0 auto", padding: "24px 16px", color: "#e2e8f0", minHeight: "100vh" },
+  hdr: { marginBottom: 24 },
+  h1: { fontSize: 24, fontWeight: 700, color: "#f1f5f9", margin: 0, letterSpacing: -0.5 },
+  h2: { fontSize: 20, fontWeight: 700, color: "#f1f5f9", margin: "0 0 16px" },
+  sub: { fontSize: 12, color: "#94a3b8", margin: "2px 0 0", letterSpacing: 0.3 },
+  pbar: { height: 6, background: "#1e293b", borderRadius: 3, overflow: "hidden", marginTop: 10 },
+  pfill: { height: "100%", background: "linear-gradient(90deg,#d97706,#f59e0b)", borderRadius: 3, transition: "width 0.4s" },
+  ptxt: { fontSize: 12, color: "#64748b", marginTop: 6 },
+  mainBtn: { background: "linear-gradient(135deg,#b45309,#d97706)", color: "#fff", border: "none", borderRadius: 10, padding: "12px 22px", fontSize: 14, fontWeight: 600, cursor: "pointer" },
+  grid: { display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(200px,1fr))", gap: 10 },
+  card: { background: "#0f172a", border: "1px solid #1e293b", borderRadius: 12, padding: 16, textAlign: "left", cursor: "pointer", display: "flex", flexDirection: "column", gap: 2, transition: "border-color 0.2s" },
+  back: { background: "none", border: "none", color: "#f59e0b", fontSize: 14, cursor: "pointer", padding: "4px 0", marginBottom: 12, fontWeight: 500 },
+  tActive: { background: "#78350f", color: "#fbbf24", border: "none", borderRadius: 8, padding: "7px 16px", fontSize: 13, fontWeight: 600, cursor: "pointer" },
+  tBtn: { background: "#1e293b", color: "#94a3b8", border: "none", borderRadius: 8, padding: "7px 16px", fontSize: 13, cursor: "pointer" },
+  flash: { background: "linear-gradient(145deg,#0f172a,#1e293b)", border: "1px solid #334155", borderRadius: 16, padding: "28px 22px", minHeight: 180, cursor: "pointer", display: "flex", flexDirection: "column", justifyContent: "center", userSelect: "none", textAlign: "center" },
+  fLabel: { fontSize: 11, color: "#64748b", textTransform: "uppercase", letterSpacing: 2, marginBottom: 10 },
+  fQ: { fontSize: 17, fontWeight: 600, color: "#f1f5f9", lineHeight: 1.5 },
+  fA: { fontSize: 14, color: "#cbd5e1", lineHeight: 1.6 },
+  fHint: { fontSize: 11, color: "#475569", marginTop: 18 },
+  nav: { display: "flex", justifyContent: "center", alignItems: "center", gap: 10, marginTop: 16, flexWrap: "wrap" },
+  nBtn: { background: "#1e293b", color: "#94a3b8", border: "none", borderRadius: 8, padding: "8px 16px", fontSize: 13, cursor: "pointer", fontWeight: 500 },
+};
