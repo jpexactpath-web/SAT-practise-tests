@@ -13,7 +13,7 @@
         margin: 0; 
         padding: 0; 
         background-color: #f4ecd8; /* Sepia base background */
-        font-family: 'Söhne', 'Helvetica Neue', sans-serif;
+        font-family: 'Minion Pro', 'Minion Pro', sans-serif;
         color: #4a3a2a; /* Main text color: dark brown */
       }
       * { box-sizing: border-box; }
@@ -348,9 +348,9 @@
                         <circle cx={17} cy={17} r={r} fill="none" stroke="#9c6644" strokeWidth={3} strokeDasharray={c} strokeDashoffset={c * (1 - pct)} strokeLinecap="round" style={{ transition: "stroke-dashoffset 0.4s" }} />
                       </svg>
                     </div>
-                    <p style={{ fontSize: 11, color: "#6b5a4a", margin: 0, textTransform: "uppercase", letterSpacing: 1 }}>Ch. {ch.id}</p>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: "#4a3a2a", margin: "2px 0" }}>{ch.title}</p>
-                    <p style={{ fontSize: 11, color: "#6b5a4a", margin: 0 }}>{ch.questions.length} Q&A · {ch.strategies.length} tips</p>
+                    <p style={{ Size: 11, color: "#6b5a4a", margin: 0, textTransform: "uppercase", letterSpacing: 1 }}>Ch. {ch.id}</p>
+                    <p style={{ Size: 13, Weight: 600, color: "#4a3a2a", margin: "2px 0" }}>{ch.title}</p>
+                    <p style={{ Size: 11, color: "#6b5a4a", margin: 0 }}>{ch.questions.length} Q&A · {ch.strategies.length} tips</p>
                   </button>
                 );
               })}
@@ -370,36 +370,36 @@
             </div>
             {refTab === "wrong" && (
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                <p style={{ fontSize: 12, color: "#6b5a4a", margin: "0 0 8px" }}>Learn to spot these 7 types of wrong answers — they appear on EVERY SAT.</p>
+                <p style={{ Size: 12, color: "#6b5a4a", margin: "0 0 8px" }}>Learn to spot these 7 types of wrong answers — they appear on EVERY SAT.</p>
                 {WRONG_ANSWER_TYPES.map((w, i) => (
                   <div key={i} style={{ background: "#ede0d4", borderRadius: 10, padding: "12px 16px", borderLeft: "3px solid #8b4513" }}>
-                    <p style={{ fontSize: 14, fontWeight: 700, color: "#8b4513", margin: "0 0 4px" }}>{i + 1}. {w.type}</p>
-                    <p style={{ fontSize: 13, color: "#4a3a2a", margin: "0 0 4px" }}>{w.desc}</p>
-                    <p style={{ fontSize: 12, color: "#6b5a4a", margin: 0, fontStyle: "italic" }}>Ex: {w.example}</p>
+                    <p style={{ Size: 14, Weight: 700, color: "#8b4513", margin: "0 0 4px" }}>{i + 1}. {w.type}</p>
+                    <p style={{ Size: 13, color: "#4a3a2a", margin: "0 0 4px" }}>{w.desc}</p>
+                    <p style={{ Size: 12, color: "#6b5a4a", margin: 0, Style: "italic" }}>Ex: {w.example}</p>
                   </div>
                 ))}
               </div>
             )}
             {refTab === "function" && (
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <p style={{ fontSize: 12, color: "#6b5a4a", margin: "0 0 8px" }}>Master these words — they appear constantly in Function & Purpose questions.</p>
+                <p style={{ Size: 12, color: "#6b5a4a", margin: "0 0 8px" }}>Master these words — they appear constantly in Function & Purpose questions.</p>
                 {FUNCTION_WORDS.map((w, i) => (
                   <div key={i} style={{ display: "flex", gap: 12, background: "#ede0d4", borderRadius: 8, padding: "10px 14px", alignItems: "center" }}>
-                    <span style={{ fontSize: 13, fontWeight: 700, color: "#9c6644", minWidth: 110 }}>{w.word}</span>
-                    <span style={{ fontSize: 13, color: "#4a3a2a" }}>{w.meaning}</span>
+                    <span style={{ Size: 13, Weight: 700, color: "#9c6644", minWidth: 110 }}>{w.word}</span>
+                    <span style={{ Size: 13, color: "#4a3a2a" }}>{w.meaning}</span>
                   </div>
                 ))}
               </div>
             )}
             {refTab === "secondary" && (
               <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                <p style={{ fontSize: 12, color: "#6b5a4a", margin: "0 0 8px" }}>The SAT tests UNCOMMON meanings. If you see the common meaning, it's likely wrong.</p>
+                <p style={{ Size: 12, color: "#6b5a4a", margin: "0 0 8px" }}>The SAT tests UNCOMMON meanings. If you see the common meaning, it's likely wrong.</p>
                 {SECOND_MEANINGS.map((w, i) => (
                   <div key={i} style={{ background: "#ede0d4", borderRadius: 8, padding: "10px 14px" }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: "#9c6644" }}>{w.word}</span>
+                    <span style={{ Size: 14, Weight: 700, color: "#9c6644" }}>{w.word}</span>
                     <div style={{ display: "flex", gap: 16, marginTop: 4, flexWrap: "wrap" }}>
-                      <span style={{ fontSize: 12, color: "#6b5a4a" }}>Common: <span style={{ color: "#4a3a2a" }}>{w.common}</span></span>
-                      <span style={{ fontSize: 12, color: "#b08968" }}>SAT meaning: <span style={{ color: "#9c6644", fontWeight: 600 }}>{w.sat}</span></span>
+                      <span style={{ Size: 12, color: "#6b5a4a" }}>Common: <span style={{ color: "#4a3a2a" }}>{w.common}</span></span>
+                      <span style={{ Size: 12, color: "#b08968" }}>SAT meaning: <span style={{ color: "#9c6644", Weight: 600 }}>{w.sat}</span></span>
                     </div>
                   </div>
                 ))}
@@ -426,8 +426,8 @@
                 <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                   {selCh.strategies.map((st, i) => (
                     <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start", background: "#ede0d4", borderRadius: 10, padding: "12px 16px", borderLeft: "3px solid #9c6644" }}>
-                      <span style={{ background: "#9c6644", color: "#fff", borderRadius: "50%", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, flexShrink: 0 }}>{i + 1}</span>
-                      <p style={{ fontSize: 13, color: "#4a3a2a", margin: 0, lineHeight: 1.55 }}>{st}</p>
+                      <span style={{ background: "#9c6644", color: "#fff", borderRadius: "50%", width: 24, height: 24, display: "flex", alignItems: "center", justifyContent: "center", Size: 12, Weight: 700, flexShrink: 0 }}>{i + 1}</span>
+                      <p style={{ Size: 13, color: "#4a3a2a", margin: 0, lineHeight: 1.55 }}>{st}</p>
                     </div>
                   ))}
                 </div>
@@ -443,7 +443,7 @@
                   </div>
                   <div style={s.nav}>
                     <button style={s.nBtn} disabled={cardIdx === 0} onClick={() => { setCardIdx(cardIdx - 1); setFlipped(false); }}>← Prev</button>
-                    <span style={{ fontSize: 13, color: "#6b5a4a", fontWeight: 600 }}>{cardIdx + 1}/{selCh.questions.length}</span>
+                    <span style={{ Size: 13, color: "#6b5a4a", Weight: 600 }}>{cardIdx + 1}/{selCh.questions.length}</span>
                     <button style={{ ...s.nBtn, background: isRev ? "#556b2f" : "#8b4513", color: "#fff" }} onClick={() => markReviewed(selCh.id, cardIdx)}>{isRev ? "✓ Done" : "Mark Done"}</button>
                     <button style={s.nBtn} disabled={cardIdx === selCh.questions.length - 1} onClick={() => { setCardIdx(cardIdx + 1); setFlipped(false); }}>Next →</button>
                   </div>
@@ -462,7 +462,7 @@
                 <div style={{ textAlign: "center", padding: "48px 0" }}>
                   {/* --- Emoji Removed --- */}
                   <h2 style={s.h1}>Quiz Complete!</h2>
-                  <p style={{ ...s.sub, fontSize: 22, marginTop: 12 }}>{score.y}/{quizQs.length} correct ({pct}%)</p>
+                  <p style={{ ...s.sub, Size: 22, marginTop: 12 }}>{score.y}/{quizQs.length} correct ({pct}%)</p>
                   <p style={{ color: "#6b5a4a", marginTop: 8 }}>{pct >= 80 ? "Excellent! You know these strategies well." : pct >= 50 ? "Good start — review the chapters you missed." : "Keep studying — focus on the strategies first, then re-quiz."}</p>
                   <div style={{ marginTop: 28, display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
                     <button style={s.mainBtn} onClick={() => startQuiz(qFilter)}>Retry</button>
@@ -477,9 +477,9 @@
             <div style={s.ctr}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                 <button style={s.back} onClick={() => setView("home")}>✕ End</button>
-                <span style={{ fontSize: 13, color: "#6b5a4a", fontWeight: 600 }}>{qIdx + 1}/{quizQs.length}</span>
+                <span style={{ Size: 13, color: "#6b5a4a", Weight: 600 }}>{qIdx + 1}/{quizQs.length}</span>
               </div>
-              <p style={{ color: "#6b5a4a", fontSize: 11, marginTop: 8, textTransform: "uppercase", letterSpacing: 1 }}>Ch. {cq.chapter}: {cq.chTitle}</p>
+              <p style={{ color: "#6b5a4a", Size: 11, marginTop: 8, textTransform: "uppercase", letterSpacing: 1 }}>Ch. {cq.chapter}: {cq.chTitle}</p>
               <div style={{ ...s.flash, cursor: "default", minHeight: showA ? 220 : 160 }}>
                 <p style={s.fLabel}>QUESTION</p>
                 <p style={s.fQ}>{cq.q}</p>
@@ -489,9 +489,9 @@
                 <div style={{ textAlign: "center", marginTop: 16 }}><button style={s.mainBtn} onClick={() => setShowA(true)}>Show Answer</button></div>
               ) : (
                 <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 16 }}>
-                  <button style={{ ...s.nBtn, background: "#556b2f", color: "#fff", padding: "12px 28px", fontSize: 15 }}
+                  <button style={{ ...s.nBtn, background: "#556b2f", color: "#fff", padding: "12px 28px", Size: 15 }}
                     onClick={() => { setScore(sc => ({ ...sc, y: sc.y + 1 })); if (qIdx + 1 >= quizQs.length) setQDone(true); else { setQIdx(qIdx + 1); setShowA(false); } }}>✓ Knew It</button>
-                  <button style={{ ...s.nBtn, background: "#8b4513", color: "#fff", padding: "12px 28px", fontSize: 15 }}
+                  <button style={{ ...s.nBtn, background: "#8b4513", color: "#fff", padding: "12px 28px", Size: 15 }}
                     onClick={() => { setScore(sc => ({ ...sc, n: sc.n + 1 })); if (qIdx + 1 >= quizQs.length) setQDone(true); else { setQIdx(qIdx + 1); setShowA(false); } }}>✗ Didn't Know</button>
                 </div>
               )}
