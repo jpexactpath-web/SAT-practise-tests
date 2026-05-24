@@ -58,17 +58,23 @@ body {
 /* ── LEGEND ── */
 .legend {
   display: flex;
-  gap: 18px;
   flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
   background: #fff;
   border: 1px solid #ddd;
   border-radius: 6px;
-  padding: 10px 18px;
+  padding: 11px 18px;
   margin-bottom: 24px;
   font-size: 9.5pt;
-  align-items: center;
 }
-.legend-title { font-weight: bold; margin-right: 4px; color: #444; }
+.legend-title { font-weight: bold; color: #444; white-space: nowrap; }
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
 
 /* ── DOMAIN BLOCKS ── */
 .domain {
@@ -312,9 +318,9 @@ body {
   <!-- LEGEND -->
   <div class="legend">
     <span class="legend-title">Difficulty key:</span>
-    <span class="badge easy">Easy</span>&nbsp; Answer is directly accessible from the passage &nbsp;&nbsp;
-    <span class="badge medium">Medium</span>&nbsp; Requires inference or comparison across the passage &nbsp;&nbsp;
-    <span class="badge hard">Hard</span>&nbsp; Distractors are partially correct; precision required
+    <span class="legend-item"><span class="badge easy">Easy</span> Answer is directly accessible from the passage</span>
+    <span class="legend-item"><span class="badge medium">Medium</span> Requires inference or comparison across the passage</span>
+    <span class="legend-item"><span class="badge hard">Hard</span> Distractors are partially correct; precision required</span>
   </div>
 
 
@@ -346,7 +352,7 @@ body {
         </div>
 
         <div class="example-box">
-          <div class="example-label">Example Question</div>
+          <div class="example-label">Example — Main Idea</div>
           <p class="example-passage">
             Recent studies have found that urban trees do more than improve air quality. They reduce surface temperatures in densely built neighbourhoods by providing shade and releasing moisture through transpiration. In cities where green cover has declined, residents report significantly higher rates of heat-related illness during summer months. Planners are now incorporating minimum canopy requirements into new development codes.
           </p>
@@ -356,6 +362,35 @@ body {
             <li><span class="choice-letter">B.</span> City planners have begun requiring developers to plant a minimum number of trees.</li>
             <li><span class="choice-letter">C.</span> Urban trees provide multiple benefits that make them essential to city health and planning.</li>
             <li><span class="choice-letter">D.</span> Heat-related illness is a growing problem in cities where green spaces have been removed.</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example — Specific Detail</div>
+          <p class="example-passage">
+            The Mars Reconnaissance Orbiter, launched in 2005, carries the most powerful camera ever sent to another planet. The HiRISE camera can resolve objects as small as a dinner table from orbit. Scientists have used its images to identify ancient river channels and select safe landing sites for future rovers. The orbiter also measures atmospheric dust levels and monitors seasonal changes at the Martian poles.
+          </p>
+          <p class="example-q">According to the text, what have scientists used HiRISE images to do?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> Measure the average temperature of the Martian surface</li>
+            <li><span class="choice-letter">B.</span> Identify ancient river channels and select landing sites for rovers</li>
+            <li><span class="choice-letter">C.</span> Confirm the presence of liquid water beneath the Martian poles</li>
+            <li><span class="choice-letter">D.</span> Map the full extent of seasonal dust storms across Mars</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example — Paragraph Purpose</div>
+          <p class="example-passage">
+            <strong>Paragraph 1:</strong> For decades, conservationists focused almost exclusively on protecting large mammals — elephants, tigers, rhinos — because their charisma made fundraising easier and their habitats were often shared with hundreds of other species.<br><br>
+            <strong>Paragraph 2:</strong> Recent research, however, has drawn attention to invertebrates. A single acre of healthy soil can contain millions of insects, worms, and microorganisms whose activity underpins all terrestrial ecosystems. Without them, even the habitats of the large mammals conservationists have long prioritised would collapse.
+          </p>
+          <p class="example-q">The second paragraph primarily serves to</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> support the argument that large mammals deserve greater conservation funding.</li>
+            <li><span class="choice-letter">B.</span> provide a historical overview of the conservation movement.</li>
+            <li><span class="choice-letter">C.</span> challenge the focus of the first paragraph by arguing for the ecological importance of invertebrates.</li>
+            <li><span class="choice-letter">D.</span> explain why invertebrate populations have declined in recent years.</li>
           </ul>
         </div>
 
@@ -527,7 +562,7 @@ body {
         </div>
 
         <div class="example-box">
-          <div class="example-label">Example Question</div>
+          <div class="example-label">Example — Single Word</div>
           <p class="example-passage">
             The negotiator's tone remained measured throughout the crisis, offering carefully worded concessions that <strong>tempered</strong> the tension in the room without fully resolving the underlying dispute.
           </p>
@@ -537,6 +572,20 @@ body {
             <li><span class="choice-letter">B.</span> Hardened</li>
             <li><span class="choice-letter">C.</span> Moderated</li>
             <li><span class="choice-letter">D.</span> Measured</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example — Phrase</div>
+          <p class="example-passage">
+            Despite decades of failed diplomatic efforts, the two nations finally reached an agreement — one that analysts described as a <strong>hard-won compromise</strong> that left neither side entirely satisfied but preserved the possibility of future cooperation.
+          </p>
+          <p class="example-q">As used in the text, what does the phrase "hard-won compromise" most nearly mean?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> A deal achieved quickly through determined negotiation</li>
+            <li><span class="choice-letter">B.</span> An agreement reached only after significant difficulty, with concessions on both sides</li>
+            <li><span class="choice-letter">C.</span> A settlement imposed by a stronger party on a weaker one</li>
+            <li><span class="choice-letter">D.</span> A temporary ceasefire that delays but does not resolve the central conflict</li>
           </ul>
         </div>
 
@@ -574,6 +623,35 @@ body {
         <div class="qt-box">
           <strong>Question Type — Sentence Function</strong>
           <p>"What is the main purpose of the underlined sentence in the passage?"</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example — Whole Text Structure</div>
+          <p class="example-passage">
+            Early experiments in electric vehicle technology during the 1990s produced cars with limited range and high costs that failed to attract mainstream buyers. Engineers spent the following decade addressing these problems, developing better battery chemistry and lighter chassis designs. By the 2010s, several manufacturers had released vehicles with ranges exceeding 200 miles, and consumer interest began to rise sharply. Today, electric vehicles represent the fastest-growing segment of the global automotive market.
+          </p>
+          <p class="example-q">Which choice best describes the overall structure of the text?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> A problem is identified, a solution is proposed, and the solution is evaluated for its limitations.</li>
+            <li><span class="choice-letter">B.</span> An early failure is described, the steps taken to overcome it are explained, and the resulting success is noted.</li>
+            <li><span class="choice-letter">C.</span> Two competing technologies are compared, and a conclusion about which is superior is reached.</li>
+            <li><span class="choice-letter">D.</span> A scientific discovery is announced and its implications for the future are discussed.</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example — Paragraph Purpose</div>
+          <p class="example-passage">
+            <strong>Paragraph 1:</strong> Psychologist Carol Dweck's research on mindset has been widely adopted in educational settings around the world. Her distinction between a "fixed mindset" — the belief that abilities are innate and unchangeable — and a "growth mindset" — the belief that effort and learning can develop ability — has influenced teaching practices across age groups.<br><br>
+            <strong>Paragraph 2:</strong> Critics, however, have pointed out that many classroom applications oversimplify Dweck's original findings. Simply telling students to "try harder" or displaying growth mindset posters does not replicate the carefully controlled conditions of the original studies, and several large-scale attempts to reproduce the results have yielded only modest effects.
+          </p>
+          <p class="example-q">The second paragraph primarily serves to</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> provide additional examples that support the claims made in the first paragraph.</li>
+            <li><span class="choice-letter">B.</span> introduce a contrasting perspective that complicates the widespread adoption described in the first paragraph.</li>
+            <li><span class="choice-letter">C.</span> explain the methodology Dweck used in her original research studies.</li>
+            <li><span class="choice-letter">D.</span> argue that the growth mindset concept should be removed from educational curricula entirely.</li>
+          </ul>
         </div>
 
         <div class="example-box">
@@ -623,7 +701,7 @@ body {
         </div>
 
         <div class="example-box">
-          <div class="example-label">Example Question</div>
+          <div class="example-label">Example — Response</div>
           <p class="example-passage">
             <strong>Text 1:</strong> Social media platforms have democratised access to information, allowing individuals from any background to share research, opinions, and expertise with a global audience without the gatekeeping of traditional media.<br><br>
             <strong>Text 2:</strong> The absence of editorial oversight on social media has led to a proliferation of unverified claims. Studies show that misinformation spreads significantly faster on these platforms than factual reporting, raising serious concerns about the quality of information now reaching mass audiences.
@@ -634,6 +712,21 @@ body {
             <li><span class="choice-letter">B.</span> By arguing that the benefits of democratised access are outweighed by the risks of unverified information</li>
             <li><span class="choice-letter">C.</span> By suggesting that traditional media was more effective at reaching global audiences</li>
             <li><span class="choice-letter">D.</span> By claiming that social media platforms should be shut down entirely</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example — Agreement / Disagreement</div>
+          <p class="example-passage">
+            <strong>Text 1:</strong> Rewilding — the large-scale restoration of natural ecosystems by reintroducing native species — offers a powerful tool for reversing biodiversity loss. Where wolves have been reintroduced, for instance, the entire food web has shifted, leading to the recovery of vegetation, rivers, and smaller animal populations in a process ecologists call a trophic cascade.<br><br>
+            <strong>Text 2:</strong> While the ecological arguments for rewilding are compelling, the approach carries significant risks when applied without careful planning. Reintroduced predators can threaten livestock and create conflict with farming communities. Long-term success depends not only on ecological science but on sustained cooperation between conservationists and the people who live in affected areas.
+          </p>
+          <p class="example-q">Both authors would most likely agree with which of the following statements about rewilding?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> Rewilding should be abandoned as a conservation strategy due to its risks to farming communities.</li>
+            <li><span class="choice-letter">B.</span> Rewilding has the potential to produce meaningful ecological benefits.</li>
+            <li><span class="choice-letter">C.</span> The reintroduction of wolves is the most effective form of rewilding currently available.</li>
+            <li><span class="choice-letter">D.</span> Conservationists and farmers are unlikely to find common ground on rewilding initiatives.</li>
           </ul>
         </div>
 
@@ -857,6 +950,34 @@ body {
             <li><span class="choice-letter">B.</span> its / its / it's</li>
             <li><span class="choice-letter">C.</span> it's / its / its</li>
             <li><span class="choice-letter">D.</span> its / it's / its</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example — Parallel Structure</div>
+          <p class="example-passage">
+            The programme trains young engineers not only to design sustainable infrastructure but also ________ with local communities and ________ practical solutions to real-world problems.
+          </p>
+          <p class="example-q">Which choice completes the text so that it conforms to the conventions of Standard English?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> engaging / implementing</li>
+            <li><span class="choice-letter">B.</span> to engage / to implement</li>
+            <li><span class="choice-letter">C.</span> engage / the implementation of</li>
+            <li><span class="choice-letter">D.</span> to engage / implementing</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example — Modifier Placement</div>
+          <p class="example-passage">
+            ________ the ancient cave paintings for the first time, the significance of the site became immediately clear to the research team.
+          </p>
+          <p class="example-q">Which choice completes the text so that it conforms to the conventions of Standard English?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> Observing</li>
+            <li><span class="choice-letter">B.</span> Having observed</li>
+            <li><span class="choice-letter">C.</span> When the research team observed</li>
+            <li><span class="choice-letter">D.</span> The research team observed</li>
           </ul>
         </div>
 
