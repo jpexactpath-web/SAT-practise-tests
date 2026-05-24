@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SAT Reading &amp; Writing — Question Type Cheat Sheet</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Book Antiqua', 'Palatino Linotype', Palatino, Georgia, serif;
+  font-size: 12pt;
+  background: #f5f3ee;
+  color: #1a1a1a;
+  line-height: 1.65;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  background: #1a1a2e;
+  color: #fff;
+  padding: 28px 40px 22px;
+  position: relative;
+}
+.page-header::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #c0392b, #1a5276, #1e8449, #6c3483);
+}
+.page-header h1 {
+  font-size: 22pt;
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+.page-header p {
+  font-size: 10pt;
+  color: #ccc;
+  font-style: italic;
+}
+.section-label {
+  font-size: 9pt;
+  background: #e05c3a;
+  color: #fff;
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 2px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* ── MAIN LAYOUT ── */
+.container { max-width: 1140px; margin: 0 auto; padding: 28px 20px; }
+
+/* ── LEGEND ── */
+.legend {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 10px 18px;
+  margin-bottom: 24px;
+  font-size: 9.5pt;
+  align-items: center;
+}
+.legend-title { font-weight: bold; margin-right: 4px; color: #444; }
+
+/* ── DOMAIN BLOCKS ── */
+.domain {
+  margin-bottom: 36px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1.5px solid #ddd;
+}
+.domain-header {
+  padding: 12px 20px;
+  color: #fff;
+  font-size: 13pt;
+  font-weight: bold;
+  letter-spacing: 0.3px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.domain-number {
+  font-size: 10pt;
+  background: rgba(255,255,255,0.2);
+  border-radius: 50%;
+  width: 26px; height: 26px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+.d1 .domain-header { background: #c0392b; }
+.d2 .domain-header { background: #1a5276; }
+.d3 .domain-header { background: #1e8449; }
+.d4 .domain-header { background: #6c3483; }
+
+.d1 { --accent:#c0392b; --accent-light:#fdf1f0; --accent-mid:#f1948a; --accent-eg:#fff5f5; --accent-eg-border:#f5c6c2; }
+.d2 { --accent:#1a5276; --accent-light:#eaf1fb; --accent-mid:#7fb3d3; --accent-eg:#f0f6fc; --accent-eg-border:#aed4ef; }
+.d3 { --accent:#1e8449; --accent-light:#eafaf1; --accent-mid:#7dcea0; --accent-eg:#f0faf4; --accent-eg-border:#a9dfbf; }
+.d4 { --accent:#6c3483; --accent-light:#f5eef8; --accent-mid:#c39bd3; --accent-eg:#f8f0fb; --accent-eg-border:#d7bde2; }
+
+/* ── SKILLS GRID ── */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 0;
+}
+.skill {
+  background: #fff;
+  border-right: 1px solid #e8e8e8;
+  border-bottom: 1px solid #e8e8e8;
+  padding: 20px 22px;
+}
+.skill:last-child { border-right: none; }
+
+.skill-title {
+  font-size: 12pt;
+  font-weight: bold;
+  color: var(--accent);
+  margin-bottom: 8px;
+  padding-bottom: 7px;
+  border-bottom: 2px solid var(--accent-mid);
+}
+.skill-number {
+  display: inline-block;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 3px;
+  font-size: 9pt;
+  padding: 1px 7px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* ── QUESTION TYPE BOX ── */
+.qt-box {
+  background: var(--accent-light);
+  border-left: 3px solid var(--accent);
+  padding: 8px 12px;
+  margin: 10px 0;
+  border-radius: 0 4px 4px 0;
+}
+.qt-box strong {
+  font-size: 8.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 3px;
+}
+.qt-box p {
+  font-size: 10.5pt;
+  font-style: italic;
+  color: #333;
+}
+
+/* ── EXAMPLE BOX ── */
+.example-box {
+  background: var(--accent-eg);
+  border: 1px dashed var(--accent-eg-border);
+  border-radius: 5px;
+  padding: 10px 14px;
+  margin: 11px 0;
+}
+.example-label {
+  font-size: 8pt;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--accent);
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+.example-passage {
+  font-size: 10pt;
+  color: #333;
+  font-style: italic;
+  margin-bottom: 7px;
+  line-height: 1.55;
+  border-left: 2px solid var(--accent-mid);
+  padding-left: 9px;
+}
+.example-q {
+  font-size: 10.5pt;
+  color: #1a1a1a;
+  font-weight: bold;
+}
+.example-choices {
+  list-style: none;
+  padding: 0;
+  margin-top: 5px;
+}
+.example-choices li {
+  font-size: 10pt;
+  color: #333;
+  padding: 2px 0;
+}
+.example-choices li span.choice-letter {
+  display: inline-block;
+  width: 18px;
+  font-weight: bold;
+  color: var(--accent);
+}
+
+/* ── LABELS ── */
+.section-sub {
+  font-size: 8.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #555;
+  margin: 12px 0 5px;
+  font-weight: bold;
+}
+
+/* ── STRATEGY LIST ── */
+.strategy-list {
+  list-style: none;
+  padding: 0;
+}
+.strategy-list li {
+  font-size: 10.5pt;
+  padding: 3px 0 3px 18px;
+  position: relative;
+  color: #222;
+}
+.strategy-list li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-size: 10pt;
+}
+
+/* ── TABLES ── */
+.info-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-size: 9.5pt;
+}
+.info-table th {
+  text-align: left;
+  padding: 5px 8px;
+  font-size: 8.5pt;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1.5px solid #ddd;
+  color: #444;
+}
+.info-table td {
+  padding: 5px 8px;
+  border-bottom: 1px solid #f0f0f0;
+  vertical-align: top;
+  line-height: 1.45;
+}
+.info-table tr:last-child td { border-bottom: none; }
+
+/* ── DIFFICULTY BADGES ── */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 8pt;
+  font-weight: bold;
+  white-space: nowrap;
+}
+.easy   { background: #d5f5e3; color: #1e6e3e; }
+.medium { background: #fef9e7; color: #9a6a00; }
+.hard   { background: #fdedec; color: #922b21; }
+
+/* ── DIVIDER ── */
+.skill-divider {
+  border: none;
+  border-top: 1px dashed #e0e0e0;
+  margin: 14px 0;
+}
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: 16px;
+  font-size: 9pt;
+  color: #888;
+  border-top: 1px solid #ddd;
+  background: #fff;
+  font-style: italic;
+}
+
+@media print {
+  body { background: #fff; font-size: 11pt; }
+  .domain { break-inside: avoid; page-break-inside: avoid; }
+  .skill  { break-inside: avoid; page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="section-label">SAT Prep</div>
+  <h1>Reading &amp; Writing — Question Type Cheat Sheet</h1>
+  <p>All 4 domains &nbsp;·&nbsp; All 10 skills &nbsp;·&nbsp; Strategy, difficulty breakdown &amp; example questions for each skill</p>
+</div>
+
+<div class="container">
+
+  <!-- LEGEND -->
+  <div class="legend">
+    <span class="legend-title">Difficulty key:</span>
+    <span class="badge easy">Easy</span>&nbsp; Answer is directly accessible from the passage &nbsp;&nbsp;
+    <span class="badge medium">Medium</span>&nbsp; Requires inference or comparison across the passage &nbsp;&nbsp;
+    <span class="badge hard">Hard</span>&nbsp; Distractors are partially correct; precision required
+  </div>
+
+
+  <!-- ═══════════════════════════════════
+       DOMAIN 1 — INFORMATION AND IDEAS
+  ═══════════════════════════════════ -->
+  <div class="domain d1">
+    <div class="domain-header">
+      <span class="domain-number">1</span>
+      Information and Ideas
+    </div>
+    <div class="skills-grid">
+
+      <!-- 1A: Central Ideas and Details -->
+      <div class="skill">
+        <div class="skill-title"><span class="skill-number">1A</span> Central Ideas and Details</div>
+
+        <div class="qt-box">
+          <strong>Question Type — Main Idea</strong>
+          <p>"Which choice best states the main idea of the text?"</p>
+        </div>
+        <div class="qt-box">
+          <strong>Question Type — Specific Detail</strong>
+          <p>"According to the text, what did the researchers find about…?"</p>
+        </div>
+        <div class="qt-box">
+          <strong>Question Type — Paragraph Purpose</strong>
+          <p>"The second paragraph primarily serves to…"</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example Question</div>
+          <p class="example-passage">
+            Recent studies have found that urban trees do more than improve air quality. They reduce surface temperatures in densely built neighbourhoods by providing shade and releasing moisture through transpiration. In cities where green cover has declined, residents report significantly higher rates of heat-related illness during summer months. Planners are now incorporating minimum canopy requirements into new development codes.
+          </p>
+          <p class="example-q">Which choice best states the main idea of the text?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> Urban trees are primarily valued for their ability to improve air quality in cities.</li>
+            <li><span class="choice-letter">B.</span> City planners have begun requiring developers to plant a minimum number of trees.</li>
+            <li><span class="choice-letter">C.</span> Urban trees provide multiple benefits that make them essential to city health and planning.</li>
+            <li><span class="choice-letter">D.</span> Heat-related illness is a growing problem in cities where green spaces have been removed.</li>
+          </ul>
+        </div>
+
+        <div class="section-sub">Strategy</div>
+        <ul class="strategy-list">
+          <li>Read the full passage before looking at choices.</li>
+          <li>Ask: "What is EVERY sentence in this passage about?" — the answer that ties them all together is the main idea.</li>
+          <li>Eliminate answers that cover only one part of the passage or extend beyond it.</li>
+          <li>For detail questions, return to the specific line — do not rely on memory.</li>
+          <li>For paragraph-purpose questions, identify how that paragraph connects to the paragraphs before and after it.</li>
+          <li>The correct main idea is neither too broad nor too narrow.</li>
+        </ul>
+
+        <div class="section-sub">Difficulty Breakdown</div>
+        <table class="info-table">
+          <tr><th style="width:72px">Level</th><th>What makes it that level</th></tr>
+          <tr><td><span class="badge easy">Easy</span></td><td>Main idea is stated in the opening or closing sentence. One choice is clearly correct.</td></tr>
+          <tr><td><span class="badge medium">Medium</span></td><td>Main idea must be pieced together from 2–3 sentences. One distractor covers a supporting detail, not the whole idea.</td></tr>
+          <tr><td><span class="badge hard">Hard</span></td><td>Two choices seem equally correct; one is too narrow or too broad. The correct answer captures nuance (e.g., "a critique of X, not a rejection of X").</td></tr>
+        </table>
+      </div>
+
+      <!-- 1B: Command of Evidence -->
+      <div class="skill">
+        <div class="skill-title"><span class="skill-number">1B</span> Command of Evidence</div>
+
+        <div class="qt-box">
+          <strong>Question Type — Textual Evidence</strong>
+          <p>"Which quotation from the text most effectively illustrates the claim that…?"</p>
+        </div>
+        <div class="qt-box">
+          <strong>Question Type — Quantitative Evidence</strong>
+          <p>"Which choice most effectively uses data from the table/graph to complete the statement?"</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example — Textual Evidence</div>
+          <p class="example-passage">
+            Dr. Osei's fieldwork documented how traditional weaving communities have adapted ancient techniques to modern materials without losing the cultural significance of their patterns. Community elders noted that the meaning of each design remained unchanged even as the threads themselves changed.
+          </p>
+          <p class="example-q">A student claims that cultural traditions can survive material changes. Which quotation from the text most effectively illustrates this claim?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> "Dr. Osei's fieldwork documented how traditional weaving communities have adapted ancient techniques to modern materials"</li>
+            <li><span class="choice-letter">B.</span> "the meaning of each design remained unchanged even as the threads themselves changed"</li>
+            <li><span class="choice-letter">C.</span> "Community elders noted that the meaning of each design remained unchanged"</li>
+            <li><span class="choice-letter">D.</span> "without losing the cultural significance of their patterns"</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example — Quantitative Evidence</div>
+          <p class="example-passage">
+            <strong>Table: Average test scores by study method</strong><br>
+            Passive re-reading: 62 &nbsp;|&nbsp; Flashcards: 71 &nbsp;|&nbsp; Practice testing: 84 &nbsp;|&nbsp; Spaced practice: 89
+          </p>
+          <p class="example-q">A researcher argues that active recall methods outperform passive study methods. Which choice most effectively uses data from the table to support this claim?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> Students who used flashcards scored 71, higher than those who re-read passively (62).</li>
+            <li><span class="choice-letter">B.</span> Spaced practice yielded the highest score of 89, compared to 62 for passive re-reading.</li>
+            <li><span class="choice-letter">C.</span> Practice testing (84) and spaced practice (89) both outperformed passive re-reading (62) and flashcards (71).</li>
+            <li><span class="choice-letter">D.</span> The average score across all methods was approximately 76.5.</li>
+          </ul>
+        </div>
+
+        <div class="section-sub">Strategy</div>
+        <ul class="strategy-list">
+          <li><strong>Textual:</strong> The quote must DIRECTLY support the exact claim in the question — not just relate to the same topic.</li>
+          <li>Eliminate quotes that are merely related; they must be logically tied to the specific claim as worded.</li>
+          <li><strong>Quantitative:</strong> Identify exactly what the question is asking for: a trend, a comparison, a specific value, or what the data does NOT show.</li>
+          <li>Find the exact data point in the table or graph — do not estimate or round loosely.</li>
+          <li>The correct choice uses data precisely and does not overstate or generalise beyond the evidence.</li>
+          <li>Beware of choices that are numerically accurate but answer a different question than the one stated.</li>
+        </ul>
+
+        <div class="section-sub">Difficulty Breakdown</div>
+        <table class="info-table">
+          <tr><th style="width:72px">Level</th><th>What makes it that level</th></tr>
+          <tr><td><span class="badge easy">Easy</span></td><td>One quote clearly and directly supports the claim. Graph has a single, obvious data point to reference.</td></tr>
+          <tr><td><span class="badge medium">Medium</span></td><td>Two quotes relate to the claim; one is too general, one is the precise evidence needed.</td></tr>
+          <tr><td><span class="badge hard">Hard</span></td><td>All quotes seem plausible. The correct one matches the precise wording of the claim. In quantitative questions, the wrong choice uses real numbers from the table but misrepresents the comparison asked.</td></tr>
+        </table>
+      </div>
+
+      <!-- 1C: Inferences -->
+      <div class="skill">
+        <div class="skill-title"><span class="skill-number">1C</span> Inferences</div>
+
+        <div class="qt-box">
+          <strong>Question Type — Standard Inference</strong>
+          <p>"Based on the text, what can most reasonably be inferred about…?"</p>
+        </div>
+        <div class="qt-box">
+          <strong>Question Type — Complete the Text</strong>
+          <p>Passage ends with a blank. "Which choice most logically completes the text?"</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example — Standard Inference</div>
+          <p class="example-passage">
+            Professor Kwan published her findings on migratory bird patterns without seeking grant funding, relying instead on data collected during her own weekend expeditions over fifteen years. Her department head later noted that no university equipment had been used in the research.
+          </p>
+          <p class="example-q">Based on the text, what can most reasonably be inferred about Professor Kwan's research?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> The research was considered unimportant by her university.</li>
+            <li><span class="choice-letter">B.</span> The research was conducted independently of institutional support.</li>
+            <li><span class="choice-letter">C.</span> The research was rejected by peer-reviewed journals.</li>
+            <li><span class="choice-letter">D.</span> The research was more reliable than institutionally funded studies.</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example — Complete the Text</div>
+          <p class="example-passage">
+            Early clinical trials of the new compound showed promising results in reducing inflammation, with 78% of participants reporting improvement. However, a follow-up study involving a larger and more diverse cohort found that the compound was effective in only 34% of cases. Researchers concluded that ________________.
+          </p>
+          <p class="example-q">Which choice most logically completes the text?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> the compound should be approved for widespread medical use based on the initial trial results.</li>
+            <li><span class="choice-letter">B.</span> initial small-scale trials may not accurately predict outcomes across broader populations.</li>
+            <li><span class="choice-letter">C.</span> inflammation is a more complex condition than scientists had previously believed.</li>
+            <li><span class="choice-letter">D.</span> follow-up studies are rarely necessary when early results are positive.</li>
+          </ul>
+        </div>
+
+        <div class="section-sub">Strategy</div>
+        <ul class="strategy-list">
+          <li>The answer must be SUPPORTED by the text — not merely possible, and not relying on outside knowledge.</li>
+          <li>Test each choice using: "This is supported because the text says…" — if you cannot complete that sentence, eliminate.</li>
+          <li>Beware of extreme language: "always," "never," "only," "proves" — these are almost always wrong.</li>
+          <li>Beware of choices that are true in the real world but not supported by this specific passage.</li>
+          <li>For "complete the text" questions, the correct answer must follow from the ENTIRE passage's logic, not just the final sentence.</li>
+          <li>The correct inference is the most conservative, best-supported conclusion available.</li>
+        </ul>
+
+        <div class="section-sub">Difficulty Breakdown</div>
+        <table class="info-table">
+          <tr><th style="width:72px">Level</th><th>What makes it that level</th></tr>
+          <tr><td><span class="badge easy">Easy</span></td><td>Inference is almost directly stated. Only one step of reasoning needed from explicit text.</td></tr>
+          <tr><td><span class="badge medium">Medium</span></td><td>Must connect two details from different parts of the passage. One distractor is a real-world fact, not a text-based inference.</td></tr>
+          <tr><td><span class="badge hard">Hard</span></td><td>Inference relies on tone or implication. Multiple choices are each supported by some part of the text, but only one holds across the full passage.</td></tr>
+        </table>
+      </div>
+
+    </div>
+  </div><!-- /domain 1 -->
+
+
+  <!-- ═══════════════════════════════════
+       DOMAIN 2 — CRAFT AND STRUCTURE
+  ═══════════════════════════════════ -->
+  <div class="domain d2">
+    <div class="domain-header">
+      <span class="domain-number">2</span>
+      Craft and Structure
+    </div>
+    <div class="skills-grid">
+
+      <!-- 2A: Words in Context -->
+      <div class="skill">
+        <div class="skill-title"><span class="skill-number">2A</span> Words in Context</div>
+
+        <div class="qt-box">
+          <strong>Question Type — Single Word</strong>
+          <p>"As used in the text, what does the word [X] most nearly mean?"</p>
+        </div>
+        <div class="qt-box">
+          <strong>Question Type — Phrase</strong>
+          <p>"As used in the text, what does the phrase [X] most nearly mean?"</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example Question</div>
+          <p class="example-passage">
+            The negotiator's tone remained measured throughout the crisis, offering carefully worded concessions that <strong>tempered</strong> the tension in the room without fully resolving the underlying dispute.
+          </p>
+          <p class="example-q">As used in the text, what does the word "tempered" most nearly mean?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> Heated</li>
+            <li><span class="choice-letter">B.</span> Hardened</li>
+            <li><span class="choice-letter">C.</span> Moderated</li>
+            <li><span class="choice-letter">D.</span> Measured</li>
+          </ul>
+        </div>
+
+        <div class="section-sub">Strategy</div>
+        <ul class="strategy-list">
+          <li>Cover the word and predict what word would fit the sentence — then match to choices.</li>
+          <li>Plug each answer choice back into the sentence and read the full sentence aloud.</li>
+          <li>The trap answer is almost always the most common everyday meaning — ignore it if the context says otherwise.</li>
+          <li>Look at the whole paragraph, not just the sentence containing the word.</li>
+          <li>For figurative phrases, ask: what quality or effect is the author conveying, not what the phrase literally means?</li>
+          <li>Consider connotation — positive vs. negative — as a quick filter to eliminate half the choices.</li>
+        </ul>
+
+        <div class="section-sub">Difficulty Breakdown</div>
+        <table class="info-table">
+          <tr><th style="width:72px">Level</th><th>What makes it that level</th></tr>
+          <tr><td><span class="badge easy">Easy</span></td><td>Contextual meaning matches the word's most common meaning. Context clues are explicit and nearby.</td></tr>
+          <tr><td><span class="badge medium">Medium</span></td><td>Word has multiple meanings; correct meaning requires reading the full paragraph. Trap answer is the most common meaning.</td></tr>
+          <tr><td><span class="badge hard">Hard</span></td><td>Word is used figuratively or in an unusual register. Common meaning is a deliberate trap. Correct answer uses a rare but contextually precise synonym.</td></tr>
+        </table>
+      </div>
+
+      <!-- 2B: Text Structure and Purpose -->
+      <div class="skill">
+        <div class="skill-title"><span class="skill-number">2B</span> Text Structure and Purpose</div>
+
+        <div class="qt-box">
+          <strong>Question Type — Whole Text</strong>
+          <p>"Which choice best describes the overall structure of the text?"</p>
+        </div>
+        <div class="qt-box">
+          <strong>Question Type — Paragraph Purpose</strong>
+          <p>"The second paragraph primarily serves to…"</p>
+        </div>
+        <div class="qt-box">
+          <strong>Question Type — Sentence Function</strong>
+          <p>"What is the main purpose of the underlined sentence in the passage?"</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example — Sentence Function</div>
+          <p class="example-passage">
+            Coral reefs are often called the rainforests of the sea because of their extraordinary biodiversity. <u>Yet unlike rainforests, which can regrow over decades, coral reefs may take centuries to recover from large-scale bleaching events.</u> This slow recovery rate makes conservation efforts particularly urgent for marine biologists working in affected regions.
+          </p>
+          <p class="example-q">What is the main purpose of the underlined sentence?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> To introduce a comparison between two types of ecosystems for the first time</li>
+            <li><span class="choice-letter">B.</span> To qualify the comparison made in the previous sentence by highlighting an important difference</li>
+            <li><span class="choice-letter">C.</span> To provide evidence that coral reefs are more biodiverse than rainforests</li>
+            <li><span class="choice-letter">D.</span> To summarise the main argument of the entire passage</li>
+          </ul>
+        </div>
+
+        <div class="section-sub">Strategy</div>
+        <ul class="strategy-list">
+          <li>Ask "WHY did the author include this?" not just "WHAT does it say?"</li>
+          <li>For whole-text structure: identify how each paragraph relates to the next (problem→solution; claim→evidence; compare→contrast; narrative→reflection).</li>
+          <li>For paragraph purpose: identify how that paragraph connects to the argument — does it introduce, extend, qualify, counter, or conclude?</li>
+          <li>For sentence function: identify its role relative to the sentences immediately before and after.</li>
+          <li>Correct answers use functional verbs: "illustrates," "qualifies," "introduces," "counters," "provides evidence" — match the function, not the content.</li>
+          <li>Eliminate choices with verbs that overstate (e.g., "proves" when the sentence merely "suggests").</li>
+        </ul>
+
+        <div class="section-sub">Difficulty Breakdown</div>
+        <table class="info-table">
+          <tr><th style="width:72px">Level</th><th>What makes it that level</th></tr>
+          <tr><td><span class="badge easy">Easy</span></td><td>Transition words signal the structure explicitly. Purpose of the sentence is unambiguous.</td></tr>
+          <tr><td><span class="badge medium">Medium</span></td><td>Structure must be inferred. One distractor describes what the sentence says rather than what it does.</td></tr>
+          <tr><td><span class="badge hard">Hard</span></td><td>Sentence serves a subtle or dual function. Two choices use the same verb; the distinction lies in the complement (e.g., "qualifies the main claim" vs. "qualifies a supporting example").</td></tr>
+        </table>
+      </div>
+
+      <!-- 2C: Cross-Text Connections -->
+      <div class="skill">
+        <div class="skill-title"><span class="skill-number">2C</span> Cross-Text Connections</div>
+
+        <div class="qt-box">
+          <strong>Question Type — Response</strong>
+          <p>"Based on the texts, how would the author of Text 2 most likely respond to the claim made in Text 1?"</p>
+        </div>
+        <div class="qt-box">
+          <strong>Question Type — Agreement / Disagreement</strong>
+          <p>"Both authors would most likely agree/disagree that…"</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example Question</div>
+          <p class="example-passage">
+            <strong>Text 1:</strong> Social media platforms have democratised access to information, allowing individuals from any background to share research, opinions, and expertise with a global audience without the gatekeeping of traditional media.<br><br>
+            <strong>Text 2:</strong> The absence of editorial oversight on social media has led to a proliferation of unverified claims. Studies show that misinformation spreads significantly faster on these platforms than factual reporting, raising serious concerns about the quality of information now reaching mass audiences.
+          </p>
+          <p class="example-q">Based on the texts, how would the author of Text 2 most likely respond to the claim in Text 1 that social media has democratised access to information?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> By agreeing that wider access to information is an unqualified benefit to society</li>
+            <li><span class="choice-letter">B.</span> By arguing that the benefits of democratised access are outweighed by the risks of unverified information</li>
+            <li><span class="choice-letter">C.</span> By suggesting that traditional media was more effective at reaching global audiences</li>
+            <li><span class="choice-letter">D.</span> By claiming that social media platforms should be shut down entirely</li>
+          </ul>
+        </div>
+
+        <div class="section-sub">Strategy</div>
+        <ul class="strategy-list">
+          <li>Understand each author's main argument SEPARATELY before attempting to compare — write a one-line summary of each text.</li>
+          <li>Locate the specific claim in Text 1 that the question references — do not rely on memory.</li>
+          <li>Identify the relationship: agreement, disagreement, qualification, or elaboration.</li>
+          <li>The responding author's view must be directly supported by something in Text 2 — do not infer beyond what is written.</li>
+          <li>Eliminate choices that go further than what Text 2 actually states (e.g., "should be banned" when Text 2 only "raises concerns").</li>
+        </ul>
+
+        <div class="section-sub">Difficulty Breakdown</div>
+        <table class="info-table">
+          <tr><th style="width:72px">Level</th><th>What makes it that level</th></tr>
+          <tr><td><span class="badge easy">Easy</span></td><td>One author explicitly agrees or disagrees with a specific statement in the other text.</td></tr>
+          <tr><td><span class="badge medium">Medium</span></td><td>Agreement or disagreement is implied. Texts discuss the same subject from different angles.</td></tr>
+          <tr><td><span class="badge hard">Hard</span></td><td>Authors discuss related but not identical ideas. Two distractors are partially correct. Must carefully infer how Author 2's perspective applies to Author 1's specific claim.</td></tr>
+        </table>
+      </div>
+
+    </div>
+  </div><!-- /domain 2 -->
+
+
+  <!-- ═══════════════════════════════════
+       DOMAIN 3 — EXPRESSION OF IDEAS
+  ═══════════════════════════════════ -->
+  <div class="domain d3">
+    <div class="domain-header">
+      <span class="domain-number">3</span>
+      Expression of Ideas
+    </div>
+    <div class="skills-grid">
+
+      <!-- 3A: Rhetorical Synthesis -->
+      <div class="skill">
+        <div class="skill-title"><span class="skill-number">3A</span> Rhetorical Synthesis</div>
+
+        <div class="qt-box">
+          <strong>Question Type</strong>
+          <p>Given 4–5 bullet-point research notes, "Which choice most effectively uses relevant information from the notes to [accomplish a specific stated goal]?"</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example Question</div>
+          <p class="example-passage">
+            A student is writing a report on the benefits of community libraries. The student wants to <strong>emphasise a contrast between two groups' library usage</strong>. Using the notes below, which choice best accomplishes this goal?<br><br>
+            • 68% of teenagers in the survey visited the library at least once a week.<br>
+            • Only 21% of adults over 40 visited the library more than once a month.<br>
+            • Libraries offer free internet access, printing, and borrowing services.<br>
+            • Several libraries have introduced evening hours to increase adult attendance.<br>
+            • The most popular library service among teenagers was the study room.
+          </p>
+          <p class="example-q">Which choice most effectively uses relevant information from the notes to emphasise a contrast between two groups' library usage?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> Libraries offer free internet access, printing, and borrowing services, making them valuable to all age groups.</li>
+            <li><span class="choice-letter">B.</span> While 68% of teenagers visited the library at least weekly, only 21% of adults over 40 visited more than once a month.</li>
+            <li><span class="choice-letter">C.</span> Libraries have introduced evening hours to encourage greater adult attendance in the community.</li>
+            <li><span class="choice-letter">D.</span> Teenagers primarily used the library for its study rooms, which were the most popular service available.</li>
+          </ul>
+        </div>
+
+        <div class="section-sub">Strategy</div>
+        <ul class="strategy-list">
+          <li>Read the goal in the question stem FIRST — underline the exact purpose stated.</li>
+          <li>Check each choice against the goal: does it accomplish that specific purpose?</li>
+          <li>Eliminate choices that use notes not relevant to the stated goal, even if the information is accurate.</li>
+          <li>Eliminate choices that miss a required element of the goal (e.g., omit a required contrast or emphasis).</li>
+          <li>For two-part goals (e.g., "introduce the topic AND emphasise a limitation") — verify both elements are present in the answer.</li>
+          <li>The correct answer uses the minimum notes necessary to accomplish the goal — no extraneous information.</li>
+        </ul>
+
+        <div class="section-sub">Difficulty Breakdown</div>
+        <table class="info-table">
+          <tr><th style="width:72px">Level</th><th>What makes it that level</th></tr>
+          <tr><td><span class="badge easy">Easy</span></td><td>Goal is simple (e.g., "introduce the topic"). One note is clearly most relevant; one answer clearly matches the goal.</td></tr>
+          <tr><td><span class="badge medium">Medium</span></td><td>Goal requires combining 2 notes. One distractor uses valid notes but accomplishes a different purpose.</td></tr>
+          <tr><td><span class="badge hard">Hard</span></td><td>Goal is nuanced (e.g., "highlight an unexpected finding while acknowledging a limitation"). All choices use accurate notes; the only difference is which notes are combined and how they are framed.</td></tr>
+        </table>
+      </div>
+
+      <!-- 3B: Transitions -->
+      <div class="skill">
+        <div class="skill-title"><span class="skill-number">3B</span> Transitions</div>
+
+        <div class="qt-box">
+          <strong>Question Type</strong>
+          <p>A blank at the start or middle of a sentence. "Which choice completes the text with the most logical transition?"</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example Question</div>
+          <p class="example-passage">
+            Early astronomers believed the Sun orbited the Earth, a view that aligned with everyday observation and religious doctrine alike. ________, Copernicus proposed a heliocentric model in 1543 that placed the Sun at the centre of the solar system, an idea that met with widespread resistance.
+          </p>
+          <p class="example-q">Which choice completes the text with the most logical transition?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> Similarly,</li>
+            <li><span class="choice-letter">B.</span> As a result,</li>
+            <li><span class="choice-letter">C.</span> In contrast,</li>
+            <li><span class="choice-letter">D.</span> Furthermore,</li>
+          </ul>
+        </div>
+
+        <div class="section-sub">Strategy</div>
+        <ul class="strategy-list">
+          <li>Read the sentence before AND the sentence after the blank — identify the logical relationship between the two ideas.</li>
+          <li>Name the relationship before looking at choices: contrast, addition, cause-and-effect, example, conclusion, or sequence.</li>
+          <li>Common categories — Contrast: however, nevertheless, yet, in contrast, instead; Addition: furthermore, moreover, additionally; Result: therefore, consequently, thus; Example: for instance, specifically; Sequence: first, then, finally.</li>
+          <li>Plug the answer choice back in and read the full two sentences together to confirm the logic holds.</li>
+          <li>Do not choose a transition simply because it sounds formal — it must match the precise relationship.</li>
+        </ul>
+
+        <div class="section-sub">Difficulty Breakdown</div>
+        <table class="info-table">
+          <tr><th style="width:72px">Level</th><th>What makes it that level</th></tr>
+          <tr><td><span class="badge easy">Easy</span></td><td>Relationship is explicit (clear contrast or addition). Common transition words are among the choices.</td></tr>
+          <tr><td><span class="badge medium">Medium</span></td><td>Relationship is subtler — e.g., the second sentence concedes a point rather than directly opposing. Two transitions from the same category appear as choices.</td></tr>
+          <tr><td><span class="badge hard">Hard</span></td><td>Three choices are from broadly similar categories. The correct choice reflects a precise logical nuance (e.g., "similarly" requires same type; "additionally" only requires more information — these are not interchangeable).</td></tr>
+        </table>
+      </div>
+
+    </div>
+  </div><!-- /domain 3 -->
+
+
+  <!-- ═══════════════════════════════════════════
+       DOMAIN 4 — STANDARD ENGLISH CONVENTIONS
+  ═══════════════════════════════════════════ -->
+  <div class="domain d4">
+    <div class="domain-header">
+      <span class="domain-number">4</span>
+      Standard English Conventions
+    </div>
+    <div class="skills-grid">
+
+      <!-- 4A: Boundaries -->
+      <div class="skill">
+        <div class="skill-title"><span class="skill-number">4A</span> Boundaries</div>
+
+        <div class="qt-box">
+          <strong>Question Type</strong>
+          <p>Choose the punctuation or structure that correctly joins or separates clauses. Covers run-ons, comma splices, fragments, and correct use of periods, semicolons, colons, commas, and dashes.</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example Question</div>
+          <p class="example-passage">
+            The report was thorough and well-cited ________ the committee nevertheless requested two additional weeks to review it before issuing a final decision.
+          </p>
+          <p class="example-q">Which choice completes the text so that it conforms to the conventions of Standard English?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> thorough and well-cited,</li>
+            <li><span class="choice-letter">B.</span> thorough and well-cited;</li>
+            <li><span class="choice-letter">C.</span> thorough and well-cited, however</li>
+            <li><span class="choice-letter">D.</span> thorough and well-cited however,</li>
+          </ul>
+        </div>
+
+        <div class="section-sub">Strategy</div>
+        <ul class="strategy-list">
+          <li>Find the subject and verb of each clause. Determine whether each clause is independent (can stand alone) or dependent (cannot).</li>
+          <li>Two independent clauses need: a period, a semicolon, or a comma + coordinating conjunction (FANBOYS: for, and, nor, but, or, yet, so).</li>
+          <li>A comma alone between two independent clauses is always wrong — this is a comma splice.</li>
+          <li>A colon must be preceded by a full independent clause and introduces a list, explanation, or quotation.</li>
+          <li>A dash or pair of dashes sets off a parenthetical — remove the parenthetical and the sentence must still make sense.</li>
+          <li>Conjunctive adverbs (however, therefore, moreover) are NOT coordinating conjunctions — they cannot join two independent clauses with only a comma. They need a semicolon before them.</li>
+        </ul>
+
+        <div class="section-sub">Core Punctuation Rules</div>
+        <table class="info-table">
+          <tr><th>Situation</th><th>Correct Punctuation</th></tr>
+          <tr><td>Independent + Independent</td><td>Period / Semicolon / Comma + FANBOYS</td></tr>
+          <tr><td>Independent + Dependent</td><td>No punctuation, or comma only if dependent clause comes first</td></tr>
+          <tr><td>Introducing a list or explanation</td><td>Colon — independent clause must precede it</td></tr>
+          <tr><td>Parenthetical inserted mid-sentence</td><td>Pair of commas or pair of dashes (must be consistent)</td></tr>
+          <tr><td>Conjunctive adverb between two independent clauses</td><td>Semicolon before the adverb; comma after it</td></tr>
+        </table>
+
+        <div class="section-sub">Difficulty Breakdown</div>
+        <table class="info-table">
+          <tr><th style="width:72px">Level</th><th>What makes it that level</th></tr>
+          <tr><td><span class="badge easy">Easy</span></td><td>Clear run-on or clear fragment. Only one choice forms a complete, correctly punctuated sentence.</td></tr>
+          <tr><td><span class="badge medium">Medium</span></td><td>Involves an introductory dependent clause or a parenthetical. Two choices use similar punctuation (comma vs. semicolon).</td></tr>
+          <tr><td><span class="badge hard">Hard</span></td><td>Complex sentence with multiple clauses. Choices differ by one punctuation mark. Colon vs. semicolon distinction or dash vs. comma parenthetical is often what separates correct from incorrect.</td></tr>
+        </table>
+      </div>
+
+      <!-- 4B: Form, Structure, and Sense -->
+      <div class="skill">
+        <div class="skill-title"><span class="skill-number">4B</span> Form, Structure, and Sense</div>
+
+        <div class="qt-box">
+          <strong>Question Type</strong>
+          <p>Choose the correct verb form, pronoun, modifier, or possessive. Covers: subject-verb agreement, pronoun-antecedent agreement, verb tense, parallel structure, modifier placement, and possessives vs. contractions.</p>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example — Subject-Verb Agreement</div>
+          <p class="example-passage">
+            The discovery of several previously unknown manuscripts ________ the research team's understanding of the medieval period considerably.
+          </p>
+          <p class="example-q">Which choice completes the text so that it conforms to the conventions of Standard English?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> expand</li>
+            <li><span class="choice-letter">B.</span> expands</li>
+            <li><span class="choice-letter">C.</span> are expanding</li>
+            <li><span class="choice-letter">D.</span> have expanded</li>
+          </ul>
+        </div>
+
+        <div class="example-box">
+          <div class="example-label">Example — Possessive vs. Contraction</div>
+          <p class="example-passage">
+            The foundation announced that ________ expanding ________ grant programme to include applicants from rural areas, a decision that reflects ________ commitment to equitable access.
+          </p>
+          <p class="example-q">Which choice correctly completes all three blanks?</p>
+          <ul class="example-choices">
+            <li><span class="choice-letter">A.</span> it's / it's / its</li>
+            <li><span class="choice-letter">B.</span> its / its / it's</li>
+            <li><span class="choice-letter">C.</span> it's / its / its</li>
+            <li><span class="choice-letter">D.</span> its / it's / its</li>
+          </ul>
+        </div>
+
+        <div class="section-sub">Strategy</div>
+        <ul class="strategy-list">
+          <li><strong>Subject-verb agreement:</strong> Cross out all prepositional phrases and parenthetical phrases between subject and verb — then match the verb to the true subject.</li>
+          <li><strong>Pronoun agreement:</strong> Identify the antecedent (the noun the pronoun refers to). Match pronoun in number and person.</li>
+          <li><strong>Possessives vs. contractions:</strong> Substitute the full form to test — "it is" = it's (contraction); "belonging to it" = its (possessive, no apostrophe). Same rule applies to their/they're and whose/who's.</li>
+          <li><strong>Verb tense:</strong> Look for time markers in surrounding sentences. Tense must be consistent with the timeline established in the passage.</li>
+          <li><strong>Parallel structure:</strong> Items in a list or after correlative conjunctions (both…and; not only…but also) must match in grammatical form.</li>
+          <li><strong>Modifier placement:</strong> The modifier must sit directly next to the noun it describes. Remove the modifier and confirm the sentence still makes sense without it.</li>
+        </ul>
+
+        <div class="section-sub">Common Trap Patterns</div>
+        <table class="info-table">
+          <tr><th>Trap</th><th>Example &amp; Fix</th></tr>
+          <tr><td>Intervening phrase hides subject</td><td>"The results of the study <em>is</em> clear" → Subject = results (plural) → use <em>are</em></td></tr>
+          <tr><td>Collective noun (American English)</td><td>"The team <em>are</em> ready" → Treat as singular → <em>is</em></td></tr>
+          <tr><td>Possessive vs. contraction</td><td>"The company announced <em>it's</em> new policy" → Should be <em>its</em> (belonging to it)</td></tr>
+          <tr><td>Ambiguous pronoun reference</td><td>"Maria told Ana that <em>she</em> was late" → Rewrite to clarify which person</td></tr>
+          <tr><td>Non-parallel list</td><td>"…swimming, running, and <em>to cycle</em>" → Fix to "…swimming, running, and <em>cycling</em>"</td></tr>
+          <tr><td>Dangling modifier</td><td>"<em>Walking home</em>, the rain began" → Rain cannot walk — rewrite: "Walking home, <em>she</em> felt the rain begin"</td></tr>
+        </table>
+
+        <div class="section-sub">Difficulty Breakdown</div>
+        <table class="info-table">
+          <tr><th style="width:72px">Level</th><th>What makes it that level</th></tr>
+          <tr><td><span class="badge easy">Easy</span></td><td>Simple subject-verb or pronoun agreement. Subject and verb are adjacent. Basic its/it's distinction with clear context.</td></tr>
+          <tr><td><span class="badge medium">Medium</span></td><td>Prepositional phrase separates subject from verb. Pronoun antecedent is one sentence earlier. Basic parallel structure in a two-item list.</td></tr>
+          <tr><td><span class="badge hard">Hard</span></td><td>Complex parallel structure across three or more items. Dangling or misplaced modifier that subtly changes meaning. Tricky tense sequence (past perfect vs. simple past). All four choices are grammatically plausible but only one is correct in context.</td></tr>
+        </table>
+      </div>
+
+    </div>
+  </div><!-- /domain 4 -->
+
+</div><!-- /container -->
+
+<div class="footer">
+  SAT Reading &amp; Writing Cheat Sheet &nbsp;|&nbsp; For student reference only &nbsp;|&nbsp; Based on the Digital SAT format (College Board)
+</div>
+
+</body>
+</html>
